@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>중개사무소 앱 — 중개사 실전 도구 7종</title>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#1f4d3f">
+<link rel="icon" href="icon.svg">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f6f5f1;--ink:#1d2321;--sub:#5d6662;--line:#e3e1da;--brand:#1f4d3f}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Noto Sans KR',system-ui,sans-serif;line-height:1.5}
+header{background:var(--brand);color:#fff;padding:22px 18px 18px}
+header h1{margin:0;font-size:21px;letter-spacing:-.4px}
+header p{margin:4px 0 0;font-size:13.5px;opacity:.85}
+main{max-width:860px;margin:0 auto;padding:16px 12px 40px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px}
+.card{display:block;background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px;color:inherit;text-decoration:none;position:relative;min-height:118px}
+a.card:hover{border-color:#9fbcb1;box-shadow:0 4px 14px rgba(0,0,0,.06)}
+.num{font-size:12px;font-weight:700;color:var(--brand);background:#e5efea;border-radius:999px;padding:2px 8px}
+.card h2{font-size:16px;margin:8px 0 4px}
+.card p{margin:0;font-size:13px;color:var(--sub)}
+.badge{position:absolute;right:12px;top:14px;font-size:11.5px;font-weight:700;border-radius:6px;padding:2px 7px}
+.on{background:#e5f5ec;color:#1e9a5a}.soon{background:#eef0ef;color:#8a918e}
+.card.dim{opacity:.62}
+.foot{margin-top:18px;font-size:12.5px;color:var(--sub);text-align:center}
+.install{display:none;margin:12px 0 0;background:#fff;color:var(--brand);border:0;border-radius:10px;padding:8px 14px;font:inherit;font-weight:700;cursor:pointer}
+</style>
+</head>
+<body>
+<header>
+  <h1>중개사무소 앱</h1>
+  <p>중개사가 공짜로, 한 화면에서 쓰는 실전 도구 7종</p>
+  <button class="install" id="installBtn">홈 화면에 설치</button>
+</header>
+<main>
+  <div class="grid">
+    <a class="card" href="lh.html"><span class="badge on">사용 가능</span><span class="num">⑤</span>
+      <h2>LH전세 · 근저당 제로 찾기</h2><p>등기부 PDF 자동 판독 → 공시가격 자동 조회 → LH 통과 가능성 신호등</p></a>
+    <div class="card dim"><span class="badge soon">준비 중</span><span class="num">⑦</span><h2>경매·공매 입찰서류</h2><p>사건번호 → 입찰표·위임장 PDF 자동 작성</p></div>
+    <div class="card dim"><span class="badge soon">준비 중</span><span class="num">④</span><h2>토지&amp;건물 얼마나 해요?</h2><p>주소 1개 → 고객용 시세 상담 리포트</p></div>
+    <div class="card dim"><span class="badge soon">준비 중</span><span class="num">⑥</span><h2>공실클럽</h2><p>수수료 0원 중개사 공동중개 네트워크</p></div>
+    <div class="card dim"><span class="badge soon">준비 중</span><span class="num">②</span><h2>다방광고 원클릭</h2><p>1회 입력 → 다방·네이버·블로그 광고문 + 표시광고 검사</p></div>
+    <div class="card dim"><span class="badge soon">준비 중</span><span class="num">③</span><h2>AI쇼츠 자동 업로드</h2><p>매물 사진 → 부동산 전용 쇼츠</p></div>
+    <div class="card dim"><span class="badge soon">준비 중</span><span class="num">①</span><h2>똥컴 업그레이드</h2><p>오래된 사무실 PC 진단 → 처방 → 실행</p></div>
+  </div>
+  <div class="foot">랜드3 연구소 · 모든 결과는 참고용 사전 점검이며 최종 판단은 관계기관·전문가 확인이 필요합니다.</div>
+</main>
+<script>
+if("serviceWorker" in navigator){ navigator.serviceWorker.register("sw.js").catch(()=>{}); }
+let deferred=null; const b=document.getElementById("installBtn");
+addEventListener("beforeinstallprompt",e=>{ e.preventDefault(); deferred=e; b.style.display="inline-block"; });
+b.onclick=async()=>{ if(!deferred) return; deferred.prompt(); await deferred.userChoice; deferred=null; b.style.display="none"; };
+</script>
+</body>
+</html>

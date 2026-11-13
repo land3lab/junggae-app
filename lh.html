@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LH 전세임대 사전점검 신호등 · 중개사무소 앱</title>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#1f4d3f">
+<link rel="icon" href="icon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<style>
+:root{
+  --bg:#f6f5f1; --card:#fff; --ink:#1d2321; --sub:#5d6662; --line:#e3e1da;
+  --brand:#1f4d3f; --brand2:#2e6b58;
+  --g:#1e9a5a; --gbg:#e5f5ec; --y:#c98a00; --ybg:#fdf3d8; --r:#d23b33; --rbg:#fbe6e4; --n:#8a918e; --nbg:#eef0ef;
+  --radius:12px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:'Noto Sans KR',system-ui,sans-serif;font-size:15px;line-height:1.5}
+button,input,select,textarea{font:inherit;color:inherit}
+header{background:var(--brand);color:#fff;padding:14px 16px 10px}
+header h1{margin:0;font-size:18px;font-weight:700;letter-spacing:-.3px}
+header .sub{font-size:12.5px;opacity:.85}
+.notice{position:sticky;top:0;z-index:30;background:#fff7e0;border-bottom:1px solid #f0d98a;color:#6b5200;font-size:12.5px;padding:7px 16px;font-weight:500}
+nav.tabs{display:flex;gap:4px;padding:8px 12px 0;background:var(--brand)}
+nav.tabs button{background:transparent;border:0;color:#cfe3db;padding:8px 14px;border-radius:10px 10px 0 0;cursor:pointer;font-weight:500}
+nav.tabs button.on{background:var(--bg);color:var(--brand)}
+main{max-width:980px;margin:0 auto;padding:14px 12px 90px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+@media(max-width:640px){.grid2,.grid3{grid-template-columns:1fr}}
+label.f{display:flex;flex-direction:column;gap:3px;font-size:12.5px;color:var(--sub);font-weight:500}
+input[type=text],input[type=number],input[type=date],select,textarea{border:1px solid var(--line);border-radius:9px;padding:8px 10px;background:#fff;width:100%;min-width:0}
+textarea{min-height:60px}
+.btn{border:1px solid var(--line);background:#fff;border-radius:10px;padding:8px 13px;cursor:pointer;font-weight:500;white-space:nowrap}
+.btn.pri{background:var(--brand);border-color:var(--brand);color:#fff}
+.btn.pri:disabled{opacity:.5;cursor:default}
+.btn.danger{color:var(--r);border-color:#f1c4c0}
+.btn.sm{padding:5px 9px;font-size:13px}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:5px 11px;cursor:pointer;font-size:13px;display:inline-flex;gap:6px;align-items:center}
+.chip.on{border-color:var(--brand);background:#e8f0ec;color:var(--brand);font-weight:700}
+.dot{width:12px;height:12px;border-radius:50%;display:inline-block;flex:none}
+.dot.green{background:var(--g)}.dot.yellow{background:var(--y)}.dot.red{background:var(--r)}.dot.gray{background:var(--n)}
+.light{display:flex;gap:5px;padding:6px 7px;background:#222;border-radius:999px;flex:none}
+.light i{width:14px;height:14px;border-radius:50%;background:#444;display:block}
+.light.green i:nth-child(3){background:#2fd27b;box-shadow:0 0 8px #2fd27b}
+.light.yellow i:nth-child(2){background:#ffc21a;box-shadow:0 0 8px #ffc21a}
+.light.red i:nth-child(1){background:#ff4c40;box-shadow:0 0 8px #ff4c40}
+.list{display:flex;flex-direction:column;gap:10px;margin-top:12px}
+.item{display:flex;gap:12px;align-items:flex-start;cursor:pointer}
+.item:hover{border-color:#bfcfc8}
+.item .t{font-weight:700;font-size:15.5px}
+.item .m{color:var(--sub);font-size:13px}
+.item .why{font-size:12.5px;margin-top:4px}
+.tag{display:inline-block;font-size:11.5px;padding:1px 7px;border-radius:6px;background:var(--nbg);color:var(--sub);margin-right:4px;font-weight:500}
+.tag.green{background:var(--gbg);color:var(--g)}.tag.yellow{background:var(--ybg);color:#8a5e00}.tag.red{background:var(--rbg);color:var(--r)}
+.stats{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.stat{flex:1;min-width:90px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:8px 10px}
+.stat b{font-size:20px;display:block}
+.stat span{font-size:12px;color:var(--sub)}
+.empty{text-align:center;color:var(--sub);padding:36px 12px}
+h2{font-size:16px;margin:0 0 10px}
+h3{font-size:14.5px;margin:18px 0 8px;color:var(--brand)}
+.muted{color:var(--sub);font-size:12.5px}
+.sheet{position:fixed;inset:0;background:rgba(20,25,23,.45);z-index:50;display:none;overflow:auto;padding:16px 8px}
+.sheet.open{display:block}
+.sheet .panel{max-width:860px;margin:0 auto;background:var(--bg);border-radius:16px;padding:16px;position:relative}
+.sheet .close{position:absolute;right:12px;top:10px}
+table.rights{width:100%;border-collapse:collapse;font-size:13px}
+table.rights th{background:#eef1ef;text-align:left;padding:6px;font-weight:500;color:var(--sub);white-space:nowrap}
+table.rights td{border-top:1px solid var(--line);padding:4px;vertical-align:middle}
+table.rights td input,table.rights td select{padding:5px 6px;font-size:13px}
+table.rights tr.off td{opacity:.45}
+table.rights tr.bad td:first-child{box-shadow:inset 3px 0 var(--r)}
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:#fff}
+.verdict{border-radius:var(--radius);padding:14px;display:flex;gap:14px;align-items:flex-start}
+.verdict.green{background:var(--gbg)}.verdict.yellow{background:var(--ybg)}.verdict.red{background:var(--rbg)}.verdict.gray{background:var(--nbg)}
+.verdict .big{font-size:18px;font-weight:700}
+.verdict ul{margin:6px 0 0;padding-left:18px;font-size:13.5px}
+.formula{font-size:13px;background:#fff;border:1px dashed var(--line);border-radius:9px;padding:8px 10px;margin-top:8px}
+.drop{border:2px dashed #b9c9c2;border-radius:var(--radius);padding:18px;text-align:center;background:#fbfcfb;cursor:pointer}
+.drop.hot{background:#e8f0ec;border-color:var(--brand)}
+.status{font-size:13px;margin-top:8px}
+.status.err{color:var(--r)}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:#1d2321;color:#fff;padding:9px 16px;border-radius:999px;font-size:13.5px;z-index:90;display:none}
+.fab{position:fixed;right:16px;bottom:18px;z-index:40;box-shadow:0 6px 18px rgba(0,0,0,.18)}
+.dialog{position:fixed;inset:0;background:rgba(20,25,23,.45);z-index:80;display:none;align-items:center;justify-content:center;padding:16px}
+.dialog.open{display:flex}
+.dialog .box{background:#fff;border-radius:14px;padding:16px;max-width:520px;width:100%}
+.check{display:flex;gap:8px;align-items:flex-start;font-size:13.5px;margin:4px 0}
+.check input{margin-top:4px}
+.req{background:#fff;border:1px solid #f0d98a;border-radius:10px;padding:8px 12px;margin-top:8px;font-size:13px}
+.req b{color:#8a5e00}
+.cust header{background:#183c31}
+.cust .item{cursor:default}
+pre.copy{white-space:pre-wrap;background:#f4f4f1;border-radius:9px;padding:10px;font-size:12.5px;max-height:260px;overflow:auto;font-family:inherit}
+.spin{display:inline-block;width:14px;height:14px;border:2px solid #c9d6d0;border-top-color:var(--brand);border-radius:50%;animation:sp 1s linear infinite;vertical-align:-2px;margin-right:6px}
+@keyframes sp{to{transform:rotate(360deg)}}
+.limits td input{min-width:70px}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div class="toast" id="toast"></div>
+<div class="dialog" id="dlg"><div class="box" id="dlgBox"></div></div>
+
+<script>
+/* ===================== 기본값 ===================== */
+const DEFAULT_RULES = {
+  threshold: 90,            // 부채비율 기준치(%)
+  margin: 5,                // 기준치까지 여유가 이보다 적으면 노랑(%p)
+  multipliers: { "공동주택": 1.0, "오피스텔": 1.0, "단독·다가구": 1.0 }, // 주택가격 = 공시가격 × 배율
+  reReadDays: 14,           // 열람일 경과 시 재열람 요청(일)
+  multiOtherShare: 30,      // 다가구: 타 호실 보증금 합계가 주택가격의 이 % 이상이면 노랑
+  defects: "압류,가압류,가처분,신탁,경매개시,임의경매,강제경매,임차권등기,주택임차권",
+  watch: "가등기,예고등기,환매",
+  limits: [
+    { label: "청년 1인", region: "수도권", amount: 12000, note: "2026년 2월 공고 예시" }
+  ],
+  office: { name: "", phone: "" },
+  updatedNote: "기본값입니다. 최신 LH 공고를 확인해 수정하세요."
+};
+const TYPES = ["아파트","연립다세대","오피스텔","다가구","단독","기타"];
+const REGIONS = ["수도권","광역시","기타"];
+const SECTIONS = ["갑구","을구"];
+
+/* ===================== 상태 ===================== */
+const S = {
+  db:null, sample:null, sampleImages:false, canWrite:true,
+  rules: structuredClone(DEFAULT_RULES),
+  listings: [], loaded:false, loadNote:"",
+  tab:"list",
+  filter:{ region:"", limitIdx:-1, maxDeposit:"", lights:new Set(), q:"" },
+  edit:null, editFiles:[], parsing:false, parseMsg:"", parseErr:false,
+  cust:null
+};
+
+/* ===================== 유틸 ===================== */
+const $ = s => document.querySelector(s);
+const esc = v => String(v ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const num = v => { const n = parseFloat(String(v ?? "").replace(/[^0-9.\-]/g,"")); return isFinite(n) ? n : 0; };
+const uid = () => Math.random().toString(36).slice(2,8) + Date.now().toString(36).slice(-4);
+function man(v){ // 만원 → "1억 2,000만원"
+  v = Math.round(num(v)); if(!v) return "0원";
+  const eok = Math.floor(v/10000), rest = v%10000;
+  return (eok? eok+"억 ":"") + (rest? rest.toLocaleString()+"만원" : (eok? "원":"")).replace(/^원$/,"");
+}
+function manShort(v){ v=num(v); return v>=10000 ? (v/10000).toFixed(v%10000?2:0).replace(/\.?0+$/,"")+"억" : v.toLocaleString()+"만"; }
+function toast(t){ const el=$("#toast"); el.textContent=t; el.style.display="block"; clearTimeout(toast._t); toast._t=setTimeout(()=>el.style.display="none",2200); }
+function daysSince(d){ if(!d) return null; const t=new Date(d+"T00:00:00"); if(isNaN(t)) return null; return Math.floor((Date.now()-t.getTime())/86400000); }
+function regionOf(addr){
+  addr = addr||"";
+  if(/^(서울|경기|인천)/.test(addr.trim())) return "수도권";
+  if(/^(부산|대구|광주|대전|울산|세종)/.test(addr.trim())) return "광역시";
+  return addr.trim() ? "기타" : "";
+}
+function typeGroup(t){ return (t==="아파트"||t==="연립다세대") ? "공동주택" : t==="오피스텔" ? "오피스텔" : "단독·다가구"; }
+function kw(list){ return String(list||"").split(/[,\s]+/).map(s=>s.trim()).filter(Boolean); }
+async function copyText(t){ try{ await navigator.clipboard.writeText(t); toast("복사했습니다"); }catch(e){ toast("복사가 막혔습니다. 길게 눌러 직접 복사하세요"); } }
+function ask(html, okLabel, onOk){
+  $("#dlgBox").innerHTML = html + `<div class="row" style="justify-content:flex-end;margin-top:14px"><button class="btn" id="dlgNo">닫기</button>${okLabel?`<button class="btn pri" id="dlgOk">${esc(okLabel)}</button>`:""}</div>`;
+  $("#dlg").classList.add("open");
+  $("#dlgNo").onclick = ()=>$("#dlg").classList.remove("open");
+  if(okLabel) $("#dlgOk").onclick = ()=>{ $("#dlg").classList.remove("open"); onOk&&onOk(); };
+}
+
+/* ===================== 판정 엔진 ===================== */
+function evaluate(L, R, limitRow){
+  R = R || S.rules;
+  const reasons = [], warns = [], checks = [];
+  const defectKw = kw(R.defects), watchKw = kw(R.watch);
+  const active = (L.rights||[]).filter(r => r.active !== false && !/말소|해제|해지|취하|각하/.test(r.kind||""));
+
+  // 1) 등기 하자
+  const defects = active.filter(r => r.section==="갑구" || /임차권/.test(r.kind||""))
+                        .filter(r => defectKw.some(k => (r.kind||"").includes(k) || (r.note||"").includes(k+"등기")));
+  // 신탁은 비고/원인에만 있을 수 있음
+  defects.forEach(r => reasons.push(`등기 하자: ${r.section} ${r.kind}${r.date?` (${r.date})`:""}`));
+  const watched = active.filter(r => watchKw.some(k => (r.kind||"").includes(k)));
+  watched.forEach(r => warns.push(`주의 등기: ${r.section} ${r.kind} — 내용 확인 필요`));
+
+  // 2) 주택가격
+  const mult = num(R.multipliers?.[typeGroup(L.type)] ?? 1) || 1;
+  const price = num(L.priceOverride) || (num(L.publicPrice) * mult);
+  const priceSrc = num(L.priceOverride) ? "직접 입력가" : `공시가격 × ${mult}`;
+
+  // 3) 선순위 채권
+  const liens = active.filter(r => r.section==="을구" && /근저당|저당|전세권|임차권|질권/.test(r.kind||""));
+  const seniorDebt = liens.reduce((s,r)=>s+num(r.amount),0);
+  const otherDep = num(L.otherDeposits);
+  const deposit = num(L.deposit);
+  const total = seniorDebt + otherDep + deposit;
+  const ratio = price>0 ? total/price*100 : null;
+
+  if(!price){ checks.push("공시가격(또는 주택가격)을 입력해야 부채비율을 계산할 수 있습니다."); }
+  else if(ratio > num(R.threshold)) reasons.push(`부채비율 ${ratio.toFixed(1)}% > 기준 ${R.threshold}%`);
+  else if(ratio > num(R.threshold) - num(R.margin)) warns.push(`부채비율 ${ratio.toFixed(1)}% — 기준(${R.threshold}%)까지 여유 ${(num(R.threshold)-ratio).toFixed(1)}%p`);
+
+  // 4) 지원한도
+  if(limitRow && num(limitRow.amount)>0 && deposit > num(limitRow.amount))
+    reasons.push(`지원한도 초과: 보증금 ${man(deposit)} > ${limitRow.label} ${limitRow.region} ${man(limitRow.amount)}`);
+
+  // 5) 집주인 동의
+  if(L.consent==="no") reasons.push("집주인 LH 전세임대 거부");
+  else if(L.consent!=="yes") warns.push("집주인 LH 동의 여부 미확인");
+
+  // 6) 다가구
+  if(L.type==="다가구" || L.type==="단독"){
+    if(price && otherDep/price*100 >= num(R.multiOtherShare)) warns.push(`다른 호실 보증금 합계 ${man(otherDep)} (주택가격의 ${(otherDep/price*100).toFixed(0)}%)`);
+    if(L.type==="다가구"){
+      if(!L.fixedDateChecked) checks.push("확정일자 부여현황 확인 (주민센터·등기소, 임대인 동의 필요)");
+      if(!L.tenantsChecked) checks.push("전입세대 열람 확인 (주민센터)");
+      if(!L.fixedDateChecked || !L.tenantsChecked) warns.push("다가구 선순위 임차보증금 미확인");
+      if(seniorDebt===0 && !otherDep) warns.push("근저당 0이지만 다른 호실 보증금이 0으로 입력됨 — 실제 확인 필요");
+    }
+  }
+
+  // 7) 열람일 / 판독 확인
+  const ds = daysSince(L.readDate);
+  if(ds===null) warns.push("등기부 열람일 미입력");
+  else if(ds > num(R.reReadDays)) warns.push(`등기부 열람 후 ${ds}일 경과 — 재열람 필요`);
+  if((L.rights||[]).length && !L.rightsConfirmed) warns.push("자동 판독 결과를 중개사가 아직 확인하지 않음");
+  if(!(L.rights||[]).length) warns.push("등기 권리 목록이 비어 있음 (등기부 미판독)");
+
+  let light = "green";
+  if(reasons.length) light = "red";
+  else if(!price) light = "gray";
+  else if(warns.length || checks.length) light = "yellow";
+
+  return { light, reasons, warns, checks, ratio, price, priceSrc, seniorDebt, otherDep, deposit, total, defects, liens, mult };
+}
+const LIGHT_LABEL = { green:"초록 · 통과 가능성 높음", yellow:"노랑 · 확인 필요", red:"빨강 · 통과 어려움", gray:"판정 불가 · 가격 미입력" };
+
+/* ===================== 서버(Supabase RPC) ===================== */
+const SB_URL = "https://dwtylilyvmvbpsryvlcg.supabase.co";
+const SB_KEY = "sb_publishable_Vht7Hh-4GF-mpbnprPp3FQ_AgGPTKTH";
+const TK = "junggae-token";
+function getToken(){ try{ return localStorage.getItem(TK)||""; }catch(e){ return ""; } }
+function setToken(t){ try{ t?localStorage.setItem(TK,t):localStorage.removeItem(TK); }catch(e){} S.token=t||""; }
+async function rpc(fn, args){
+  let res;
+  try{
+    res = await fetch(`${SB_URL}/rest/v1/rpc/${fn}`, { method:"POST",
+      headers:{ apikey:SB_KEY, "Content-Type":"application/json" }, body: JSON.stringify(args||{}) });
+  }catch(e){ throw new Error("인터넷 연결을 확인하세요"); }
+  const txt = await res.text(); let j=null; try{ j = txt?JSON.parse(txt):null; }catch(e){}
+  if(!res.ok){
+    const msg = (j && (j.message||j.hint)) || ("서버 오류 "+res.status);
+    if(msg==="AUTH_REQUIRED"){ setToken(""); S.me=null; render(); throw new Error("다시 로그인하세요"); }
+    throw new Error(msg);
+  }
+  return j;
+}
+async function saveListing(L){
+  L.updatedAt = new Date().toISOString();
+  const i = S.listings.findIndex(x=>x.id===L.id);
+  if(i>=0) S.listings[i]=L; else S.listings.unshift(L);
+  render();
+  try{ const d = JSON.parse(JSON.stringify(L)); delete d.id; await rpc("lh_save",{p_token:S.token,p_id:L.id,p_data:d}); }
+  catch(e){ toast("저장 실패: "+e.message); }
+}
+async function deleteListing(id){
+  S.listings = S.listings.filter(x=>x.id!==id); render();
+  try{ await rpc("lh_delete",{p_token:S.token,p_id:id}); }catch(e){ toast("삭제 실패: "+e.message); }
+}
+async function saveRules(){
+  try{ await rpc("lh_rules_save",{p_token:S.token,p_data:JSON.parse(JSON.stringify(S.rules))}); toast("규칙을 저장했습니다"); }
+  catch(e){ toast("저장 실패: "+e.message); }
+}
+async function initStore(){
+  S.loaded=false; render();
+  try{
+    const [me, list, rules] = await Promise.all([ rpc("lh_me",{p_token:S.token}), rpc("lh_list",{p_token:S.token}), rpc("lh_rules_get",{p_token:S.token}) ]);
+    S.me = me; S.listings = list||[];
+    S.rules = Object.assign(structuredClone(DEFAULT_RULES), rules||{});
+    if(!S.rules.office || !S.rules.office.name) S.rules.office = { name: me.office, phone: S.rules.office?.phone || "" };
+    S.loadNote="";
+  }catch(e){ S.loadNote = e.message; }
+  S.loaded=true; render();
+}
+
+/* ===================== 등기부 판독 ===================== */
+if(window.pdfjsLib){ pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js"; }
+
+async function pdfToTextAndImages(file, wantImages){
+  const buf = await file.arrayBuffer();
+  const pdf = await pdfjsLib.getDocument({data:buf}).promise;
+  let text = ""; const images = [];
+  for(let p=1;p<=pdf.numPages;p++){
+    const page = await pdf.getPage(p);
+    const tc = await page.getTextContent();
+    // 줄 단위 재구성
+    let lastY=null, line="";
+    for(const it of tc.items){
+      const y = Math.round(it.transform[5]);
+      if(lastY!==null && Math.abs(y-lastY)>3){ text += line.trim()+"\n"; line=""; }
+      line += it.str + (it.hasEOL?"\n":" "); lastY=y;
+    }
+    text += line.trim()+"\n\n[페이지 "+p+" 끝]\n";
+    if(wantImages && images.length<8){
+      const vp = page.getViewport({scale:1.6});
+      const c = document.createElement("canvas"); c.width=vp.width; c.height=vp.height;
+      await page.render({canvasContext:c.getContext("2d"), viewport:vp}).promise;
+      images.push(await new Promise(r=>c.toBlob(r,"image/jpeg",0.82)));
+    }
+  }
+  return { text, images, pages: pdf.numPages };
+}
+
+function ymd(y,m,d){ return `${y}-${String(m).padStart(2,"0")}-${String(d).padStart(2,"0")}`; }
+const KIND_RE = /(근저당권설정|저당권설정|전세권설정|주택임차권|임차권설정|임차권등기|가압류|압류|가처분|임의경매개시결정|강제경매개시결정|경매개시결정|소유권이전청구권가등기|소유권이전담보가등기|가등기|신탁|환매특약|소유권이전|소유권보존|근저당권변경|전세권변경)/;
+function parseRecords(text, section){
+  // "순위번호 등기목적 접수일 ..." 단위로 끊어 레코드화
+  const t = text.replace(/\s+/g," ");
+  const re = new RegExp("(?:^|\\s)(\\d{1,3}(?:-\\d{1,2})?)\\s+(?:\\S{0,6}\\s)?" + KIND_RE.source, "g");
+  const hits=[]; let m;
+  while((m=re.exec(t))){ hits.push({ idx:m.index, rank:m[1], kind:m[2] }); }
+  return hits.map((h,i)=>{
+    const body = t.slice(h.idx, i+1<hits.length?hits[i+1].idx:t.length);
+    const dt = body.match(/(\d{4})\s*년\s*(\d{1,2})\s*월\s*(\d{1,2})\s*일/);
+    const amt = body.match(/(?:채권최고액|청구금액|전세금|임차보증금|보증금)\s*금?\s*([\d,]+)\s*원/);
+    const hold = body.match(/(?:근저당권자|저당권자|채권자|전세권자|임차권자|권리자|수탁자|가등기권자)\s*((?:주식회사|\(주\)|㈜|유한회사|재단법인|사단법인)\s*\S+|\S+)/);
+    let kind = h.kind;
+    if(kind==="소유권이전" && /신탁/.test(body)) kind="신탁";
+    return { section, rank:h.rank, kind, date: dt?ymd(dt[1],dt[2],dt[3]):"", holder: hold?hold[1]:"", amount: amt?Math.round(num(amt[1])/10000):"", active:true, note:"" };
+  });
+}
+function ruleParse(text){
+  const out = { readDate:null, address:"", rights:[], warnings:[] };
+  const flat = text.replace(/[ \t]+/g," ");
+  const rd = flat.match(/(?:열람일시|발행일|출력일시)\s*:?\s*(\d{4})\s*[년.\/-]\s*(\d{1,2})\s*[월.\/-]\s*(\d{1,2})/);
+  if(rd) out.readDate = ymd(rd[1],rd[2],rd[3]);
+  const ad = flat.match(/\[(집합건물|건물|토지)\]\s*([^\n]+)/);
+  if(ad){ out.address = ad[2].trim(); out.kindHint = ad[1]; }
+  const sumIdx = flat.indexOf("주요 등기사항 요약");
+  if(sumIdx>=0){
+    const sum = flat.slice(sumIdx);
+    const s2 = sum.search(/2\.\s*소유지분을\s*제외한/);
+    const s3 = sum.search(/3\.\s*\(근\)저당권/);
+    const end = sum.search(/\[\s*참\s*고\s*사\s*항|이\s*하\s*여\s*백|\*\s*실선으로/);
+    const gap = s2>=0 ? sum.slice(s2, s3>=0?s3:undefined) : "";
+    const eul = s3>=0 ? sum.slice(s3, end>s3?end:undefined) : "";
+    if(gap && !/기록사항\s*없음/.test(gap)) out.rights.push(...parseRecords(gap.replace(/^2\.[^)]*\)/,""), "갑구").filter(r=>!/^소유권(이전|보존)$/.test(r.kind)));
+    if(eul && !/기록사항\s*없음/.test(eul)) out.rights.push(...parseRecords(eul.replace(/^3\.[^)]*\)/,""), "을구"));
+    if(s3<0) out.warnings.push("요약표에서 을구 항목을 찾지 못했습니다. 을구를 직접 확인하세요.");
+    if(eul && /기록사항\s*없음/.test(eul)) out.warnings.push("을구 기록사항 없음 — 근저당 제로");
+  } else {
+    // 요약표가 없으면 본문 전체에서 추출(말소 여부 판단 불가 → 모두 유효로 표시)
+    const gIdx = flat.search(/【\s*갑\s*구\s*】|\[\s*갑\s*구\s*\]/), eIdx = flat.search(/【\s*을\s*구\s*】|\[\s*을\s*구\s*\]/);
+    if(gIdx>=0) out.rights.push(...parseRecords(flat.slice(gIdx, eIdx>gIdx?eIdx:undefined), "갑구").filter(r=>!/^소유권(이전|보존)$/.test(r.kind)));
+    if(eIdx>=0) out.rights.push(...parseRecords(flat.slice(eIdx), "을구"));
+    out.warnings.push("'주요 등기사항 요약' 페이지가 없어 말소된 등기도 '유효'로 표시됐을 수 있습니다. 말소된 줄은 체크를 해제하세요.");
+  }
+  // 말소 등기 자체는 제외
+  out.rights = out.rights.filter(r=>!/말소|해제|해지/.test(r.kind));
+  if(!out.rights.length && sumIdx<0) out.warnings.push("권리 항목을 찾지 못했습니다. 원본과 대조해 직접 입력하세요.");
+  return out;
+}
+
+async function runParse(){
+  const L = S.edit; if(!L || !S.editFiles.length) return;
+  S.parsing=true; S.parseErr=false; S.parseMsg="등기부를 읽는 중…"; renderEditor();
+  try{
+    let text="";
+    for(const f of S.editFiles){
+      if(f.type==="application/pdf" || /\.pdf$/i.test(f.name)){
+        if(!window.pdfjsLib) throw new Error("PDF 라이브러리를 불러오지 못했습니다");
+        const r = await pdfToTextAndImages(f, false); text += r.text;
+      }
+    }
+    if(text.replace(/\s/g,"").length < 200) throw new Error("글자를 읽을 수 없는 파일입니다. 인터넷등기소에서 발급·열람한 PDF를 그대로 올려주세요(사진·스캔본은 2차에서 지원 예정).");
+    const res = ruleParse(text);
+    applyParse(L, res, "자동");
+    if(res.kindHint==="집합건물" && !L.type) L.type="연립다세대";
+    S.parseMsg = `판독 완료 — 권리 ${L.rights.length}건. 아래 표를 원본과 대조해 고친 뒤 '확인 완료'에 체크하세요.`;
+  }catch(e){ S.parseErr=true; S.parseMsg = "판독 실패: "+(e.message||e); }
+  S.parsing=false; renderEditor();
+  if(!S.parseErr && S.edit===L && !num(L.priceOverride)) runPrice();
+}
+function applyParse(L, r, via){
+  if(!r || typeof r!=="object") throw new Error("판독 결과 형식 오류");
+  if(r.readDate) L.readDate = r.readDate;
+  if(r.address && !L.address) L.address = r.address;
+  if(r.address && !L.name) L.name = r.address.split(" ").slice(-3).join(" ");
+  if(r.buildingType && TYPES.includes(r.buildingType) && (!L.type || L._typeAuto)) { L.type = r.buildingType; L._typeAuto=true; }
+  if(r.area && !L.area) L.area = r.area;
+  if(r.jibunAddress) L.jibun = r.jibunAddress;
+  if(r.dongNm && !L.dongNm) L.dongNm = String(r.dongNm);
+  if(r.hoNm && !L.hoNm) L.hoNm = String(r.hoNm);
+  if(r.complexName && !L.complexName) L.complexName = r.complexName;
+  if(r.owner) L.owner = r.owner;
+  if(!L.region) L.region = regionOf(L.address);
+  L.rights = (r.rights||[]).map(x=>({
+    section: SECTIONS.includes(x.section)?x.section:(/근저당|전세|임차/.test(x.kind||"")?"을구":"갑구"),
+    rank: String(x.rank??""), kind: String(x.kind??""), date: String(x.date??""), holder: String(x.holder??""),
+    amount: x.amount==null ? "" : num(x.amount), active: x.active!==false, note: String(x.note??"")
+  }));
+  L.parseWarnings = (r.warnings||[]).map(String);
+  L.parsedVia = via; L.parsedAt = new Date().toISOString();
+  L.rightsConfirmed = false;
+}
+
+/* ===================== 공시가격 자동 조회 (Supabase → VWorld) ===================== */
+const SB_SERVER = "Supabase", SB_PROJECT = "dwtylilyvmvbpsryvlcg";
+const sqlStr = s => "'" + String(s ?? "").replace(/'/g,"''") + "'";
+function jibunOf(addr){
+  const a = String(addr||"").replace(/\s+/g," ").trim();
+  const m = a.match(/^(.*?\S+(?:동|리|가)\d*\s+(?:산\s*)?\d+(?:-\d+)?)(?=\s|$|,)/);
+  return m ? m[1] : a;
+}
+function dongHoOf(addr){
+  const a = String(addr||""); const rest = a.slice(jibunOf(a).length);
+  const d = rest.match(/제?\s*([0-9A-Za-z가-하]{1,4})\s*동(?![가-힣])/);
+  const h = rest.match(/제?\s*(B?\d{1,5}|지하\s*\d+)\s*호/);
+  return { dong: d?d[1].replace(/^제/,""):"", ho: h?h[1].replace(/\s/g,""):"" };
+}
+function priceKind(type){ return (type==="아파트"||type==="연립다세대") ? "apart" : (type==="다가구"||type==="단독") ? "house" : "auto"; }
+
+/* L에 공시가격을 채운다. 반환: {ok, msg, choices?} */
+async function fetchPublicPrice(L, opt={}){
+  if(L.type==="오피스텔") return { ok:false, msg:"오피스텔은 주택 공시가격 대상이 아닙니다. 국세청 기준시가·감정가를 직접 입력하세요." };
+  const src = L.jibun || L.address;
+  if(!src) return { ok:false, msg:"소재지(지번주소)를 먼저 입력하세요." };
+  const jib = L.jibun || jibunOf(L.address);
+  const dh = dongHoOf(L.address);
+  const dong = opt.dong ?? (L.dongNm || dh.dong), ho = L.hoNm || dh.ho;
+  const kind = priceKind(L.type);
+  let r;
+  try{ r = await rpc("lh_price",{ p_token:S.token, p_jibun:jib, p_dong:dong, p_ho:ho, p_kind:kind }); }catch(e){ return { ok:false, msg: e.message }; }
+  if(!r) return { ok:false, msg:"응답이 비어 있습니다." };
+  if(r.ok && r.price_won){
+    L.publicPrice = Math.round(r.price_won/10000);
+    L.priceInfo = { kind:r.kind, year:r.year, pnu:r.pnu, address:r.address, at:new Date().toISOString(), won:r.price_won };
+    if(opt.dong) L.dongNm = opt.dong;
+    return { ok:true, msg:`${r.year}년 ${r.kind} ${man(L.publicPrice)} 자동 입력 (${r.address||""})` };
+  }
+  if(r.code==="NO_KEY") return { ok:false, noKey:true, msg:"공시가격 조회 서버 설정이 아직 끝나지 않았습니다. 관리자에게 문의하세요." };
+  if(r.code==="AMBIGUOUS") return { ok:false, msg:r.message, choices:r.choices||[] };
+  return { ok:false, msg: r.message || "공시가격을 찾지 못했습니다." };
+}
+
+/* 편집 화면에서 실행 */
+async function runPrice(opt={}){
+  const L=S.edit; if(!L) return;
+  S.priceBusy=true; S.priceMsg="공시가격 조회 중…"; S.priceErr=false; S.priceChoices=null; renderEditor();
+  const r = await fetchPublicPrice(L, opt);
+  if(S.edit!==L) return;
+  S.priceBusy=false; S.priceMsg=r.msg; S.priceErr=!r.ok; S.priceChoices=r.choices||null;
+  renderEditor();
+}
+
+/* 매물장 전체 일괄 갱신 */
+async function bulkPrice(){
+  if(S.bulk) return;
+  const targets = S.listings.filter(L => L.type!=="오피스텔" && (L.jibun||L.address) && !num(L.priceOverride));
+  if(!targets.length){ toast("조회할 매물이 없습니다"); return; }
+  S.bulk = { done:0, total:targets.length, ok:0, fail:[] }; renderListOnly();
+  for(const L0 of targets){
+    const L = structuredClone(L0);
+    const r = await fetchPublicPrice(L);
+    if(r.ok){ S.bulk.ok++; await saveListing(L); } else S.bulk.fail.push(`${L.name||L.address}: ${r.msg}`);
+    S.bulk.done++; renderListOnly();
+    if(r.noKey) break;
+  }
+  const b=S.bulk; S.bulk=null;
+  ask(`<b>공시가격 일괄 갱신 완료</b><div style="margin-top:6px">성공 ${b.ok}건 / 실패 ${b.fail.length}건</div>${b.fail.length?`<pre class="copy">${esc(b.fail.join("\n"))}</pre>`:""}`, null);
+  render();
+}
+
+/* ===================== 화면: 공통 ===================== */
+function render(){
+  if(S.cust){ renderCustomer(); return; }
+  if(!S.token){ renderLogin(); return; }
+  const app = $("#app");
+  app.innerHTML = `
+  <header>
+    <div class="row" style="justify-content:space-between;align-items:flex-start">
+      <div><h1>LH 전세임대 사전점검 신호등</h1>
+      <div class="sub"><a href="./" style="color:#cfe3db">중개사무소 앱</a> ⑤ · ${esc(S.me?.office||"")} ${esc(S.me?.name||"")}</div></div>
+      <button class="btn sm" id="logoutBtn" style="background:transparent;color:#fff;border-color:#6f9c8c">로그아웃</button>
+    </div>
+  </header>
+  <nav class="tabs">
+    <button data-tab="list" class="${S.tab==="list"?"on":""}">매물장</button>
+    <button data-tab="rules" class="${S.tab==="rules"?"on":""}">판정 규칙</button>
+    <button data-tab="help" class="${S.tab==="help"?"on":""}">사용법</button>
+  </nav>
+  <div class="notice">⚠ 사전 점검용 화면입니다. 최종 승인은 LH 권리조사·감정평가가 결정합니다.</div>
+  <main id="main"></main>
+  ${S.tab==="list"?`<button class="btn pri fab" id="addBtn">＋ 매물 등록</button>`:""}`;
+  app.querySelectorAll("nav.tabs button").forEach(b=>b.onclick=()=>{ S.tab=b.dataset.tab; render(); });
+  if($("#addBtn")) $("#addBtn").onclick=()=>openEditor(null);
+  if($("#logoutBtn")) $("#logoutBtn").onclick=logout;
+  if(S.tab==="list") renderList();
+  else if(S.tab==="rules") renderRules();
+  else renderHelp();
+  if(S.edit) renderEditor();
+}
+function renderListOnly(){ if(S.tab==="list" && $("#main")) renderList(); }
+
+/* ===================== 화면: 매물장 ===================== */
+function currentLimit(){ const i=S.filter.limitIdx; return i>=0 ? S.rules.limits[i] : null; }
+function filtered(){
+  const F=S.filter, lim=currentLimit(), q=F.q.trim();
+  return S.listings.map(L=>({L, E:evaluate(L,S.rules,lim)})).filter(({L,E})=>{
+    if(F.region && (L.region||regionOf(L.address))!==F.region) return false;
+    if(lim && lim.region && (L.region||regionOf(L.address))!==lim.region) return false;
+    if(F.maxDeposit && num(L.deposit) > num(F.maxDeposit)) return false;
+    if(F.lights.size && !F.lights.has(E.light)) return false;
+    if(q && !((L.name||"")+(L.address||"")+(L.memo||"")).includes(q)) return false;
+    return true;
+  });
+}
+function renderList(){
+  const F=S.filter, rows=filtered();
+  const all = S.listings.map(L=>evaluate(L,S.rules,currentLimit()).light);
+  const cnt = k => all.filter(x=>x===k).length;
+  const greens = rows.filter(r=>r.E.light==="green");
+  $("#main").innerHTML = `
+  <div class="card">
+    <div class="grid3">
+      <label class="f">지원 유형·한도
+        <select id="fLimit"><option value="-1">한도 적용 안 함</option>
+        ${S.rules.limits.map((l,i)=>`<option value="${i}" ${F.limitIdx===i?"selected":""}>${esc(l.label)} · ${esc(l.region)} · ${l.amount?manShort(l.amount):"미설정"}</option>`).join("")}</select></label>
+      <label class="f">지역
+        <select id="fRegion"><option value="">전체</option>${REGIONS.map(r=>`<option ${F.region===r?"selected":""}>${r}</option>`).join("")}</select></label>
+      <label class="f">보증금 상한(만원)
+        <input type="number" id="fMax" placeholder="예: 12000" value="${esc(F.maxDeposit)}"></label>
+    </div>
+    <div class="row" style="margin-top:10px;justify-content:space-between">
+      <div class="chips">
+        ${["green","yellow","red","gray"].map(k=>`<button class="chip ${F.lights.has(k)?"on":""}" data-light="${k}"><span class="dot ${k}"></span>${{green:"초록만",yellow:"노랑",red:"빨강",gray:"판정불가"}[k]}</button>`).join("")}
+      </div>
+      <input type="text" id="fQ" placeholder="이름·주소·메모 검색" value="${esc(F.q)}" style="max-width:220px">
+    </div>
+    <div class="stats">
+      <div class="stat"><b>${S.listings.length}</b><span>전체 매물</span></div>
+      <div class="stat"><b style="color:var(--g)">${cnt("green")}</b><span>초록</span></div>
+      <div class="stat"><b style="color:var(--y)">${cnt("yellow")}</b><span>노랑</span></div>
+      <div class="stat"><b style="color:var(--r)">${cnt("red")}</b><span>빨강</span></div>
+    </div>
+    <div class="row" style="margin-top:10px">
+      <button class="btn pri" id="shareBtn" ${greens.length?"":"disabled"}>고객용 링크·문자 만들기 (현재 목록의 초록 ${greens.length}건)</button>
+      ${S.token?`<button class="btn" id="bulkBtn" ${S.bulk?"disabled":""}>${S.bulk?`<span class="spin"></span>공시가격 갱신 ${S.bulk.done}/${S.bulk.total}`:"공시가격 전체 자동 갱신"}</button>`:""}
+      ${S.loadNote?`<span class="muted">${esc(S.loadNote)}</span>`:""}
+    </div>
+  </div>
+  <div class="list">
+    ${!S.loaded ? `<div class="empty"><span class="spin"></span>매물장을 불러오는 중…</div>` :
+      rows.length ? rows.map(({L,E})=>itemCard(L,E)).join("") :
+      `<div class="empty">${S.listings.length?"조건에 맞는 매물이 없습니다.":"아직 등록된 매물이 없습니다.<br>오른쪽 아래 <b>＋ 매물 등록</b>을 눌러 등기부등본 PDF를 올려보세요."}</div>`}
+  </div>`;
+  $("#fLimit").onchange=e=>{ F.limitIdx=+e.target.value; const l=currentLimit(); if(l && l.amount) F.maxDeposit = String(l.amount); renderList(); };
+  $("#fRegion").onchange=e=>{ F.region=e.target.value; renderList(); };
+  $("#fMax").oninput=e=>{ F.maxDeposit=e.target.value; clearTimeout(renderList._t); renderList._t=setTimeout(()=>{ renderList(); const el=$("#fMax"); el.focus(); el.setSelectionRange?.(el.value.length,el.value.length); },400); };
+  $("#fQ").oninput=e=>{ F.q=e.target.value; clearTimeout(renderList._q); renderList._q=setTimeout(()=>{ renderList(); const el=$("#fQ"); el.focus(); el.setSelectionRange(el.value.length,el.value.length); },400); };
+  document.querySelectorAll("[data-light]").forEach(b=>b.onclick=()=>{ const k=b.dataset.light; F.lights.has(k)?F.lights.delete(k):F.lights.add(k); renderList(); });
+  document.querySelectorAll("[data-open]").forEach(el=>el.onclick=()=>openEditor(el.dataset.open));
+  $("#shareBtn").onclick=()=>openShare(greens.map(r=>r.L));
+  if($("#bulkBtn")) $("#bulkBtn").onclick=bulkPrice;
+}
+function itemCard(L,E){
+  const why = E.light==="green" ? `<span class="tag green">부채비율 ${E.ratio.toFixed(1)}%</span>` :
+    [...E.reasons.map(r=>`<span class="tag red">${esc(r)}</span>`), ...E.warns.slice(0,3).map(r=>`<span class="tag yellow">${esc(r)}</span>`), ...(E.light==="gray"?[`<span class="tag">공시가격 미입력</span>`]:[])].join(" ");
+  const ds = daysSince(L.readDate);
+  return `<div class="card item" data-open="${esc(L.id)}">
+    <div class="light ${E.light}"><i></i><i></i><i></i></div>
+    <div style="flex:1;min-width:0">
+      <div class="t">${esc(L.name||L.address||"(이름 없음)")}</div>
+      <div class="m">${esc(L.type||"-")} · ${esc(L.region||regionOf(L.address)||"-")} · 전세 ${man(L.deposit)}${E.price?` · 주택가격 ${manShort(E.price)}`:""}${E.ratio!=null?` · 부채비율 ${E.ratio.toFixed(1)}%`:""}</div>
+      <div class="m">${L.consent==="yes"?"집주인 동의 ✓":L.consent==="no"?"집주인 거부":"집주인 동의 미확인"} · 열람일 ${esc(L.readDate||"-")}${ds!=null?` (${ds}일 전)`:""}</div>
+      <div class="why">${why}</div>
+    </div>
+  </div>`;
+}
+
+/* ===================== 화면: 매물 편집 ===================== */
+function blankListing(){
+  return { id:uid(), name:"", address:"", unit:"", type:"", region:"", area:"", deposit:"", consent:"unknown",
+    publicPrice:"", priceOverride:"", readDate:"", rights:[], rightsConfirmed:false, otherDeposits:"",
+    fixedDateChecked:false, tenantsChecked:false, memo:"", createdAt:new Date().toISOString() };
+}
+function openEditor(id){
+  const src = id ? S.listings.find(x=>x.id===id) : null;
+  S.edit = src ? structuredClone(src) : blankListing();
+  S.editFiles=[]; S.parseMsg=""; S.parseErr=false; S.priceMsg=""; S.priceErr=false; S.priceChoices=null; S.priceBusy=false;
+  if(!$("#sheet")){ const d=document.createElement("div"); d.className="sheet"; d.id="sheet"; document.body.appendChild(d); }
+  $("#sheet").classList.add("open"); document.body.style.overflow="hidden";
+  renderEditor();
+}
+function closeEditor(){ S.edit=null; $("#sheet")?.classList.remove("open"); document.body.style.overflow=""; render(); }
+
+function renderEditor(){
+  const L=S.edit; if(!L) return;
+  const E = evaluate(L, S.rules, currentLimit());
+  const isNew = !S.listings.some(x=>x.id===L.id);
+  const sh = $("#sheet");
+  const scroll = sh.scrollTop;
+  sh.innerHTML = `<div class="panel">
+    <button class="btn sm close" id="eClose">닫기 ✕</button>
+    <h2>${isNew?"매물 등록":"매물 수정"}</h2>
+    <div class="notice" style="position:static;border-radius:9px;margin-bottom:12px">사전 점검 결과이며, 최종 승인은 LH 권리조사·감정평가가 합니다. 계약 직전 등기부를 반드시 재열람하세요.</div>
+
+    <div class="verdict ${E.light}" id="verdict">${verdictHTML(E)}</div>
+
+    <h3>① 등기부등본 올리기</h3>
+    <div class="drop" id="drop">
+      <div><b>등기부등본 PDF</b>를 끌어놓거나 눌러서 선택</div>
+      <div class="muted">인터넷등기소 열람·발급 PDF 그대로 (말소사항 포함, 요약 페이지 포함)</div>
+      <input type="file" id="file" accept="application/pdf" multiple hidden>
+    </div>
+    ${S.editFiles.length?`<div class="muted" style="margin-top:6px">선택됨: ${S.editFiles.map(f=>esc(f.name)).join(", ")}</div>`:""}
+    <div class="row" style="margin-top:8px">
+      <button class="btn pri" id="parseBtn" ${(!S.editFiles.length||S.parsing)?"disabled":""}>${S.parsing?`<span class="spin"></span>판독 중`:"갑구·을구 자동 판독"}</button>
+      <span class="muted">인터넷등기소 PDF의 '주요 등기사항 요약'을 읽습니다 · 사진·스캔본은 2차 지원</span>
+    </div>
+    ${S.parseMsg?`<div class="status ${S.parseErr?"err":""}">${S.parsing?'<span class="spin"></span>':""}${esc(S.parseMsg)}</div>`:""}
+    ${(L.parseWarnings||[]).length?`<div class="req"><b>판독 주의</b><ul style="margin:4px 0 0;padding-left:18px">${L.parseWarnings.map(w=>`<li>${esc(w)}</li>`).join("")}</ul></div>`:""}
+
+    <h3>② 매물 기본정보</h3>
+    <div class="card">
+      <div class="grid2">
+        <label class="f">매물 이름(표시용)<input type="text" data-k="name" value="${esc(L.name)}" placeholder="예: 봉천동 ○○빌라 302호"></label>
+        <label class="f">소재지(등기부 기준)<input type="text" data-k="address" value="${esc(L.address)}" placeholder="서울특별시 관악구 …"></label>
+      </div>
+      <div class="grid3" style="margin-top:10px">
+        <label class="f">주택 유형<select data-k="type"><option value="">선택</option>${TYPES.map(t=>`<option ${L.type===t?"selected":""}>${t}</option>`).join("")}</select></label>
+        <label class="f">지역<select data-k="region"><option value="">자동(${esc(regionOf(L.address)||"-")})</option>${REGIONS.map(r=>`<option ${L.region===r?"selected":""}>${r}</option>`).join("")}</select></label>
+        <label class="f">전용면적(㎡)<input type="number" data-k="area" value="${esc(L.area)}"></label>
+      </div>
+      <div class="grid3" style="margin-top:10px">
+        <label class="f">이번 전세금(만원)<input type="number" data-k="deposit" value="${esc(L.deposit)}" placeholder="예: 11000"></label>
+        <label class="f">등기부 열람일<input type="date" data-k="readDate" value="${esc(L.readDate)}"></label>
+        <label class="f">집주인 LH 전세임대 동의
+          <select data-k="consent">
+            <option value="unknown" ${L.consent==="unknown"?"selected":""}>미확인</option>
+            <option value="yes" ${L.consent==="yes"?"selected":""}>동의함</option>
+            <option value="no" ${L.consent==="no"?"selected":""}>거부</option>
+          </select></label>
+      </div>
+    </div>
+
+    <h3>③ 권리 목록 (자동 판독 → 중개사 확인·수정)</h3>
+    <div class="tablewrap"><table class="rights">
+      <thead><tr><th>구분</th><th>순위</th><th>등기목적</th><th>접수일</th><th>권리자</th><th>금액(만원)</th><th>유효</th><th></th></tr></thead>
+      <tbody>${(L.rights||[]).map((r,i)=>{
+        const bad = E.defects.includes(r) ; const lien = E.liens.includes(r);
+        return `<tr class="${r.active===false?"off":""} ${bad?"bad":""}">
+        <td><select data-r="${i}" data-f="section">${SECTIONS.map(s=>`<option ${r.section===s?"selected":""}>${s}</option>`).join("")}</select></td>
+        <td><input type="text" data-r="${i}" data-f="rank" value="${esc(r.rank)}" style="width:46px"></td>
+        <td><input type="text" data-r="${i}" data-f="kind" value="${esc(r.kind)}" style="min-width:130px">${bad?'<div class="tag red" style="margin-top:2px">하자</div>':lien?'<div class="tag" style="margin-top:2px">선순위 채권</div>':""}</td>
+        <td><input type="text" data-r="${i}" data-f="date" value="${esc(r.date)}" style="width:100px"></td>
+        <td><input type="text" data-r="${i}" data-f="holder" value="${esc(r.holder)}" style="min-width:110px"></td>
+        <td><input type="number" data-r="${i}" data-f="amount" value="${esc(r.amount)}" style="width:90px"></td>
+        <td style="text-align:center"><input type="checkbox" data-r="${i}" data-f="active" ${r.active!==false?"checked":""}></td>
+        <td><button class="btn sm danger" data-del="${i}">삭제</button></td></tr>`;}).join("") ||
+        `<tr><td colspan="8" class="muted" style="padding:14px;text-align:center">등기부를 판독하거나 '행 추가'로 직접 입력하세요. 권리가 하나도 없으면 '근저당 제로'로 판정됩니다.</td></tr>`}
+      </tbody></table></div>
+    <div class="row" style="margin-top:8px;justify-content:space-between">
+      <div class="row"><button class="btn sm" id="addRow">＋ 행 추가</button><span class="muted">'유효' 해제 = 말소된 등기</span></div>
+      <label class="check"><input type="checkbox" data-k="rightsConfirmed" ${L.rightsConfirmed?"checked":""}> <b>원본과 대조해 확인 완료</b></label>
+    </div>
+
+    <h3>④ 주택가격 (공시가격 자동 조회)</h3>
+    <div class="card">
+      <div class="grid3">
+        <label class="f">조회용 지번주소<input type="text" data-k="jibun" value="${esc(L.jibun||"")}" placeholder="${esc(jibunOf(L.address)||"서울특별시 관악구 봉천동 1712-3")}"></label>
+        <label class="f">동 (집합건물)<input type="text" data-k="dongNm" value="${esc(L.dongNm||"")}" placeholder="${esc(dongHoOf(L.address).dong||"없으면 비움")}"></label>
+        <label class="f">호 (집합건물)<input type="text" data-k="hoNm" value="${esc(L.hoNm||"")}" placeholder="${esc(dongHoOf(L.address).ho||"예: 302")}"></label>
+      </div>
+      <div class="row" style="margin-top:8px">
+        <button class="btn pri sm" id="priceBtn" ${(S.priceBusy||!S.token)?"disabled":""}>${S.priceBusy?'<span class="spin"></span>조회 중':"공시가격 자동 조회"}</button>
+        <span class="muted">${S.token?"등기부 판독이 끝나면 자동으로 조회합니다":"Supabase 연결이 없어 수동 입력만 가능"}</span>
+      </div>
+      ${S.priceMsg?`<div class="status ${S.priceErr?"err":""}">${esc(S.priceMsg)}</div>`:""}
+      ${S.priceChoices&&S.priceChoices.length?`<div class="chips" style="margin-top:6px">${S.priceChoices.map(c=>`<button class="chip" data-pickdong="${esc(c.dongNm||"")}">${esc(c.dongNm||"동없음")}동 ${esc(c.hoNm)}호 · ${c.price_won?manShort(c.price_won/10000):"-"}</button>`).join("")}</div>`:""}
+      <div class="grid2" style="margin-top:10px">
+        <label class="f">공시가격(만원)<input type="number" data-k="publicPrice" value="${esc(L.publicPrice)}" placeholder="자동 조회 또는 직접 입력"></label>
+        <label class="f">주택가격 직접 입력(만원, 선택)<input type="number" data-k="priceOverride" value="${esc(L.priceOverride)}" placeholder="감정가·KB시세 등이 있으면"></label>
+      </div>
+      ${L.priceInfo?`<div class="muted" style="margin-top:6px">출처: ${esc(L.priceInfo.year)}년 ${esc(L.priceInfo.kind)} · PNU ${esc(L.priceInfo.pnu)} · ${esc(String(L.priceInfo.at||"").slice(0,10))} 조회</div>`:""}
+      <div class="row" style="margin-top:8px">
+        <a class="btn sm" href="https://www.realtyprice.kr/" target="_blank" rel="noopener">공시가격알리미에서 확인 ↗</a>
+        <span class="muted">적용 산식: 주택가격 = ${esc(E.priceSrc)} (규칙 탭에서 변경)</span>
+      </div>
+    </div>
+
+    ${(L.type==="다가구"||L.type==="단독")?`
+    <h3>⑤ 다가구 선순위 임차보증금</h3>
+    <div class="card">
+      <label class="f">다른 호실 보증금 합계(만원)<input type="number" data-k="otherDeposits" value="${esc(L.otherDeposits)}" placeholder="확정일자 부여현황 기준"></label>
+      <label class="check"><input type="checkbox" data-k="fixedDateChecked" ${L.fixedDateChecked?"checked":""}> 확정일자 부여현황 확인 완료</label>
+      <label class="check"><input type="checkbox" data-k="tenantsChecked" ${L.tenantsChecked?"checked":""}> 전입세대 열람 확인 완료</label>
+      <div class="muted">근저당이 0이어도 다른 호실 보증금이 크면 선순위가 됩니다.</div>
+    </div>`:""}
+
+    <h3>메모</h3>
+    <textarea data-k="memo" placeholder="내부 메모 (고객 링크에는 '고객 안내문'만 표시)">${esc(L.memo)}</textarea>
+    <label class="f" style="margin-top:8px">고객 안내문(고객용 링크에 표시)<input type="text" data-k="publicNote" value="${esc(L.publicNote||"")}" placeholder="예: 역세권 도보 5분, 즉시 입주 가능"></label>
+
+    <div class="row" style="margin-top:16px;justify-content:space-between">
+      <div>${isNew?"":`<button class="btn danger" id="eDel">매물 삭제</button>`}</div>
+      <div class="row"><button class="btn" id="eCancel">취소</button><button class="btn pri" id="eSave" ${S.canWrite?"":"disabled"}>저장</button></div>
+    </div>
+  </div>`;
+  sh.scrollTop = scroll;
+  bindEditor();
+}
+function verdictHTML(E){
+  return `<div class="light ${E.light==="gray"?"":E.light}"><i></i><i></i><i></i></div>
+  <div style="flex:1">
+    <div class="big">${LIGHT_LABEL[E.light]}</div>
+    <div class="formula">부채비율 = (선순위 채권 ${man(E.seniorDebt)} + 선순위 임차보증금 ${man(E.otherDep)} + 이번 전세금 ${man(E.deposit)}) ÷ 주택가격 ${E.price?man(E.price):"?"}<br>
+      = <b>${E.ratio!=null?E.ratio.toFixed(1)+"%":"계산 불가"}</b> (기준 ${esc(S.rules.threshold)}% 이하)</div>
+    ${E.reasons.length?`<ul>${E.reasons.map(r=>`<li style="color:var(--r)"><b>${esc(r)}</b></li>`).join("")}</ul>`:""}
+    ${E.warns.length?`<ul>${E.warns.map(r=>`<li>${esc(r)}</li>`).join("")}</ul>`:""}
+    ${E.checks.length?`<div class="req"><b>확인 요청 항목</b><ul style="margin:4px 0 0;padding-left:18px">${E.checks.map(c=>`<li>${esc(c)}</li>`).join("")}</ul></div>`:""}
+  </div>`;
+}
+function refreshVerdict(){
+  const E = evaluate(S.edit, S.rules, currentLimit());
+  const v = $("#verdict"); if(!v) return;
+  v.className = "verdict "+E.light; v.innerHTML = verdictHTML(E);
+}
+function bindEditor(){
+  const L=S.edit;
+  $("#eClose").onclick=$("#eCancel").onclick=closeEditor;
+  const drop=$("#drop"), file=$("#file");
+  drop.onclick=()=>file.click();
+  file.onchange=()=>{ S.editFiles=[...file.files]; S.parseMsg=""; renderEditor(); };
+  drop.ondragover=e=>{e.preventDefault(); drop.classList.add("hot");};
+  drop.ondragleave=()=>drop.classList.remove("hot");
+  drop.ondrop=e=>{ e.preventDefault(); S.editFiles=[...e.dataTransfer.files].filter(f=>/pdf|image/.test(f.type)); renderEditor(); };
+  $("#parseBtn").onclick=runParse;
+  if($("#priceBtn")) $("#priceBtn").onclick=()=>runPrice();
+  $("#sheet").querySelectorAll("[data-pickdong]").forEach(b=>b.onclick=()=>runPrice({dong:b.dataset.pickdong}));
+  $("#sheet").querySelectorAll("[data-k]").forEach(el=>{
+    const k=el.dataset.k;
+    const h=()=>{
+      L[k] = el.type==="checkbox" ? el.checked : el.value;
+      if(k==="type") L._typeAuto=false;
+      if(k==="type") { renderEditor(); return; }
+      refreshVerdict();
+    };
+    el.addEventListener(el.tagName==="SELECT"||el.type==="checkbox"||el.type==="date"?"change":"input", h);
+  });
+  $("#sheet").querySelectorAll("[data-r]").forEach(el=>{
+    const i=+el.dataset.r, f=el.dataset.f;
+    const h=()=>{
+      const r=L.rights[i]; r[f] = el.type==="checkbox" ? el.checked : (f==="amount" ? (el.value===""?"":num(el.value)) : el.value);
+      L.rightsConfirmed=false;
+      if(el.type==="checkbox"||el.tagName==="SELECT") renderEditor(); else refreshVerdict();
+    };
+    el.addEventListener(el.type==="checkbox"||el.tagName==="SELECT"?"change":"input", h);
+    if(el.type!=="checkbox"&&el.tagName!=="SELECT") el.addEventListener("change",()=>renderEditor());
+  });
+  $("#sheet").querySelectorAll("[data-del]").forEach(b=>b.onclick=()=>{ L.rights.splice(+b.dataset.del,1); L.rightsConfirmed=false; renderEditor(); });
+  $("#addRow").onclick=()=>{ L.rights.push({section:"을구",rank:"",kind:"근저당권설정",date:"",holder:"",amount:"",active:true,note:"직접 입력"}); renderEditor(); };
+  $("#eSave").onclick=async()=>{
+    if(!L.name && !L.address){ toast("매물 이름이나 소재지를 입력하세요"); return; }
+    if(!L.region) L.region = regionOf(L.address);
+    const copy = structuredClone(L); delete copy._typeAuto;
+    S.edit=null; $("#sheet").classList.remove("open"); document.body.style.overflow="";
+    await saveListing(copy); toast("저장했습니다");
+    // 공시가격이 비어 있으면 저장 후 자동 조회
+    if(S.token && !num(copy.publicPrice) && !num(copy.priceOverride) && copy.type!=="오피스텔" && (copy.jibun||copy.address)){
+      const c2 = structuredClone(copy); const r = await fetchPublicPrice(c2);
+      if(r.ok){ await saveListing(c2); toast("공시가격 자동 입력: "+man(c2.publicPrice)); } else toast("공시가격 자동 조회 실패: "+r.msg);
+    }
+  };
+  if($("#eDel")) $("#eDel").onclick=()=>ask(`<b>이 매물을 삭제할까요?</b><div class="muted">${esc(L.name||L.address)}</div>`,"삭제",async()=>{ const id=L.id; S.edit=null; $("#sheet").classList.remove("open"); document.body.style.overflow=""; await deleteListing(id); toast("삭제했습니다"); });
+}
+
+/* ===================== 화면: 규칙 ===================== */
+function renderRules(){
+  const R=S.rules;
+  $("#main").innerHTML = `
+  <div class="card">
+    <h2>판정 규칙 (공고마다 바뀌는 값)</h2>
+    <div class="muted" style="margin-bottom:10px">${esc(R.updatedNote||"")}</div>
+    <h3>지원한도 표</h3>
+    <div class="tablewrap"><table class="rights limits">
+      <thead><tr><th>지원 유형</th><th>지역</th><th>한도(만원)</th><th>근거·메모</th><th></th></tr></thead>
+      <tbody>${R.limits.map((l,i)=>`<tr>
+        <td><input type="text" data-l="${i}" data-f="label" value="${esc(l.label)}"></td>
+        <td><select data-l="${i}" data-f="region">${REGIONS.map(r=>`<option ${l.region===r?"selected":""}>${r}</option>`).join("")}</select></td>
+        <td><input type="number" data-l="${i}" data-f="amount" value="${esc(l.amount)}"></td>
+        <td><input type="text" data-l="${i}" data-f="note" value="${esc(l.note||"")}"></td>
+        <td><button class="btn sm danger" data-ldel="${i}">삭제</button></td></tr>`).join("")}</tbody></table></div>
+    <button class="btn sm" id="addLimit" style="margin-top:8px">＋ 유형 추가</button>
+
+    <h3>부채비율</h3>
+    <div class="grid3">
+      <label class="f">기준치(%) 이하 통과<input type="number" data-rk="threshold" value="${esc(R.threshold)}"></label>
+      <label class="f">노랑 경계 여유(%p)<input type="number" data-rk="margin" value="${esc(R.margin)}"></label>
+      <label class="f">재열람 요청(열람 후 일수)<input type="number" data-rk="reReadDays" value="${esc(R.reReadDays)}"></label>
+    </div>
+    <div class="muted" style="margin-top:6px">주택가격 = 공시가격 × 배율 (매물에 '직접 입력가'가 있으면 그것을 우선)</div>
+    <div class="grid3" style="margin-top:6px">
+      ${Object.keys(DEFAULT_RULES.multipliers).map(g=>`<label class="f">${g} 배율<input type="number" step="0.01" data-mul="${g}" value="${esc(R.multipliers?.[g]??1)}"></label>`).join("")}
+    </div>
+
+    <h3>등기 하자·다가구</h3>
+    <label class="f">빨강 처리 등기(쉼표 구분)<input type="text" data-rk="defects" value="${esc(R.defects)}"></label>
+    <label class="f" style="margin-top:8px">노랑 처리 등기(쉼표 구분)<input type="text" data-rk="watch" value="${esc(R.watch)}"></label>
+    <label class="f" style="margin-top:8px">다가구: 다른 호실 보증금이 주택가격의 몇 % 이상이면 노랑<input type="number" data-rk="multiOtherShare" value="${esc(R.multiOtherShare)}"></label>
+
+    <h3>고객용 화면에 표시할 중개사무소</h3>
+    <div class="grid2">
+      <label class="f">사무소 이름<input type="text" data-of="name" value="${esc(R.office?.name)}" placeholder="예: ○○공인중개사사무소"></label>
+      <label class="f">연락처<input type="text" data-of="phone" value="${esc(R.office?.phone)}" placeholder="02-000-0000"></label>
+    </div>
+    <label class="f" style="margin-top:8px">규칙 메모(근거 공고명·날짜)<input type="text" data-rk="updatedNote" value="${esc(R.updatedNote)}"></label>
+
+    <div class="row" style="margin-top:14px;justify-content:space-between">
+      <button class="btn" id="resetRules">기본값으로</button>
+      <button class="btn pri" id="saveRules" ${S.canWrite?"":"disabled"}>규칙 저장</button>
+    </div>
+  </div>
+  <div class="card" style="margin-top:12px">
+    <h2>백업</h2>
+    <div class="row"><button class="btn" id="exportBtn">매물장 JSON 복사</button><button class="btn" id="importBtn">JSON 붙여넣어 가져오기</button></div>
+  </div>`;
+  document.querySelectorAll("[data-l]").forEach(el=>el.addEventListener(el.tagName==="SELECT"?"change":"input",()=>{ const l=R.limits[+el.dataset.l]; l[el.dataset.f] = el.dataset.f==="amount"?num(el.value):el.value; }));
+  document.querySelectorAll("[data-ldel]").forEach(b=>b.onclick=()=>{ R.limits.splice(+b.dataset.ldel,1); S.filter.limitIdx=-1; renderRules(); });
+  $("#addLimit").onclick=()=>{ R.limits.push({label:"",region:"수도권",amount:"",note:""}); renderRules(); };
+  document.querySelectorAll("[data-rk]").forEach(el=>el.oninput=()=>{ const k=el.dataset.rk; R[k] = el.type==="number"?num(el.value):el.value; });
+  document.querySelectorAll("[data-mul]").forEach(el=>el.oninput=()=>{ R.multipliers = R.multipliers||{}; R.multipliers[el.dataset.mul]=num(el.value)||1; });
+  document.querySelectorAll("[data-of]").forEach(el=>el.oninput=()=>{ R.office = R.office||{}; R.office[el.dataset.of]=el.value; });
+  $("#saveRules").onclick=saveRules;
+  $("#resetRules").onclick=()=>ask("<b>규칙을 기본값으로 되돌릴까요?</b><div class='muted'>저장을 눌러야 반영됩니다.</div>","되돌리기",()=>{ S.rules=structuredClone(DEFAULT_RULES); renderRules(); });
+  $("#exportBtn").onclick=()=>{ const t=JSON.stringify({listings:S.listings,rules:S.rules},null,1); ask(`<b>매물장 백업</b><pre class="copy">${esc(t.slice(0,3000))}${t.length>3000?"\n…":""}</pre>`,"전체 복사",()=>copyText(t)); };
+  $("#importBtn").onclick=()=>{
+    ask(`<b>JSON 붙여넣기</b><textarea id="impTxt" style="min-height:140px;margin-top:8px"></textarea>`,"가져오기",async()=>{
+      try{ const j=JSON.parse($("#impTxt").value); for(const L of (j.listings||[])){ if(!L.id) L.id=uid(); await saveListing(L); } toast("가져왔습니다"); }catch(e){ toast("JSON 형식 오류"); }
+    });
+  };
+}
+
+/* ===================== 화면: 사용법 ===================== */
+function renderHelp(){
+  $("#main").innerHTML = `<div class="card">
+  <h2>사용 순서</h2>
+  <ol style="padding-left:20px;margin:0">
+    <li><b>＋ 매물 등록</b> → 인터넷등기소 등기부등본 PDF를 올리고 <b>자동 판독</b>.</li>
+    <li>권리 목록 표를 원본과 대조해 고치고 <b>확인 완료</b>에 체크. 말소된 등기는 '유효' 체크 해제.</li>
+    <li><b>공시가격은 판독 직후 자동 조회</b>됩니다(아파트·연립다세대=공동주택가격, 단독·다가구=개별주택가격). 감정가·시세가 있으면 직접 입력란이 우선합니다.</li>
+    <li>전세금·집주인 동의 여부 입력 → 신호등이 즉시 바뀝니다. 다가구는 확정일자·전입세대 확인 항목이 자동 요청됩니다.</li>
+    <li>매물장에서 <b>지원 유형·한도</b>를 고르고 <b>초록만</b>을 켜면 "수도권·청년 1인·1.2억 이하·초록" 목록이 됩니다.</li>
+    <li><b>고객용 링크·문자 만들기</b> → LH 당첨자에게 초록 매물만 보냅니다(로그인 없이 열림, 90일 유지).</li>
+  </ol>
+  <h3>신호등 기준</h3>
+  <ul style="padding-left:20px;margin:0">
+    <li><span class="dot red"></span> <b>빨강</b>: 압류·가압류·가처분·신탁·경매개시·임차권등기, 부채비율 초과, 지원한도 초과, 집주인 거부</li>
+    <li><span class="dot yellow"></span> <b>노랑</b>: 기준치 근접, 다가구 선순위 보증금 미확인/과다, 집주인 동의 미확인, 열람일 경과, 판독 미확인, 가등기 등</li>
+    <li><span class="dot green"></span> <b>초록</b>: 위 항목 모두 해당 없음</li>
+  </ul>
+  <h3>주의</h3>
+  <div class="muted">등기부는 열람일 기준입니다. 계약 직전 반드시 재열람하세요. 기준치·주택가격 산식·지원한도는 최신 LH 공고로 '판정 규칙' 탭에서 수정하세요. 이 화면은 사전 점검용이며 최종 승인은 LH 권리조사·감정평가가 합니다.</div>
+  </div>`;
+}
+
+/* ===================== 고객용 공유 ===================== */
+function shareText(items, title){
+  const o=S.rules.office||{};
+  return `[${title}]\nLH 전세임대 사전점검 '초록' 매물 ${items.length}건\n\n` +
+    items.map((L,i)=>`${i+1}. ${L.name||L.address}\n   ${L.type||""} · ${L.area?L.area+"㎡ · ":""}전세 ${man(L.deposit)}${L.publicNote?`\n   ${L.publicNote}`:""}`).join("\n") +
+    `\n\n※ 사전 점검 결과이며 최종 승인은 LH 권리조사·감정평가가 결정합니다.` + (o.name||o.phone?`\n문의: ${o.name||""} ${o.phone||""}`:"");
+}
+function openShare(items){
+  const title = (S.filter.limitIdx>=0 ? `${S.rules.limits[S.filter.limitIdx].label} ${S.rules.limits[S.filter.limitIdx].region} ` : "") + "추천 매물";
+  const txt = shareText(items, title);
+  ask(`<b>고객에게 보내기 — 초록 ${items.length}건</b>
+    <div class="muted" style="margin:6px 0">고객용 링크를 만들면 로그인 없이 누구나 볼 수 있는 목록 화면이 생깁니다(90일 유지). 소유자·권리 정보는 들어가지 않습니다.</div>
+    <pre class="copy">${esc(txt)}</pre>
+    <div class="row"><button class="btn pri" id="mkLink">고객용 링크 만들기</button><button class="btn" id="cpTxt">문구만 복사</button></div>
+    <div id="linkOut" style="margin-top:8px"></div>`, null);
+  $("#cpTxt").onclick=()=>copyText(txt);
+  $("#mkLink").onclick=async()=>{
+    $("#mkLink").disabled=true;
+    const doc = { title, office:S.rules.office||{}, items: items.map(L=>({
+      name:L.name||"", address:(L.address||"").replace(/\s*(제?\s*\S+동\s*)?제?\s*\d+\s*호.*$/,"").replace(/\s*제\d+층.*$/,""), type:L.type||"", area:L.area||"", deposit:num(L.deposit), publicNote:L.publicNote||"", readDate:L.readDate||"" })) };
+    try{
+      const r = await rpc("lh_share_create",{p_token:S.token,p_data:doc});
+      const url = `${location.origin}${location.pathname}?s=${r.id}`;
+      const full = txt + "\n\n▶ 매물 보기: " + url;
+      $("#linkOut").innerHTML = `<div class="req"><b>링크가 만들어졌습니다</b><div style="word-break:break-all;margin:4px 0">${esc(url)}</div>
+        <div class="row"><button class="btn sm pri" id="cpFull">문구+링크 복사</button><button class="btn sm" id="cpUrl">링크만 복사</button><a class="btn sm" href="${esc(url)}" target="_blank" rel="noopener">미리보기 ↗</a></div></div>`;
+      $("#cpFull").onclick=()=>copyText(full); $("#cpUrl").onclick=()=>copyText(url);
+    }catch(e){ toast("링크 생성 실패: "+e.message); $("#mkLink").disabled=false; }
+  };
+}
+async function loadCustomer(id){
+  S.cust = { id, loading:true }; renderCustomer();
+  try{
+    const d = await rpc("lh_share_get",{p_id:id});
+    S.cust = d ? { id, data:d } : { id, error:"만료되었거나 없는 링크입니다." };
+  }catch(e){ S.cust={id,error:"불러오지 못했습니다: "+e.message}; }
+  renderCustomer();
+}
+function renderCustomer(){
+  const C=S.cust, d=C.data;
+  document.body.classList.add("cust");
+  $("#app").innerHTML = `<header><h1>${esc(d?.title||"추천 매물")}</h1><div class="sub">LH 전세임대 사전점검 '초록' 매물${d?.office?.name?` · ${esc(d.office.name)}`:""}</div></header>
+  <div class="notice">⚠ 사전 점검 결과입니다. 최종 승인은 LH 권리조사·감정평가가 결정합니다.</div>
+  <main>
+    ${C.loading?`<div class="empty"><span class="spin"></span>불러오는 중…</div>`:C.error?`<div class="empty">${esc(C.error)}</div>`:
+    `<div class="list">${(d.items||[]).map(it=>`<div class="card item"><div class="light green"><i></i><i></i><i></i></div><div style="flex:1">
+      <div class="t">${esc(it.name||it.address)}</div>
+      <div class="m">${esc(it.address)}</div>
+      <div class="m">${esc(it.type)}${it.area?` · ${esc(it.area)}㎡`:""} · 전세 <b>${man(it.deposit)}</b></div>
+      ${it.publicNote?`<div class="why">${esc(it.publicNote)}</div>`:""}
+      <div class="muted">등기 열람일 ${esc(it.readDate||"-")} · 계약 전 재확인 예정</div></div></div>`).join("")}</div>
+    ${(d.office?.name||d.office?.phone)?`<div class="card" style="margin-top:12px"><b>문의</b> ${esc(d.office.name||"")} ${d.office.phone?`<a href="tel:${esc(String(d.office.phone).replace(/[^0-9]/g,""))}">${esc(d.office.phone)}</a>`:""}</div>`:""}`}
+  </main>`;
+}
+
+/* ===================== 로그인 ===================== */
+function renderLogin(mode){
+  mode = mode || S.loginMode || "login"; S.loginMode = mode;
+  $("#app").innerHTML = `<header><h1>LH 전세임대 사전점검 신호등</h1><div class="sub">중개사무소 앱 ⑤ · 중개사 전용</div></header>
+  <div class="notice">⚠ 사전 점검용 도구입니다. 최종 승인은 LH 권리조사·감정평가가 결정합니다.</div>
+  <main style="max-width:440px">
+    <div class="card">
+      <div class="chips" style="margin-bottom:12px"><button class="chip ${mode==="login"?"on":""}" data-mode="login">로그인</button><button class="chip ${mode==="signup"?"on":""}" data-mode="signup">처음이에요 (가입)</button></div>
+      <form id="authForm">
+        ${mode==="signup"?`
+        <label class="f">이름<input type="text" name="name" autocomplete="name" required></label>
+        <label class="f" style="margin-top:8px">중개사무소 이름<input type="text" name="office" required placeholder="○○공인중개사사무소"></label>
+        <label class="f" style="margin-top:8px">중개사무소 등록번호<input type="text" name="reg" required placeholder="예: 11620-2020-00123"></label>`:""}
+        <label class="f" style="margin-top:8px">휴대폰 번호<input type="tel" name="phone" autocomplete="tel" required placeholder="010-0000-0000"></label>
+        <label class="f" style="margin-top:8px">비밀번호 (숫자 6~8자리)<input type="password" name="pin" inputmode="numeric" autocomplete="${mode==="signup"?"new-password":"current-password"}" required></label>
+        ${mode==="signup"?`<label class="f" style="margin-top:8px">비밀번호 확인<input type="password" name="pin2" inputmode="numeric" required></label>
+        <div class="muted" style="margin-top:8px">매물장은 본인만 볼 수 있습니다. 등록번호는 중개사 확인용으로만 씁니다.</div>`:""}
+        <div id="authErr" class="status err"></div>
+        <button class="btn pri" type="submit" style="width:100%;margin-top:12px;padding:11px">${mode==="signup"?"가입하고 시작하기":"로그인"}</button>
+      </form>
+    </div>
+    <div class="muted" style="margin-top:12px;text-align:center"><a href="./">← 중개사무소 앱 홈</a></div>
+  </main>`;
+  document.querySelectorAll("[data-mode]").forEach(b=>b.onclick=()=>renderLogin(b.dataset.mode));
+  $("#authForm").onsubmit=async e=>{
+    e.preventDefault(); const f=new FormData(e.target), err=$("#authErr"); err.textContent="";
+    const btn=e.target.querySelector("button[type=submit]"); btn.disabled=true;
+    try{
+      let r;
+      if(mode==="signup"){
+        if(f.get("pin")!==f.get("pin2")) throw new Error("비밀번호 확인이 다릅니다");
+        r = await rpc("lh_signup",{p_name:f.get("name"),p_phone:f.get("phone"),p_office:f.get("office"),p_reg_no:f.get("reg"),p_pin:f.get("pin")});
+      } else {
+        r = await rpc("lh_login",{p_phone:f.get("phone"),p_pin:f.get("pin")});
+      }
+      if(r && r.error) throw new Error(r.error);
+      setToken(r.token); S.me=r.member; initStore();
+    }catch(ex){ err.textContent = ex.message; btn.disabled=false; }
+  };
+}
+async function logout(){ try{ await rpc("lh_logout",{p_token:S.token}); }catch(e){} setToken(""); S.me=null; S.listings=[]; renderLogin("login"); }
+
+/* ===================== 시작 ===================== */
+(function start(){
+  const sid = new URLSearchParams(location.search).get("s");
+  if(sid && /^[a-f0-9]{8,40}$/.test(sid)){ loadCustomer(sid); return; }
+  S.token = getToken();
+  if(!S.token){ renderLogin("login"); return; }
+  initStore();
+})();
+
+/* 테스트용 노출 */
+window.__evaluate = evaluate; window.__ruleParse = ruleParse;
+</script>
+</body>
+</html>

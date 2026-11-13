@@ -1,0 +1,19 @@
+{
+  "name": "중개사무소 앱",
+  "short_name": "중개사무소",
+  "description": "중개사 실전 도구 7종 — LH전세 사전점검 등",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f6f5f1",
+  "theme_color": "#1f4d3f",
+  "lang": "ko",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
