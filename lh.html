@@ -102,6 +102,55 @@ pre.copy{white-space:pre-wrap;background:#f4f4f1;border-radius:9px;padding:10px;
 .spin{display:inline-block;width:14px;height:14px;border:2px solid #c9d6d0;border-top-color:var(--brand);border-radius:50%;animation:sp 1s linear infinite;vertical-align:-2px;margin-right:6px}
 @keyframes sp{to{transform:rotate(360deg)}}
 .limits td input{min-width:70px}
+/* ---- 모바일 사용성 ---- */
+.btn{min-height:42px;display:inline-flex;align-items:center;justify-content:center;gap:4px}
+.btn.sm{min-height:38px}
+.chip{min-height:38px}
+input[type=text],input[type=number],input[type=date],input[type=tel],input[type=password],select{min-height:44px}
+input[type=tel],input[type=password]{border:1px solid var(--line);border-radius:9px;padding:8px 10px;background:#fff;width:100%}
+.check{min-height:40px;align-items:center}
+.check input{width:22px;height:22px;margin-top:0;flex:none}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.stat{min-width:0;padding:6px 8px;text-align:center}
+.stat b{font-size:19px}
+.filterbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.filterbar input{flex:1;min-width:150px}
+.fpanel{margin-top:10px}
+.fpanel.closed{display:none}
+.hint{font-size:12px;color:var(--brand);font-weight:500;min-height:16px}
+.notice .long{display:inline}
+.list{padding-bottom:20px}
+.fab{border-radius:999px;padding:12px 18px;font-size:15px}
+.sheet .panel{padding-bottom:0}
+.sheet .topbar{position:sticky;top:0;z-index:5;background:var(--bg);margin:-16px -16px 8px;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;border-radius:16px 16px 0 0;border-bottom:1px solid var(--line)}
+.sheet .topbar h2{margin:0}
+.savebar{position:sticky;bottom:0;background:var(--bg);margin:16px -16px 0;padding:10px 16px calc(10px + env(safe-area-inset-bottom));border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:8px;z-index:5}
+.savebar .btn.pri{flex:1;max-width:260px}
+.pickrow{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.pickrow .btn{min-height:56px;flex-direction:column;font-size:14px}
+.pickrow .btn small{font-weight:400;color:var(--sub);font-size:11.5px}
+.progress{height:6px;background:#e3e9e6;border-radius:9px;overflow:hidden;margin-top:6px}
+.progress i{display:block;height:100%;background:var(--brand);width:0;transition:width .3s}
+@media(max-width:640px){
+  .notice .long{display:none}
+  .sheet{padding:0}
+  .sheet .panel{border-radius:0;min-height:100%}
+  .sheet .topbar{border-radius:0}
+  .fpanel .grid3{grid-template-columns:1fr 1fr}
+  .fpanel .grid3 label:first-child{grid-column:1/-1}
+  table.rights thead{display:none}
+  table.rights,table.rights tbody{display:block}
+  table.rights tr{display:grid;grid-template-columns:1fr 1fr;gap:8px 10px;padding:12px;border-top:1px solid var(--line)}
+  table.rights tr:first-child{border-top:0}
+  table.rights td{border:0;padding:0;display:block}
+  table.rights td[data-label]::before{content:attr(data-label);display:block;font-size:11.5px;color:var(--sub);margin-bottom:2px}
+  table.rights td.wide{grid-column:1/-1}
+  table.rights td input:not([type=checkbox]),table.rights td select{width:100%!important;min-width:0!important;min-height:42px;font-size:15px}
+  table.rights td .check{white-space:nowrap;font-size:14px}
+  table.rights tr.bad{box-shadow:inset 4px 0 var(--r)}
+  table.rights tr.bad td:first-child{box-shadow:none}
+  table.rights td.act{display:flex;align-items:end;justify-content:space-between;gap:8px}
+}
 </style>
 </head>
 <body>
@@ -295,11 +344,16 @@ async function pdfToTextAndImages(file, wantImages){
     const page = await pdf.getPage(p);
     const tc = await page.getTextContent();
     // 줄 단위 재구성
-    let lastY=null, line="";
+    // 글자 조각 사이 실제 간격을 보고 띄어쓰기 결정(글자마다 쪼개진 PDF 대응)
+    let lastY=null, lastEnd=null, line="";
     for(const it of tc.items){
-      const y = Math.round(it.transform[5]);
-      if(lastY!==null && Math.abs(y-lastY)>3){ text += line.trim()+"\n"; line=""; }
-      line += it.str + (it.hasEOL?"\n":" "); lastY=y;
+      if(!it.str) { if(it.hasEOL){ text += line.trim()+"\n"; line=""; lastEnd=null; } continue; }
+      const x = it.transform[4], y = Math.round(it.transform[5]);
+      const fh = Math.abs(it.transform[3]) || Math.abs(it.height) || 10;
+      if(lastY!==null && Math.abs(y-lastY)>fh*0.5){ text += line.trim()+"\n"; line=""; lastEnd=null; }
+      else if(lastEnd!==null){ const gap = x - lastEnd; if(gap > fh*0.22 && !/\s$/.test(line) && !/^\s/.test(it.str)) line += gap > fh*1.5 ? "   " : " "; }
+      line += it.str; lastY=y; lastEnd = x + (it.width||0);
+      if(it.hasEOL){ text += line.trim()+"\n"; line=""; lastEnd=null; }
     }
     text += line.trim()+"\n\n[페이지 "+p+" 끝]\n";
     if(wantImages && images.length<8){
@@ -330,56 +384,251 @@ function parseRecords(text, section){
     return { section, rank:h.rank, kind, date: dt?ymd(dt[1],dt[2],dt[3]):"", holder: hold?hold[1]:"", amount: amt?Math.round(num(amt[1])/10000):"", active:true, note:"" };
   });
 }
-function ruleParse(text){
+function ocrNormalize(t){
+  return String(t||"")
+    .replace(/[|｜]/g," ")
+    .replace(/([가-힣]) (?=[가-힣])/g,"$1")               // 글자 사이 한 칸 띄어쓰기만 제거(칸 사이 큰 공백은 유지)
+    .replace(/(\d)\s*([,.])\s*(?=\d{3}\b)/g,"$1,")         // 240. 000 → 240,000
+    .replace(/금\s+(?=\d)/g,"금")
+    .replace(/(\d)\s*[윈웬원]/g,"$1원")
+    .replace(/(\d{4})\s*년\s*(\d{1,2})\s*월\s*(\d{1,2})\s*일/g,"$1년$2월$3일");
+}
+/* OCR 결과용: 금액·키워드를 기준점으로 묶어 레코드화(표의 줄 순서가 뒤섞여도 동작) */
+const OCR_KIND = [
+  {re:/근\s*[저서져제]\s*당\s*권?\s*(?:설\s*[정징점장])?/, kind:"근저당권설정"},
+  {re:/전\s*세\s*권\s*설\s*[정징점장]/, kind:"전세권설정"},
+  {re:/(?:주\s*택\s*)?임\s*차\s*권/, kind:"주택임차권"},
+  {re:/가\s*[압암]\s*[류루]/, kind:"가압류"},
+  {re:/가\s*처\s*[분붐]/, kind:"가처분"},
+  {re:/(?:임\s*의|강\s*제)?\s*경\s*매\s*개\s*시/, kind:"경매개시결정"},
+  {re:/신\s*[탁닥]/, kind:"신탁"},
+  {re:/가\s*등\s*기/, kind:"가등기"},
+  {re:/(?<!가\s*)[압암]\s*[류루]/, kind:"압류"}
+];
+const OCR_AMT = /(채?\s*[권긴곤]\s*최\s*고\s*[액엑억]|최\s*고\s*[액엑억]|청?\s*구\s*금\s*[액엑억]|전\s*세\s*금|임\s*차\s*보\s*증\s*금|보\s*증\s*금)\s*금?\s*([\d][\d,.\s]{4,})\s*[원윈웬]/g;
+const OCR_DATE = /(\d{4})\s*년\s*([0-9]{1,2})\s*[월윌뭘밀울]\s*([0-9]{1,2})\s*[일알]/g;
+function nearest(list, pos, maxDist){ let best=null, bd=1e9; for(const it of list){ const d=Math.abs(it.idx-pos); if(d<bd && d<=maxDist){ bd=d; best=it; } } return best; }
+function parseOcrSection(text, section){
+  const t = text.replace(/\s+/g," ");
+  const amts=[], dates=[], kinds=[];
+  let m; OCR_AMT.lastIndex=0;
+  while((m=OCR_AMT.exec(t))) amts.push({ idx:m.index, label:m[1].replace(/\s/g,""), man: Math.round(num(m[2].replace(/[\s.]/g,"").replace(/,/g,""))/10000) });
+  OCR_DATE.lastIndex=0;
+  while((m=OCR_DATE.exec(t))) dates.push({ idx:m.index, v:ymd(m[1],m[2],m[3]) });
+  for(const k of OCR_KIND){ const re=new RegExp(k.re.source,"g"); while((m=re.exec(t))){ if(!kinds.some(x=>Math.abs(x.idx-m.index)<3)) kinds.push({ idx:m.index, kind:k.kind }); } }
+  const holderOf = pos => { const seg=t.slice(pos, pos+160); const h=seg.match(/(?:[근군]\s*[저서져]\s*당\s*권\s*자|채\s*권\s*자|전\s*세\s*권\s*자|임\s*차\s*권\s*자)\s*((?:주식회사|\(주\)|㈜)\s?)?([^\s|]+)/); return h?((h[1]||"")+h[2]).replace(/\s/g,"").replace(/[^가-힣A-Za-z0-9()㈜]+$/,""):""; };
+  const out=[];
+  if(section==="을구"){
+    // 을구: 금액 하나 = 권리 하나
+    for(const a of amts){
+      const k = nearest(kinds.filter(x=>x.kind!=="압류"&&x.kind!=="가압류"), a.idx, 220);
+      const kind = k ? k.kind : (/전세/.test(a.label) ? "전세권설정" : /보증/.test(a.label) ? "주택임차권" : "근저당권설정");
+      const d = dates.filter(x=>x.idx<a.idx && a.idx-x.idx<=60).pop();
+      out.push({ section, rank:"", kind, date:d?d.v:"", holder:holderOf(a.idx), amount:a.man||"", active:true, note:"사진 인식" });
+    }
+    if(!amts.length) for(const k of kinds) out.push({ section, rank:"", kind:k.kind, date:"", holder:"", amount:"", active:true, note:"사진 인식(금액 못 읽음)" });
+  } else {
+    // 갑구: 하자 키워드 하나 = 권리 하나
+    const used=new Set();
+    for(const k of kinds){
+      const a = nearest(amts, k.idx, 260), d = nearest(dates, k.idx, 90);
+      if(a) used.add(a);
+      out.push({ section, rank:"", kind:k.kind, date:d?d.v:"", holder:holderOf(Math.max(0,k.idx-120)), amount:a?a.man:"", active:true, note:"사진 인식" });
+    }
+    // 등기목적은 못 읽었지만 청구금액이 보이면 가압류로 보고 빨강 처리(놓치는 것보다 안전)
+    for(const a of amts) if(!used.has(a) && /구금/.test(a.label)){
+      const d = dates.filter(x=>x.idx<a.idx && a.idx-x.idx<=80).pop();
+      out.push({ section, rank:"", kind:"가압류(확인 필요)", date:d?d.v:"", holder:holderOf(a.idx), amount:a.man||"", active:true, note:"사진 인식 — 등기목적 못 읽음" });
+    }
+  }
+  return out;
+}
+function ruleParse(text, opt={}){
   const out = { readDate:null, address:"", rights:[], warnings:[] };
-  const flat = text.replace(/[ \t]+/g," ");
-  const rd = flat.match(/(?:열람일시|발행일|출력일시)\s*:?\s*(\d{4})\s*[년.\/-]\s*(\d{1,2})\s*[월.\/-]\s*(\d{1,2})/);
+  const flat = (opt.ocr ? ocrNormalize(text) : text).replace(/[ \t]+/g," ");
+  const rd = flat.match(/(?:[열혈]람\s*일\s*시|발\s*행\s*일|출\s*력\s*일\s*시)\s*[:.]?\s*(\d{4})\s*[년.\/-]\s*(\d{1,2})\s*[월윌뭘밀.\/-]\s*(\d{1,2})/);
   if(rd) out.readDate = ymd(rd[1],rd[2],rd[3]);
-  const ad = flat.match(/\[(집합건물|건물|토지)\]\s*([^\n]+)/);
-  if(ad){ out.address = ad[2].trim(); out.kindHint = ad[1]; }
-  const sumIdx = flat.indexOf("주요 등기사항 요약");
+  const rawFlat = text.replace(/[ \t]+/g," ").replace(/[|｜]/g," ");
+  const adRe = /[\[【(]\s*([집개짐]\s*합\s*건\s*물|건\s*물|토\s*지)\s*[\]】)]\s*([^\n]+)/;
+  const ad = rawFlat.match(adRe) || flat.match(adRe);
+  if(ad){ out.address = ad[2].replace(/\s+/g," ").trim().replace(/제(\d+)충/,"제$1층"); out.kindHint = /합/.test(ad[1]) ? "집합건물" : ad[1].replace(/\s/g,""); }
+  const sm = flat.match(/주요\s*등기\s*사항\s*요약/);
+  const sumIdx = sm ? sm.index : -1;
   if(sumIdx>=0){
     const sum = flat.slice(sumIdx);
-    const s2 = sum.search(/2\.\s*소유지분을\s*제외한/);
-    const s3 = sum.search(/3\.\s*\(근\)저당권/);
-    const end = sum.search(/\[\s*참\s*고\s*사\s*항|이\s*하\s*여\s*백|\*\s*실선으로/);
-    const gap = s2>=0 ? sum.slice(s2, s3>=0?s3:undefined) : "";
+    const s2 = sum.search(/2\s*[.,]?\s*소유\s*지분을\s*제외한/);
+    const s3 = sum.search(/3\s*[.,]?\s*\(?\s*근?\s*\)?\s*저당권\s*및/);
+    const end = sum.search(/[\[【(]\s*참\s*고\s*사\s*항|이\s*하\s*여\s*백|\*\s*실선으로/);
+    const gap = s2>=0 ? sum.slice(s2, s3>s2?s3:undefined) : "";
     const eul = s3>=0 ? sum.slice(s3, end>s3?end:undefined) : "";
-    if(gap && !/기록사항\s*없음/.test(gap)) out.rights.push(...parseRecords(gap.replace(/^2\.[^)]*\)/,""), "갑구").filter(r=>!/^소유권(이전|보존)$/.test(r.kind)));
-    if(eul && !/기록사항\s*없음/.test(eul)) out.rights.push(...parseRecords(eul.replace(/^3\.[^)]*\)/,""), "을구"));
+    const P = opt.ocr ? parseOcrSection : parseRecords;
+    if(gap && !/사\s*항\s*[없업]\s*[음옴]/.test(gap)) out.rights.push(...P(gap.replace(/^2\s*[.,]?[^)]*\)/,""), "갑구").filter(r=>!/^소유권(이전|보존)$/.test(r.kind)));
+    if(eul && !/사\s*항\s*[없업]\s*[음옴]/.test(eul)) out.rights.push(...P(eul.replace(/^3\s*[.,]?[^)]*\)[^)]*\)/,""), "을구"));
     if(s3<0) out.warnings.push("요약표에서 을구 항목을 찾지 못했습니다. 을구를 직접 확인하세요.");
-    if(eul && /기록사항\s*없음/.test(eul)) out.warnings.push("을구 기록사항 없음 — 근저당 제로");
+    if(eul && /사\s*항\s*[없업]\s*[음옴]/.test(eul)) out.warnings.push("을구 기록사항 없음 — 근저당 제로");
   } else {
-    // 요약표가 없으면 본문 전체에서 추출(말소 여부 판단 불가 → 모두 유효로 표시)
-    const gIdx = flat.search(/【\s*갑\s*구\s*】|\[\s*갑\s*구\s*\]/), eIdx = flat.search(/【\s*을\s*구\s*】|\[\s*을\s*구\s*\]/);
-    if(gIdx>=0) out.rights.push(...parseRecords(flat.slice(gIdx, eIdx>gIdx?eIdx:undefined), "갑구").filter(r=>!/^소유권(이전|보존)$/.test(r.kind)));
-    if(eIdx>=0) out.rights.push(...parseRecords(flat.slice(eIdx), "을구"));
+    const gIdx = flat.search(/[【\[(]\s*갑\s*구\s*[】\])]/), eIdx = flat.search(/[【\[(]\s*을\s*구\s*[】\])]/);
+    const P = opt.ocr ? parseOcrSection : parseRecords;
+    if(gIdx>=0) out.rights.push(...P(flat.slice(gIdx, eIdx>gIdx?eIdx:undefined), "갑구").filter(r=>!/^소유권(이전|보존)$/.test(r.kind)));
+    if(eIdx>=0) out.rights.push(...P(flat.slice(eIdx), "을구"));
     out.warnings.push("'주요 등기사항 요약' 페이지가 없어 말소된 등기도 '유효'로 표시됐을 수 있습니다. 말소된 줄은 체크를 해제하세요.");
   }
-  // 말소 등기 자체는 제외
   out.rights = out.rights.filter(r=>!/말소|해제|해지/.test(r.kind));
   if(!out.rights.length && sumIdx<0) out.warnings.push("권리 항목을 찾지 못했습니다. 원본과 대조해 직접 입력하세요.");
+  if(opt.ocr) out.warnings.unshift("사진 글자 인식 결과입니다. 금액·날짜·권리자를 원본과 꼭 대조하세요.");
   return out;
 }
 
+/* ===================== 사진·스캔본 글자 인식(OCR, 브라우저 안에서 무료) ===================== */
+const TESS = {
+  js:"https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js",
+  worker:"https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/worker.min.js",
+  core:"https://cdn.jsdelivr.net/npm/tesseract.js-core@5.1.1",
+  lang:"https://cdn.jsdelivr.net/npm/@tesseract.js-data/kor@1.0.0/4.0.0_best_int"
+};
+let ocrWorker=null, ocrProg=null;
+function loadScript(src){
+  return new Promise((ok,no)=>{ if(window.Tesseract) return ok();
+    const sc=document.createElement("script"); sc.src=src; sc.onload=ok;
+    sc.onerror=()=>no(new Error("글자 인식 엔진을 불러오지 못했습니다. 인터넷 연결을 확인하세요.")); document.head.appendChild(sc); });
+}
+async function getOcr(){
+  await loadScript(TESS.js);
+  if(!ocrWorker){
+    ocrWorker = await Tesseract.createWorker("kor", 1, { workerPath:TESS.worker, corePath:TESS.core, langPath:TESS.lang,
+      logger:m=>{ if(ocrProg) ocrProg(m); } });
+    await ocrWorker.setParameters({ preserve_interword_spaces:"1", user_defined_dpi:"300", tessedit_pageseg_mode: String(window.__ocrPsm||"4") });
+  }
+  return ocrWorker;
+}
+const PREP_MODE = "B";
+/* 기울기 추정: 작은 이미지에서 -5°~+5°를 0.25° 간격으로 돌려 보며 글자 줄이 가장 또렷하게 모이는 각도 */
+function estimateSkew(src){
+  const L=900, sc=Math.min(1, L/Math.max(src.width,src.height)), w=Math.max(1,Math.round(src.width*sc)), h=Math.max(1,Math.round(src.height*sc));
+  const c=document.createElement("canvas"); c.width=w; c.height=h; const g=c.getContext("2d",{willReadFrequently:true});
+  g.fillStyle="#fff"; g.fillRect(0,0,w,h); g.drawImage(src,0,0,w,h);
+  const d=g.getImageData(0,0,w,h).data; let mean=0; const gr=new Float32Array(w*h);
+  for(let i=0,j=0;i<w*h;i++,j+=4){ gr[i]=0.299*d[j]+0.587*d[j+1]+0.114*d[j+2]; mean+=gr[i]; } mean/=w*h;
+  const xs=[], ys=[]; const th=mean*0.72;
+  for(let y=0;y<h;y++) for(let x=0;x<w;x++) if(gr[y*w+x]<th){ xs.push(x); ys.push(y); }
+  if(xs.length<200) return 0;
+  let best=0, bestScore=-1; const pad=Math.ceil(w*0.1)+2, hist=new Float64Array(h+2*pad);
+  for(let a=-5;a<=5.001;a+=0.25){
+    const t=Math.tan(a*Math.PI/180); hist.fill(0);
+    for(let k=0;k<xs.length;k++){ const r=Math.round(ys[k]-xs[k]*t)+pad; if(r>=0&&r<hist.length) hist[r]++; }
+    let sc2=0; for(let r=0;r<hist.length;r++) sc2+=hist[r]*hist[r];
+    if(sc2>bestScore){ bestScore=sc2; best=a; }
+  }
+  return best;
+}
+/* 사진 보정: 회전 정보 반영 → 크기 맞춤 → 흑백 → 그림자 제거(적응형 이진화) */
+async function prepImage(src){
+  let bmp = src;
+  if(!(src instanceof HTMLCanvasElement)){
+    try{ bmp = await createImageBitmap(src, { imageOrientation:"from-image" }); }
+    catch(e){ bmp = await new Promise((ok,no)=>{ const im=new Image(); im.onload=()=>ok(im); im.onerror=()=>no(new Error("사진을 열 수 없습니다")); im.src=URL.createObjectURL(src); }); }
+  }
+  const W0=bmp.width, H0=bmp.height, long=Math.max(W0,H0);
+  if(long < 1500) prepImage.lowRes = true;
+  const sc = Math.max(0.5, Math.min(3, 2600/long));
+  const W=Math.round(W0*sc), H=Math.round(H0*sc);
+  const c=document.createElement("canvas"); c.width=W; c.height=H;
+  const g=c.getContext("2d",{willReadFrequently:true}); g.imageSmoothingQuality="high";
+  g.fillStyle="#fff"; g.fillRect(0,0,W,H);
+  const MODE = window.__prepMode || PREP_MODE;
+  const ang = MODE==="A" ? 0 : estimateSkew(bmp);     // 기울기(도) 추정
+  if(Math.abs(ang) > 0.15){ g.translate(W/2,H/2); g.rotate(-ang*Math.PI/180); g.translate(-W/2,-H/2); }
+  g.drawImage(bmp,0,0,W,H); g.setTransform(1,0,0,1,0,0);
+  prepImage.lastSkew = ang;
+  const img=g.getImageData(0,0,W,H), d=img.data, n=W*H;
+  const gray=new Float32Array(n);
+  for(let i=0,j=0;i<n;i++,j+=4) gray[i]=0.299*d[j]+0.587*d[j+1]+0.114*d[j+2];
+  // 적응형 임계값(Bradley): 주변 평균보다 15% 어두우면 글자
+  const I=new Float64Array((W+1)*(H+1));
+  for(let y=1;y<=H;y++){ let row=0; for(let x=1;x<=W;x++){ row+=gray[(y-1)*W+x-1]; I[y*(W+1)+x]=I[(y-1)*(W+1)+x]+row; } }
+  const r=Math.max(12,Math.round(Math.min(W,H)/40)), bin=new Uint8Array(n), norm=new Uint8ClampedArray(n);
+  for(let y=0;y<H;y++){ const y0=Math.max(0,y-r), y1=Math.min(H,y+r+1);
+    for(let x=0;x<W;x++){ const x0=Math.max(0,x-r), x1=Math.min(W,x+r+1);
+      const sum=I[y1*(W+1)+x1]-I[y0*(W+1)+x1]-I[y1*(W+1)+x0]+I[y0*(W+1)+x0];
+      const mean=sum/((x1-x0)*(y1-y0)); bin[y*W+x] = gray[y*W+x] < mean*0.85 ? 1 : 0;
+      norm[y*W+x] = Math.max(0, Math.min(255, 255*gray[y*W+x]/Math.max(mean,1))); } }   // 그림자 평탄화(회색조 유지)
+  // 표 선 지우기: 위아래(좌우) 1픽셀을 합쳐 본 뒤, 글자보다 훨씬 긴 가로·세로 줄을 흰색으로
+  const minH=Math.round(W*0.06), minV=Math.round(H*0.025), kill=new Uint8Array(n);
+  for(let y=0;y<H;y++){ let run=0; for(let x=0;x<=W;x++){
+      const b = x<W && (bin[y*W+x] || (y>0&&bin[(y-1)*W+x]) || (y<H-1&&bin[(y+1)*W+x]));
+      if(b) run++; else { if(run>=minH) for(let k=x-run;k<x;k++){ for(let dy=-2;dy<=2;dy++){ const yy=y+dy; if(yy>=0&&yy<H) kill[yy*W+k]=1; } } run=0; } } }
+  for(let x=0;x<W;x++){ let run=0; for(let y=0;y<=H;y++){
+      const b = y<H && (bin[y*W+x] || (x>0&&bin[y*W+x-1]) || (x<W-1&&bin[y*W+x+1]));
+      if(b) run++; else { if(run>=minV) for(let k=y-run;k<y;k++){ for(let dx=-2;dx<=2;dx++){ const xx=x+dx; if(xx>=0&&xx<W) kill[k*W+xx]=1; } } run=0; } } }
+  for(let i=0,j=0;i<n;i++,j+=4){ const v = kill[i] ? 255 : (MODE==="C" ? norm[i] : (bin[i]?0:255)); d[j]=d[j+1]=d[j+2]=v; d[j+3]=255; }
+  g.putImageData(img,0,0);
+  return c;
+}
+async function ocrImages(sources, onMsg){
+  prepImage.lowRes = false;
+  const w = await getOcr();
+  let text="";
+  for(let i=0;i<sources.length;i++){
+    const base=i/sources.length, span=1/sources.length;
+    onMsg(`사진 ${i+1}/${sources.length} 보정 중…`, base);
+    const canvas = await prepImage(sources[i]);
+    ocrProg = m=>{ if(m.status==="recognizing text") onMsg(`사진 ${i+1}/${sources.length} 글자 읽는 중… ${Math.round(m.progress*100)}%`, base+span*m.progress);
+                   else if(/load|initializ/.test(m.status||"")) onMsg("글자 인식 엔진 준비 중… (처음 한 번 약 2MB 내려받기)", base); };
+    const { data } = await w.recognize(canvas);
+    text += data.text + "\n\n";
+  }
+  ocrProg=null;
+  return text;
+}
+async function pdfPagesToCanvas(file, maxPages){
+  const pdf = await pdfjsLib.getDocument({data:await file.arrayBuffer()}).promise;
+  const out=[]; const n=Math.min(pdf.numPages, maxPages);
+  // 요약 페이지는 보통 마지막 쪽 → 뒤에서부터 읽기
+  for(let p=pdf.numPages; p>pdf.numPages-n; p--){
+    const page=await pdf.getPage(p); const v1=page.getViewport({scale:1});
+    const vp=page.getViewport({scale: Math.min(4, (window.__pdfTarget||2600)/Math.max(v1.width, v1.height))});
+    const c=document.createElement("canvas"); c.width=vp.width; c.height=vp.height;
+    await page.render({canvasContext:c.getContext("2d"), viewport:vp}).promise; out.unshift(c);
+  }
+  return out;
+}
+
+function setParseMsg(msg, prog){
+  S.parseMsg=msg; S.parseProg=prog;
+  const m=$("#parseMsg"), b=$("#parseBar");
+  if(m && b){ m.textContent=msg; b.style.width=Math.round((prog||0)*100)+"%"; } else renderEditor();
+}
 async function runParse(){
-  const L = S.edit; if(!L || !S.editFiles.length) return;
-  S.parsing=true; S.parseErr=false; S.parseMsg="등기부를 읽는 중…"; renderEditor();
+  const L = S.edit; if(!L || !S.editFiles.length || S.parsing) return;
+  S.parsing=true; S.parseErr=false; S.parseProg=0; S.parseMsg="등기부를 읽는 중…"; renderEditor();
   try{
-    let text="";
+    let text="", ocrSources=[];
     for(const f of S.editFiles){
       if(f.type==="application/pdf" || /\.pdf$/i.test(f.name)){
-        if(!window.pdfjsLib) throw new Error("PDF 라이브러리를 불러오지 못했습니다");
-        const r = await pdfToTextAndImages(f, false); text += r.text;
+        if(!window.pdfjsLib) throw new Error("PDF 라이브러리를 불러오지 못했습니다. 인터넷 연결을 확인하세요.");
+        const r = await pdfToTextAndImages(f, false);
+        if(r.text.replace(/\s|\[페이지 \d+ 끝\]/g,"").length >= 200) text += r.text;
+        else { setParseMsg("스캔 PDF입니다. 페이지를 이미지로 바꾸는 중…", 0); ocrSources.push(...await pdfPagesToCanvas(f, 8)); }
+      } else if(/^image\//.test(f.type) || /\.(jpe?g|png|heic|heif|webp)$/i.test(f.name)){
+        ocrSources.push(f);
       }
     }
-    if(text.replace(/\s/g,"").length < 200) throw new Error("글자를 읽을 수 없는 파일입니다. 인터넷등기소에서 발급·열람한 PDF를 그대로 올려주세요(사진·스캔본은 2차에서 지원 예정).");
-    const res = ruleParse(text);
-    applyParse(L, res, "자동");
+    let usedOcr=false;
+    if(ocrSources.length){
+      usedOcr=true;
+      text += await ocrImages(ocrSources, (msg,p)=>{ if(S.edit===L) setParseMsg(msg,p); });
+    }
+    if(text.replace(/\s/g,"").length < 100) throw new Error("글자를 거의 읽지 못했습니다. 등기부가 화면에 꽉 차게, 흔들림 없이 밝은 곳에서 다시 찍어주세요.");
+    const res = ruleParse(text, { ocr: usedOcr });
+    if(usedOcr && prepImage.lowRes) res.warnings.push("사진 해상도가 낮습니다. 휴대폰 기본 카메라로 등기부가 화면에 꽉 차게 다시 찍으면 더 정확합니다.");
+    if(usedOcr && !res.rights.length && !/주요\s*등기\s*사항\s*요약|사\s*항\s*[없업]\s*[음옴]/.test(ocrNormalize(text)))
+      res.warnings.push("등기부 내용을 거의 찾지 못했습니다. 마지막 장 '주요 등기사항 요약' 페이지를 밝은 곳에서 정면으로 찍어주세요.");
+    applyParse(L, res, usedOcr ? "사진 인식" : "자동");
     if(res.kindHint==="집합건물" && !L.type) L.type="연립다세대";
-    S.parseMsg = `판독 완료 — 권리 ${L.rights.length}건. 아래 표를 원본과 대조해 고친 뒤 '확인 완료'에 체크하세요.`;
+    L.ocrText = usedOcr ? text.slice(0,20000) : undefined;
+    S.parseMsg = `${usedOcr?"사진 인식":"판독"} 완료 — 권리 ${L.rights.length}건. 아래 표를 원본과 대조해 고친 뒤 '확인 완료'에 체크하세요.`;
   }catch(e){ S.parseErr=true; S.parseMsg = "판독 실패: "+(e.message||e); }
-  S.parsing=false; renderEditor();
+  S.parsing=false; S.parseProg=null; renderEditor();
   if(!S.parseErr && S.edit===L && !num(L.priceOverride)) runPrice();
 }
 function applyParse(L, r, via){
@@ -481,7 +730,7 @@ function render(){
   <header>
     <div class="row" style="justify-content:space-between;align-items:flex-start">
       <div><h1>LH 전세임대 사전점검 신호등</h1>
-      <div class="sub"><a href="./" style="color:#cfe3db">중개사무소 앱</a> ⑤ · ${esc(S.me?.office||"")} ${esc(S.me?.name||"")}</div></div>
+      <div class="sub"><a href="./" style="color:#cfe3db;display:inline-block;padding:6px 0">중개사무소 앱</a> ⑤ · ${esc(S.me?.office||"")} ${esc(S.me?.name||"")}</div></div>
       <button class="btn sm" id="logoutBtn" style="background:transparent;color:#fff;border-color:#6f9c8c">로그아웃</button>
     </div>
   </header>
@@ -490,7 +739,7 @@ function render(){
     <button data-tab="rules" class="${S.tab==="rules"?"on":""}">판정 규칙</button>
     <button data-tab="help" class="${S.tab==="help"?"on":""}">사용법</button>
   </nav>
-  <div class="notice">⚠ 사전 점검용 화면입니다. 최종 승인은 LH 권리조사·감정평가가 결정합니다.</div>
+  <div class="notice">⚠ 사전 점검용<span class="long"> 화면입니다</span>. 최종 승인은 LH 권리조사·감정평가가 합니다.</div>
   <main id="main"></main>
   ${S.tab==="list"?`<button class="btn pri fab" id="addBtn">＋ 매물 등록</button>`:""}`;
   app.querySelectorAll("nav.tabs button").forEach(b=>b.onclick=()=>{ S.tab=b.dataset.tab; render(); });
@@ -521,32 +770,35 @@ function renderList(){
   const all = S.listings.map(L=>evaluate(L,S.rules,currentLimit()).light);
   const cnt = k => all.filter(x=>x===k).length;
   const greens = rows.filter(r=>r.E.light==="green");
+  const nF = (F.limitIdx>=0?1:0)+(F.region?1:0)+(F.maxDeposit?1:0);
+  if(S.filterOpen===undefined) S.filterOpen = innerWidth>640;
   $("#main").innerHTML = `
   <div class="card">
-    <div class="grid3">
+    <div class="filterbar">
+      <input type="text" id="fQ" placeholder="이름·주소·메모 검색" value="${esc(F.q)}">
+      <button class="btn" id="fToggle">필터${nF?` <b style="color:var(--brand)">${nF}</b>`:""} ${S.filterOpen?"▴":"▾"}</button>
+    </div>
+    <div class="chips" style="margin-top:8px">
+      ${["green","yellow","red","gray"].map(k=>`<button class="chip ${F.lights.has(k)?"on":""}" data-light="${k}"><span class="dot ${k}"></span>${{green:"초록만",yellow:"노랑",red:"빨강",gray:"판정불가"}[k]}</button>`).join("")}
+    </div>
+    <div class="fpanel ${S.filterOpen?"":"closed"}"><div class="grid3">
       <label class="f">지원 유형·한도
         <select id="fLimit"><option value="-1">한도 적용 안 함</option>
         ${S.rules.limits.map((l,i)=>`<option value="${i}" ${F.limitIdx===i?"selected":""}>${esc(l.label)} · ${esc(l.region)} · ${l.amount?manShort(l.amount):"미설정"}</option>`).join("")}</select></label>
       <label class="f">지역
         <select id="fRegion"><option value="">전체</option>${REGIONS.map(r=>`<option ${F.region===r?"selected":""}>${r}</option>`).join("")}</select></label>
       <label class="f">보증금 상한(만원)
-        <input type="number" id="fMax" placeholder="예: 12000" value="${esc(F.maxDeposit)}"></label>
-    </div>
-    <div class="row" style="margin-top:10px;justify-content:space-between">
-      <div class="chips">
-        ${["green","yellow","red","gray"].map(k=>`<button class="chip ${F.lights.has(k)?"on":""}" data-light="${k}"><span class="dot ${k}"></span>${{green:"초록만",yellow:"노랑",red:"빨강",gray:"판정불가"}[k]}</button>`).join("")}
-      </div>
-      <input type="text" id="fQ" placeholder="이름·주소·메모 검색" value="${esc(F.q)}" style="max-width:220px">
-    </div>
-    <div class="stats">
-      <div class="stat"><b>${S.listings.length}</b><span>전체 매물</span></div>
+        <input type="number" inputmode="numeric" id="fMax" placeholder="예: 12000" value="${esc(F.maxDeposit)}"></label>
+    </div>${nF?`<button class="btn sm" id="fReset" style="margin-top:8px">필터 초기화</button>`:""}</div>
+    <div class="stats" style="margin-top:10px">
+      <div class="stat"><b>${S.listings.length}</b><span>전체</span></div>
       <div class="stat"><b style="color:var(--g)">${cnt("green")}</b><span>초록</span></div>
       <div class="stat"><b style="color:var(--y)">${cnt("yellow")}</b><span>노랑</span></div>
       <div class="stat"><b style="color:var(--r)">${cnt("red")}</b><span>빨강</span></div>
     </div>
     <div class="row" style="margin-top:10px">
-      <button class="btn pri" id="shareBtn" ${greens.length?"":"disabled"}>고객용 링크·문자 만들기 (현재 목록의 초록 ${greens.length}건)</button>
-      ${S.token?`<button class="btn" id="bulkBtn" ${S.bulk?"disabled":""}>${S.bulk?`<span class="spin"></span>공시가격 갱신 ${S.bulk.done}/${S.bulk.total}`:"공시가격 전체 자동 갱신"}</button>`:""}
+      <button class="btn pri" id="shareBtn" ${greens.length?"":"disabled"}>고객에게 초록 ${greens.length}건 보내기</button>
+      ${S.token?`<button class="btn" id="bulkBtn" ${S.bulk?"disabled":""}>${S.bulk?`<span class="spin"></span>공시가격 갱신 ${S.bulk.done}/${S.bulk.total}`:"공시가격 전체 갱신"}</button>`:""}
       ${S.loadNote?`<span class="muted">${esc(S.loadNote)}</span>`:""}
     </div>
   </div>
@@ -557,6 +809,8 @@ function renderList(){
   </div>`;
   $("#fLimit").onchange=e=>{ F.limitIdx=+e.target.value; const l=currentLimit(); if(l && l.amount) F.maxDeposit = String(l.amount); renderList(); };
   $("#fRegion").onchange=e=>{ F.region=e.target.value; renderList(); };
+  $("#fToggle").onclick=()=>{ S.filterOpen=!S.filterOpen; renderList(); };
+  if($("#fReset")) $("#fReset").onclick=()=>{ F.limitIdx=-1; F.region=""; F.maxDeposit=""; renderList(); };
   $("#fMax").oninput=e=>{ F.maxDeposit=e.target.value; clearTimeout(renderList._t); renderList._t=setTimeout(()=>{ renderList(); const el=$("#fMax"); el.focus(); el.setSelectionRange?.(el.value.length,el.value.length); },400); };
   $("#fQ").oninput=e=>{ F.q=e.target.value; clearTimeout(renderList._q); renderList._q=setTimeout(()=>{ renderList(); const el=$("#fQ"); el.focus(); el.setSelectionRange(el.value.length,el.value.length); },400); };
   document.querySelectorAll("[data-light]").forEach(b=>b.onclick=()=>{ const k=b.dataset.light; F.lights.has(k)?F.lights.delete(k):F.lights.add(k); renderList(); });
@@ -566,7 +820,8 @@ function renderList(){
 }
 function itemCard(L,E){
   const why = E.light==="green" ? `<span class="tag green">부채비율 ${E.ratio.toFixed(1)}%</span>` :
-    [...E.reasons.map(r=>`<span class="tag red">${esc(r)}</span>`), ...E.warns.slice(0,3).map(r=>`<span class="tag yellow">${esc(r)}</span>`), ...(E.light==="gray"?[`<span class="tag">공시가격 미입력</span>`]:[])].join(" ");
+    [...E.reasons.slice(0,2).map(r=>`<span class="tag red">${esc(r)}</span>`), ...E.warns.slice(0, E.reasons.length?1:2).map(r=>`<span class="tag yellow">${esc(r)}</span>`), ...(E.light==="gray"?[`<span class="tag">공시가격 미입력</span>`]:[]),
+     ...((E.reasons.length+E.warns.length) > (Math.min(2,E.reasons.length)+(E.reasons.length?Math.min(1,E.warns.length):Math.min(2,E.warns.length))) ? [`<span class="tag">외 ${(E.reasons.length+E.warns.length)-(Math.min(2,E.reasons.length)+(E.reasons.length?Math.min(1,E.warns.length):Math.min(2,E.warns.length)))}건</span>`]:[])].join(" ");
   const ds = daysSince(L.readDate);
   return `<div class="card item" data-open="${esc(L.id)}">
     <div class="light ${E.light}"><i></i><i></i><i></i></div>
@@ -590,10 +845,13 @@ function openEditor(id){
   S.edit = src ? structuredClone(src) : blankListing();
   S.editFiles=[]; S.parseMsg=""; S.parseErr=false; S.priceMsg=""; S.priceErr=false; S.priceChoices=null; S.priceBusy=false;
   if(!$("#sheet")){ const d=document.createElement("div"); d.className="sheet"; d.id="sheet"; document.body.appendChild(d); }
-  $("#sheet").classList.add("open"); document.body.style.overflow="hidden";
+  $("#sheet").classList.add("open"); document.body.style.overflow="hidden"; $("#sheet").scrollTop=0;
+  try{ history.pushState({sheet:1},""); }catch(e){}
   renderEditor();
 }
-function closeEditor(){ S.edit=null; $("#sheet")?.classList.remove("open"); document.body.style.overflow=""; render(); }
+function hideSheet(){ S.edit=null; $("#sheet")?.classList.remove("open"); document.body.style.overflow=""; }
+function closeEditor(){ if(history.state && history.state.sheet){ history.back(); return; } hideSheet(); render(); }
+window.addEventListener("popstate", ()=>{ if(S.edit){ hideSheet(); render(); } });
 
 function renderEditor(){
   const L=S.edit; if(!L) return;
@@ -602,24 +860,27 @@ function renderEditor(){
   const sh = $("#sheet");
   const scroll = sh.scrollTop;
   sh.innerHTML = `<div class="panel">
-    <button class="btn sm close" id="eClose">닫기 ✕</button>
-    <h2>${isNew?"매물 등록":"매물 수정"}</h2>
+    <div class="topbar"><h2>${isNew?"매물 등록":"매물 수정"}</h2><button class="btn sm" id="eClose">✕ 닫기</button></div>
     <div class="notice" style="position:static;border-radius:9px;margin-bottom:12px">사전 점검 결과이며, 최종 승인은 LH 권리조사·감정평가가 합니다. 계약 직전 등기부를 반드시 재열람하세요.</div>
 
     <div class="verdict ${E.light}" id="verdict">${verdictHTML(E)}</div>
 
     <h3>① 등기부등본 올리기</h3>
     <div class="drop" id="drop">
-      <div><b>등기부등본 PDF</b>를 끌어놓거나 눌러서 선택</div>
-      <div class="muted">인터넷등기소 열람·발급 PDF 그대로 (말소사항 포함, 요약 페이지 포함)</div>
+      <div class="pickrow">
+        <button class="btn" id="pickPdf" type="button">📄 PDF 파일<small>인터넷등기소 열람·발급본</small></button>
+        <button class="btn" id="pickImg" type="button">📷 사진 찍기·앨범<small>여러 장 가능</small></button>
+      </div>
+      <div class="muted" style="margin-top:8px">'주요 등기사항 요약' 페이지가 있으면 가장 정확합니다 · PC는 파일을 여기로 끌어놓아도 됩니다</div>
       <input type="file" id="file" accept="application/pdf" multiple hidden>
+      <input type="file" id="fileImg" accept="image/*" multiple hidden>
     </div>
-    ${S.editFiles.length?`<div class="muted" style="margin-top:6px">선택됨: ${S.editFiles.map(f=>esc(f.name)).join(", ")}</div>`:""}
+    ${S.editFiles.length?`<div class="muted" style="margin-top:6px">선택됨(${S.editFiles.length}): ${S.editFiles.map(f=>esc(f.name)).join(", ")}</div>`:""}
     <div class="row" style="margin-top:8px">
-      <button class="btn pri" id="parseBtn" ${(!S.editFiles.length||S.parsing)?"disabled":""}>${S.parsing?`<span class="spin"></span>판독 중`:"갑구·을구 자동 판독"}</button>
-      <span class="muted">인터넷등기소 PDF의 '주요 등기사항 요약'을 읽습니다 · 사진·스캔본은 2차 지원</span>
+      <button class="btn pri" id="parseBtn" ${(!S.editFiles.length||S.parsing)?"disabled":""}>${S.parsing?`<span class="spin"></span>판독 중`:(L.parsedAt?"다시 판독":"갑구·을구 자동 판독")}</button>
     </div>
-    ${S.parseMsg?`<div class="status ${S.parseErr?"err":""}">${S.parsing?'<span class="spin"></span>':""}${esc(S.parseMsg)}</div>`:""}
+    ${S.parseMsg?`<div class="status ${S.parseErr?"err":""}">${S.parsing?'<span class="spin"></span>':""}<span id="parseMsg">${esc(S.parseMsg)}</span></div>${S.parsing&&S.parseProg!=null?`<div class="progress"><i id="parseBar" style="width:${Math.round(S.parseProg*100)}%"></i></div>`:""}`:""}
+    ${L.ocrText?`<details style="margin-top:6px"><summary class="muted">인식된 글자 원문 보기</summary><pre class="copy">${esc(L.ocrText)}</pre></details>`:""}
     ${(L.parseWarnings||[]).length?`<div class="req"><b>판독 주의</b><ul style="margin:4px 0 0;padding-left:18px">${L.parseWarnings.map(w=>`<li>${esc(w)}</li>`).join("")}</ul></div>`:""}
 
     <h3>② 매물 기본정보</h3>
@@ -634,7 +895,7 @@ function renderEditor(){
         <label class="f">전용면적(㎡)<input type="number" data-k="area" value="${esc(L.area)}"></label>
       </div>
       <div class="grid3" style="margin-top:10px">
-        <label class="f">이번 전세금(만원)<input type="number" data-k="deposit" value="${esc(L.deposit)}" placeholder="예: 11000"></label>
+        <label class="f">이번 전세금(만원)<input type="number" inputmode="numeric" data-k="deposit" data-money="1" value="${esc(L.deposit)}" placeholder="예: 11000"><span class="hint">${num(L.deposit)?"= "+man(L.deposit):""}</span></label>
         <label class="f">등기부 열람일<input type="date" data-k="readDate" value="${esc(L.readDate)}"></label>
         <label class="f">집주인 LH 전세임대 동의
           <select data-k="consent">
@@ -651,14 +912,14 @@ function renderEditor(){
       <tbody>${(L.rights||[]).map((r,i)=>{
         const bad = E.defects.includes(r) ; const lien = E.liens.includes(r);
         return `<tr class="${r.active===false?"off":""} ${bad?"bad":""}">
-        <td><select data-r="${i}" data-f="section">${SECTIONS.map(s=>`<option ${r.section===s?"selected":""}>${s}</option>`).join("")}</select></td>
-        <td><input type="text" data-r="${i}" data-f="rank" value="${esc(r.rank)}" style="width:46px"></td>
-        <td><input type="text" data-r="${i}" data-f="kind" value="${esc(r.kind)}" style="min-width:130px">${bad?'<div class="tag red" style="margin-top:2px">하자</div>':lien?'<div class="tag" style="margin-top:2px">선순위 채권</div>':""}</td>
-        <td><input type="text" data-r="${i}" data-f="date" value="${esc(r.date)}" style="width:100px"></td>
-        <td><input type="text" data-r="${i}" data-f="holder" value="${esc(r.holder)}" style="min-width:110px"></td>
-        <td><input type="number" data-r="${i}" data-f="amount" value="${esc(r.amount)}" style="width:90px"></td>
-        <td style="text-align:center"><input type="checkbox" data-r="${i}" data-f="active" ${r.active!==false?"checked":""}></td>
-        <td><button class="btn sm danger" data-del="${i}">삭제</button></td></tr>`;}).join("") ||
+        <td data-label="구분"><select data-r="${i}" data-f="section">${SECTIONS.map(s=>`<option ${r.section===s?"selected":""}>${s}</option>`).join("")}</select></td>
+        <td data-label="순위"><input type="text" data-r="${i}" data-f="rank" value="${esc(r.rank)}" style="width:46px"></td>
+        <td data-label="등기목적" class="wide"><input type="text" data-r="${i}" data-f="kind" value="${esc(r.kind)}" style="min-width:130px">${bad?'<div class="tag red" style="margin-top:2px">하자</div>':lien?'<div class="tag" style="margin-top:2px">선순위 채권</div>':""}</td>
+        <td data-label="접수일"><input type="text" data-r="${i}" data-f="date" value="${esc(r.date)}" style="width:100px"></td>
+        <td data-label="권리자"><input type="text" data-r="${i}" data-f="holder" value="${esc(r.holder)}" style="min-width:110px"></td>
+        <td data-label="금액(만원)" class="wide"><input type="number" inputmode="numeric" data-r="${i}" data-f="amount" value="${esc(r.amount)}" style="width:110px"></td>
+        <td style="text-align:center" class="act"><label class="check" style="margin:0"><input type="checkbox" data-r="${i}" data-f="active" ${r.active!==false?"checked":""}> 유효</label></td>
+        <td class="act"><button class="btn sm danger" data-del="${i}">삭제</button></td></tr>`;}).join("") ||
         `<tr><td colspan="8" class="muted" style="padding:14px;text-align:center">등기부를 판독하거나 '행 추가'로 직접 입력하세요. 권리가 하나도 없으면 '근저당 제로'로 판정됩니다.</td></tr>`}
       </tbody></table></div>
     <div class="row" style="margin-top:8px;justify-content:space-between">
@@ -680,8 +941,8 @@ function renderEditor(){
       ${S.priceMsg?`<div class="status ${S.priceErr?"err":""}">${esc(S.priceMsg)}</div>`:""}
       ${S.priceChoices&&S.priceChoices.length?`<div class="chips" style="margin-top:6px">${S.priceChoices.map(c=>`<button class="chip" data-pickdong="${esc(c.dongNm||"")}">${esc(c.dongNm||"동없음")}동 ${esc(c.hoNm)}호 · ${c.price_won?manShort(c.price_won/10000):"-"}</button>`).join("")}</div>`:""}
       <div class="grid2" style="margin-top:10px">
-        <label class="f">공시가격(만원)<input type="number" data-k="publicPrice" value="${esc(L.publicPrice)}" placeholder="자동 조회 또는 직접 입력"></label>
-        <label class="f">주택가격 직접 입력(만원, 선택)<input type="number" data-k="priceOverride" value="${esc(L.priceOverride)}" placeholder="감정가·KB시세 등이 있으면"></label>
+        <label class="f">공시가격(만원)<input type="number" inputmode="numeric" data-k="publicPrice" data-money="1" value="${esc(L.publicPrice)}" placeholder="자동 조회 또는 직접 입력"><span class="hint">${num(L.publicPrice)?"= "+man(L.publicPrice):""}</span></label>
+        <label class="f">주택가격 직접 입력(만원, 선택)<input type="number" inputmode="numeric" data-k="priceOverride" data-money="1" value="${esc(L.priceOverride)}" placeholder="감정가·KB시세 등이 있으면"><span class="hint">${num(L.priceOverride)?"= "+man(L.priceOverride):""}</span></label>
       </div>
       ${L.priceInfo?`<div class="muted" style="margin-top:6px">출처: ${esc(L.priceInfo.year)}년 ${esc(L.priceInfo.kind)} · PNU ${esc(L.priceInfo.pnu)} · ${esc(String(L.priceInfo.at||"").slice(0,10))} 조회</div>`:""}
       <div class="row" style="margin-top:8px">
@@ -693,7 +954,7 @@ function renderEditor(){
     ${(L.type==="다가구"||L.type==="단독")?`
     <h3>⑤ 다가구 선순위 임차보증금</h3>
     <div class="card">
-      <label class="f">다른 호실 보증금 합계(만원)<input type="number" data-k="otherDeposits" value="${esc(L.otherDeposits)}" placeholder="확정일자 부여현황 기준"></label>
+      <label class="f">다른 호실 보증금 합계(만원)<input type="number" inputmode="numeric" data-k="otherDeposits" data-money="1" value="${esc(L.otherDeposits)}" placeholder="확정일자 부여현황 기준"><span class="hint">${num(L.otherDeposits)?"= "+man(L.otherDeposits):""}</span></label>
       <label class="check"><input type="checkbox" data-k="fixedDateChecked" ${L.fixedDateChecked?"checked":""}> 확정일자 부여현황 확인 완료</label>
       <label class="check"><input type="checkbox" data-k="tenantsChecked" ${L.tenantsChecked?"checked":""}> 전입세대 열람 확인 완료</label>
       <div class="muted">근저당이 0이어도 다른 호실 보증금이 크면 선순위가 됩니다.</div>
@@ -703,9 +964,9 @@ function renderEditor(){
     <textarea data-k="memo" placeholder="내부 메모 (고객 링크에는 '고객 안내문'만 표시)">${esc(L.memo)}</textarea>
     <label class="f" style="margin-top:8px">고객 안내문(고객용 링크에 표시)<input type="text" data-k="publicNote" value="${esc(L.publicNote||"")}" placeholder="예: 역세권 도보 5분, 즉시 입주 가능"></label>
 
-    <div class="row" style="margin-top:16px;justify-content:space-between">
-      <div>${isNew?"":`<button class="btn danger" id="eDel">매물 삭제</button>`}</div>
-      <div class="row"><button class="btn" id="eCancel">취소</button><button class="btn pri" id="eSave" ${S.canWrite?"":"disabled"}>저장</button></div>
+    <div class="savebar">
+      ${isNew?`<button class="btn" id="eCancel">취소</button>`:`<button class="btn danger" id="eDel">삭제</button>`}
+      <button class="btn pri" id="eSave" ${S.canWrite?"":"disabled"}>저장</button>
     </div>
   </div>`;
   sh.scrollTop = scroll;
@@ -729,10 +990,11 @@ function refreshVerdict(){
 }
 function bindEditor(){
   const L=S.edit;
-  $("#eClose").onclick=$("#eCancel").onclick=closeEditor;
-  const drop=$("#drop"), file=$("#file");
-  drop.onclick=()=>file.click();
-  file.onchange=()=>{ S.editFiles=[...file.files]; S.parseMsg=""; renderEditor(); };
+  $("#eClose").onclick=closeEditor; if($("#eCancel")) $("#eCancel").onclick=closeEditor;
+  const drop=$("#drop"), file=$("#file"), fileImg=$("#fileImg");
+  $("#pickPdf").onclick=()=>file.click(); $("#pickImg").onclick=()=>fileImg.click();
+  file.onchange=()=>{ S.editFiles=[...file.files]; S.parseMsg=""; renderEditor(); if(S.editFiles.length) runParse(); };
+  fileImg.onchange=()=>{ S.editFiles=[...fileImg.files]; S.parseMsg=""; renderEditor(); if(S.editFiles.length) runParse(); };
   drop.ondragover=e=>{e.preventDefault(); drop.classList.add("hot");};
   drop.ondragleave=()=>drop.classList.remove("hot");
   drop.ondrop=e=>{ e.preventDefault(); S.editFiles=[...e.dataTransfer.files].filter(f=>/pdf|image/.test(f.type)); renderEditor(); };
@@ -743,6 +1005,7 @@ function bindEditor(){
     const k=el.dataset.k;
     const h=()=>{
       L[k] = el.type==="checkbox" ? el.checked : el.value;
+      if(el.dataset.money && el.nextElementSibling) el.nextElementSibling.textContent = num(el.value)?"= "+man(el.value):"";
       if(k==="type") L._typeAuto=false;
       if(k==="type") { renderEditor(); return; }
       refreshVerdict();
@@ -765,7 +1028,7 @@ function bindEditor(){
     if(!L.name && !L.address){ toast("매물 이름이나 소재지를 입력하세요"); return; }
     if(!L.region) L.region = regionOf(L.address);
     const copy = structuredClone(L); delete copy._typeAuto;
-    S.edit=null; $("#sheet").classList.remove("open"); document.body.style.overflow="";
+    if(history.state && history.state.sheet){ S.edit=null; history.back(); } hideSheet();
     await saveListing(copy); toast("저장했습니다");
     // 공시가격이 비어 있으면 저장 후 자동 조회
     if(S.token && !num(copy.publicPrice) && !num(copy.priceOverride) && copy.type!=="오피스텔" && (copy.jibun||copy.address)){
@@ -773,7 +1036,7 @@ function bindEditor(){
       if(r.ok){ await saveListing(c2); toast("공시가격 자동 입력: "+man(c2.publicPrice)); } else toast("공시가격 자동 조회 실패: "+r.msg);
     }
   };
-  if($("#eDel")) $("#eDel").onclick=()=>ask(`<b>이 매물을 삭제할까요?</b><div class="muted">${esc(L.name||L.address)}</div>`,"삭제",async()=>{ const id=L.id; S.edit=null; $("#sheet").classList.remove("open"); document.body.style.overflow=""; await deleteListing(id); toast("삭제했습니다"); });
+  if($("#eDel")) $("#eDel").onclick=()=>ask(`<b>이 매물을 삭제할까요?</b><div class="muted">${esc(L.name||L.address)}</div>`,"삭제",async()=>{ const id=L.id; if(history.state && history.state.sheet){ S.edit=null; history.back(); } hideSheet(); await deleteListing(id); toast("삭제했습니다"); });
 }
 
 /* ===================== 화면: 규칙 ===================== */
@@ -847,7 +1110,7 @@ function renderHelp(){
   $("#main").innerHTML = `<div class="card">
   <h2>사용 순서</h2>
   <ol style="padding-left:20px;margin:0">
-    <li><b>＋ 매물 등록</b> → 인터넷등기소 등기부등본 PDF를 올리고 <b>자동 판독</b>.</li>
+    <li><b>＋ 매물 등록</b> → 인터넷등기소 등기부등본 PDF나 <b>사진</b>을 올리면 바로 <b>자동 판독</b>합니다(사진은 휴대폰 안에서 글자 인식, 처음 한 번 약 2MB 내려받기).</li>
     <li>권리 목록 표를 원본과 대조해 고치고 <b>확인 완료</b>에 체크. 말소된 등기는 '유효' 체크 해제.</li>
     <li><b>공시가격은 판독 직후 자동 조회</b>됩니다(아파트·연립다세대=공동주택가격, 단독·다가구=개별주택가격). 감정가·시세가 있으면 직접 입력란이 우선합니다.</li>
     <li>전세금·집주인 동의 여부 입력 → 신호등이 즉시 바뀝니다. 다가구는 확정일자·전입세대 확인 항목이 자동 요청됩니다.</li>
