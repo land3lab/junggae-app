@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>중개사무소 앱 — 중개사 실전 도구 7종</title>
+<title>중개사무소 앱 — 중개사 실전 도구 8종</title>
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#ffffff">
 <link rel="icon" href="img/icon-192.png">
@@ -71,7 +71,7 @@ input{width:100%;min-height:46px;border:1px solid #D6D6D6;border-radius:10px;pad
 <body>
 <div class="top">
   <div class="in">
-    <h1><img src="img/land3-logo.png" alt="랜드3 연구소"><span class="bar"></span><span>중개사무소 앱<small>중개사 실전 도구 7종</small></span></h1>
+    <h1><img src="img/land3-logo.png" alt="랜드3 연구소"><span class="bar"></span><span>중개사무소 앱<small>중개사 실전 도구 8종</small></span></h1>
     <div class="who" id="who"></div>
     <button class="ibtn" id="installBtn" style="display:none">설치</button>
   </div>
@@ -98,6 +98,7 @@ const TOOLS=[
   {id:'bid',num:'⑦',short:'입찰서류',name:'경매 입찰서류 자동작성',desc:'사건번호·입찰가 → 새 기일입찰표·위임장·준비물 체크리스트 PDF, "0 하나 더" 실수 방지',page:'bid.html',state:'on'},
   {id:'vacancy',num:'⑥',short:'공실클럽',name:'공실클럽 (RSA 동문 전용)',desc:'수수료·이용료 0원 동문 공동중개 — 공실 30초 등록·지도 검색·14일 신선도 확인·문의 일지',page:'gongsil.html',state:'new'},
   {id:'shorts',num:'③',short:'AI쇼츠',name:'AI쇼츠 만들기',desc:'② 매물·사진 → 훅·본문·마무리 대본 + 내 목소리 → 표시사항 고정 30초 세로영상 → 확인 후 유튜브 업로드',page:'shorts.html',state:'new'},
+  {id:'blog',num:'⑧',short:'블로그',name:'블로그 자동생성',desc:'매물·동네·상식·상담사례 → 검색용 제목 5안·본문·태그 + 표시사항 자동 첨부 → 서식 복사·사진 내보내기·발행 기록',page:'blog.html',state:'new'},
   {id:'pc',num:'①',short:'똥컴 PC',name:'똥컴 업그레이드',desc:'오래된 사무실 PC 진단 → 처방 → 실행(윈도우 프로그램)',state:'soon',
     plan:['사양 자동 진단(CPU·RAM·HDD/SSD·부팅시간)','용도·예산 질문 3개','처방전: 0원 청소 / SSD·RAM / ChromeOS Flex','전후 비교 카드']}
 ];
@@ -150,8 +151,9 @@ function renderHome(){
     </div>
     ${bidsUp.length?`<h2 class="sec">다가오는 입찰기일</h2><div class="card"><ul class="recent">${bidsUp.slice(0,5).map(b=>`<li><span>${esc(b.court)} ${esc(b.case)} · ${esc(b.name||'')}${b.type==='agent'?'(대리)':''}</span><span>${b.dd===0?'오늘':'D-'+b.dd}${b.price?' · '+wonShort(b.price):''}</span></li>`).join('')}</ul></div>`:''}
     ${gsInfo&&gsInfo.ok&&(gsInfo.unread||gsInfo.stale)?`<h2 class="sec">⑥ 공실클럽</h2><div class="card"><ul class="recent">${gsInfo.unread?`<li><span>새 공동중개 문의</span><span><a href="#vacancy">${gsInfo.unread}건 보기</a></span></li>`:''}${gsInfo.stale?`<li><span>"아직 공실인가요?" 확인할 내 공실</span><span><a href="#vacancy">${gsInfo.stale}건</a></span></li>`:''}</ul></div>`:''}
+    ${blogHtml()}
     ${hist.length?`<h2 class="sec">최근 토지 시세 상담</h2><div class="card"><ul class="recent">${hist.slice(0,5).map(h=>`<li><span>${esc(h.address)}</span><span>${wonShort(h.lo)}~${wonShort(h.hi)}</span></li>`).join('')}</ul></div>`:''}
-    <h2 class="sec">도구 7종</h2>
+    <h2 class="sec">도구 8종</h2>
     <div class="grid">${TOOLS.map(t=>`<button class="tool ${t.state==='soon'?'dim':''}" data-go="${t.id}">${BADGE[t.state]}<span class="num">${t.num}</span><h3>${esc(t.name)}</h3><p>${esc(t.desc)}</p></button>`).join('')}</div>
     <div class="foot">랜드3 연구소 · 모든 결과는 참고용 사전 점검이며 최종 판단은 관계기관·전문가 확인이 필요합니다.<br>② 다방광고 자료는 이 기기에만 저장됩니다.</div>
   </div>`;
@@ -162,6 +164,12 @@ function renderHome(){
       localStorage.setItem(TK,j.token);me=j.member;reloadFrames();renderAll();loadLh()}catch(e){$('#lmsg').className='msg r';$('#lmsg').textContent=e.message}};
     lg.onclick=f;$('#pin').addEventListener('keydown',e=>{if(e.key==='Enter')f()})}
 }
+function blogHtml(){const bh=LSget('bl.history',[]),cfg=LSget('bl.cfg',{goal:3}),dl=LSget('d1c.listings',[]);
+  const d=new Date();d.setHours(0,0,0,0);const mon=new Date(d);mon.setDate(d.getDate()-((d.getDay()+6)%7));const ms=mon.getFullYear()+'-'+String(mon.getMonth()+1).padStart(2,'0')+'-'+String(mon.getDate()).padStart(2,'0');
+  const wk=bh.filter(h=>h.date>=ms).length,goal=cfg.goal||3;
+  const down=bh.filter(h=>h.listingId&&!h.cleared&&(dl.find(x=>x.id===h.listingId)||{}).status==='거래완료');
+  if(!bh.length&&!down.length)return'';
+  return `<h2 class="sec">⑧ 블로그</h2><div class="card"><ul class="recent"><li><span>이번 주 발행</span><span><a href="#blog">${wk} / ${goal}편</a></span></li>${down.length?`<li><span style="color:var(--red)">거래완료 매물 글 — 정리 필요</span><span><a href="#blog">${down.length}건</a></span></li>`:''}</ul></div>`}
 let gsInfo=null;
 async function loadGs(){if(!token())return;try{gsInfo=await rpc('gs_me',{p_token:token()})}catch(e){gsInfo=null}if(cur==='home')renderHome()}
 async function loadLh(){loadGs();if(!token())return;try{const l=await rpc('lh_list',{p_token:token()});lhCount=Array.isArray(l)?l.length:(l&&l.length)||0}catch(e){lhCount=null}if(cur==='home')renderHome()}

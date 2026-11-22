@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>블로그 자동생성 — 중개사무소 앱 ⑧</title>
+<script>if(/[?&]embed=1/.test(location.search))document.documentElement.classList.add("embed")</script>
+<meta name="theme-color" content="#ffffff">
+<link rel="icon" href="img/icon-192.png">
+<link rel="apple-touch-icon" href="img/icon-192.png">
+<style>
+:root{--bg:#F7F7F7;--card:#fff;--ink:#23292B;--sub:#5C6366;--line:#E6E6E6;--brand:#EE6A2C;--brand-soft:#FDEEE5;
+  --red:#b42318;--red-soft:#fdecea;--yel:#7a5400;--yel-soft:#fff4d6;--grn:#17733f;--grn-soft:#e4f4ea;--r:14px}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;font-size:16px;line-height:1.55;-webkit-text-size-adjust:100%}
+header{background:var(--brand);color:#fff;padding:16px}
+header h1{margin:0;font-size:19px;letter-spacing:-.3px}
+header p{margin:2px 0 0;font-size:13px;opacity:.85}
+.embed header{display:none}
+.wrap{max-width:860px;margin:0 auto;padding:12px 12px 60px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px;margin:0 0 12px}
+.card h2{font-size:16.5px;margin:0 0 10px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.n{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--brand);color:#fff;font-size:13px;flex:none}
+label.f{display:block;font-size:13.5px;color:var(--sub);font-weight:600}
+input[type=text],input[type=tel],input[type=url],input[type=date],input[type=number],select,textarea{width:100%;min-height:46px;border:1px solid #D6D6D6;border-radius:10px;padding:10px 12px;font:inherit;color:var(--ink);background:#fff;margin-top:4px}
+textarea{min-height:64px;resize:vertical}
+#body{min-height:420px;font-size:15px;line-height:1.7}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.full{grid-column:1/-1}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.btn{min-height:46px;border:1px solid #D6D6D6;background:#fff;border-radius:10px;padding:10px 16px;font:inherit;font-weight:700;color:var(--ink);cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.btn.pri{background:var(--brand);border-color:var(--brand);color:#fff}
+.btn.sm{min-height:40px;padding:6px 12px;font-size:14px}
+.btn.big{min-height:54px;font-size:17px;flex:1}
+.btn:disabled{opacity:.45;cursor:default}
+.seg{display:flex;border:1px solid #D6D6D6;border-radius:10px;overflow:hidden;margin:0 0 12px;flex-wrap:wrap}
+.seg button{flex:1;min-height:46px;border:0;background:#fff;font:inherit;font-weight:700;color:var(--sub);cursor:pointer;padding:6px 8px}
+.seg button+button{border-left:1px solid #D6D6D6}
+.seg button.on{background:var(--brand);color:#fff}
+.kinds{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.kinds button{border:1px solid var(--line);background:#fff;border-radius:12px;padding:12px 10px;text-align:left;font:inherit;color:inherit;cursor:pointer;min-height:84px}
+.kinds button b{display:block;font-size:15px}
+.kinds button span{font-size:12.5px;color:var(--sub)}
+.kinds button.on{border-color:var(--brand);outline:2px solid #F9B48F;background:var(--brand-soft)}
+.hint{font-size:13px;color:var(--sub);margin:4px 0 0;font-weight:400}
+.note{padding:11px 14px;border-radius:12px;font-size:14px;margin:10px 0 0}
+.note.y{background:var(--yel-soft);color:var(--yel)} .note.r{background:var(--red-soft);color:var(--red)} .note.g{background:var(--grn-soft);color:var(--grn)} .note.b{background:var(--brand-soft);color:var(--brand)}
+.hide{display:none!important}
+.chk{display:flex;align-items:flex-start;gap:9px;min-height:44px;font-size:14.5px;cursor:pointer;padding:8px 0}
+.chk input{width:22px;height:22px;accent-color:var(--brand);flex:none;margin:0}
+.lst{display:flex;gap:10px;align-items:center;padding:10px;border:1px solid var(--line);border-radius:12px;margin-bottom:8px;cursor:pointer;background:#fff;width:100%;text-align:left;font:inherit;color:inherit}
+.lst.on{border-color:var(--brand);outline:2px solid #F9B48F}
+.lst .th{width:58px;height:58px;border-radius:10px;background:#ddd center/cover;flex:none}
+.lst .t1{font-weight:700}.lst .t2{font-size:13px;color:var(--sub)}
+.chip{display:inline-block;font-size:12px;font-weight:700;border-radius:20px;padding:1px 8px;background:var(--brand-soft);color:var(--brand)}
+.chip.r{background:var(--red-soft);color:var(--red)}.chip.g{background:var(--grn-soft);color:var(--grn)}.chip.gr{background:#eef0ef;color:#6b736f}
+.kwchips{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.kwchips button{border:1px solid #D6D6D6;background:#fff;border-radius:20px;padding:5px 11px;font:inherit;font-size:13.5px;cursor:pointer;min-height:36px}
+.kwchips button:hover{border-color:var(--brand)}
+.photos{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin-top:8px}
+.photos div{aspect-ratio:1;border-radius:8px;background:#ddd center/cover;position:relative}
+.photos div b{position:absolute;left:4px;top:4px;background:rgba(0,0,0,.65);color:#fff;font-size:11px;border-radius:6px;padding:0 5px}
+.photos div button{position:absolute;right:2px;top:2px;border:0;background:rgba(0,0,0,.6);color:#fff;border-radius:50%;width:24px;height:24px;cursor:pointer}
+.photos div .mv{right:auto;left:2px;top:auto;bottom:2px;border-radius:6px;width:auto;padding:0 6px;font-size:12px}
+.titles label{display:flex;gap:8px;align-items:center;border:1px solid var(--line);border-radius:10px;padding:8px 10px;margin-bottom:6px;cursor:pointer}
+.titles label.on{border-color:var(--brand);background:var(--brand-soft)}
+.titles input[type=radio]{width:20px;height:20px;accent-color:var(--brand);flex:none;margin:0}
+.titles .len{font-size:12px;color:var(--sub);white-space:nowrap}
+.checks{display:grid;gap:6px}
+.ck{display:flex;gap:8px;align-items:flex-start;font-size:14px;padding:7px 10px;border-radius:10px}
+.ck i{font-style:normal;font-weight:800;flex:none;width:18px;text-align:center}
+.ck.ok{background:var(--grn-soft);color:var(--grn)} .ck.warn{background:var(--yel-soft);color:var(--yel)} .ck.red{background:var(--red-soft);color:var(--red)}
+.score{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.score .v{font-size:34px;font-weight:800;letter-spacing:-1px}
+.score .bar{flex:1;height:10px;background:#EBEBEB;border-radius:6px;overflow:hidden}
+.score .bar i{display:block;height:100%;background:var(--brand)}
+.foot{background:#FAFAFA;border:1px dashed #D6D6D6;border-radius:10px;padding:10px 12px;font-size:13.5px;white-space:pre-wrap;color:var(--sub);margin-top:8px}
+/* 미리보기 (네이버 글 모양) */
+#preview{border:1px solid var(--line);border-radius:12px;padding:22px 20px;background:#fff;max-height:640px;overflow:auto}
+.pv h1{font-size:24px;line-height:1.4;margin:0 0 18px;padding-bottom:14px;border-bottom:1px solid #eee}
+.pv h3{font-size:19px;margin:26px 0 10px;color:#111}
+.pv p{margin:0 0 14px;font-size:15.5px;line-height:1.85}
+.pv .ph{margin:0 0 14px;border-radius:6px;background:#F1F3F4;color:#80878A;font-size:13.5px;text-align:center;padding:26px 10px;border:1px dashed #CDD1D3}
+.pv .ph img{display:block;max-width:100%;max-height:340px;margin:0 auto 6px;border-radius:4px}
+.pv table{border-collapse:collapse;width:100%;margin:0 0 16px;font-size:14.5px}
+.pv td{border:1px solid #DADDDF;padding:8px 10px}
+.pv td:first-child{background:#F6F7F8;font-weight:700;width:32%;white-space:nowrap}
+.pv hr{border:0;border-top:1px solid #DDD;margin:24px 0}
+.pv .q{font-weight:700;margin-bottom:4px}
+.pv .tags{color:#1E6FD9;font-size:14px}
+.pv .todo{background:#fff4d6;color:#7a5400}
+.hist{margin:0;padding:0;list-style:none}
+.hist li{border-bottom:1px solid var(--line);padding:10px 0;display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
+.hist li:last-child{border:0}
+.hist .t{font-weight:700;font-size:14.5px}
+.hist .s{font-size:12.5px;color:var(--sub)}
+.week{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin:6px 0 12px}
+.week div{border:1px solid var(--line);border-radius:8px;text-align:center;padding:6px 0;font-size:12.5px;color:var(--sub)}
+.week div.today{border-color:var(--brand)}
+.week div b{display:block;font-size:16px;color:var(--ink)}
+.week div.done{background:var(--grn-soft)} .week div.done b{color:var(--grn)}
+.steps{margin:8px 0 0;padding-left:20px;font-size:14px;color:var(--sub)}
+.steps li{margin-bottom:4px}
+.sticky{position:sticky;bottom:0;background:linear-gradient(transparent,var(--bg) 30%);padding:14px 0 6px;z-index:3}
+.spin{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,.5);border-top-color:#fff;border-radius:50%;animation:sp 1s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;z-index:20;padding:14px}
+.modal .box{background:#fff;border-radius:16px;max-width:620px;width:100%;max-height:92vh;overflow:auto;padding:18px}
+.modal h3{margin:0 0 8px}
+.modal textarea{min-height:150px;font-size:13.5px}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#23292B;color:#fff;padding:10px 18px;border-radius:20px;font-size:14px;z-index:30;opacity:0;transition:opacity .2s;pointer-events:none}
+.toast.on{opacity:1}
+@media (max-width:620px){.grid{grid-template-columns:1fr}.kinds{grid-template-columns:1fr 1fr}.photos{grid-template-columns:repeat(4,1fr)}#preview{padding:16px 12px}}
+</style>
+<link rel="stylesheet" href="land3.css">
+</head>
+<body>
+<header><h1>⑧ 블로그 자동생성</h1><p>재료만 넣으면 → 검색용 제목·본문·태그 + 표시사항 자동 첨부 → 복사해서 네이버 블로그에 올리기</p></header>
+<div class="wrap">
+
+<div class="note b" style="margin:0 0 12px">네이버 블로그는 외부 프로그램이 대신 발행하는 공개 통로가 없어, 이 도구는 <b>글을 완성해 복사</b>까지 해 드리고 발행은 네이버 글쓰기 화면에서 붙여넣기 → [발행](또는 예약 발행)으로 합니다. 매물이 나오는 글에는 <b>중개대상물 표시사항과 사무소 정보가 자동으로</b> 붙습니다.</div>
+
+<!-- 1. 글 종류 -->
+<section class="card">
+  <h2><span class="n">1</span>어떤 글을 쓸까요?</h2>
+  <div class="kinds" id="kinds">
+    <button data-k="listing"><b>🏠 매물 소개</b><span>② 매물장 또는 직접 입력</span></button>
+    <button data-k="area"><b>📍 동네 소개</b><span>교통·생활·학교 — 동네 키워드 잡기</span></button>
+    <button data-k="tip"><b>📘 부동산 상식</b><span>전세 체크리스트·중개보수 등 주제 골라 쓰기</span></button>
+    <button data-k="case"><b>💬 상담 사례</b><span>실제 상담 이야기를 익명으로</span></button>
+  </div>
+</section>
+
+<!-- 2. 재료 -->
+<section class="card">
+  <h2><span class="n">2</span>재료 넣기 <span class="hint" id="kindHint"></span></h2>
+
+  <div data-kind="listing">
+    <div class="seg" id="srcSeg"><button data-s="dabang" class="on">② 다방 매물장에서</button><button data-s="manual">직접 입력</button></div>
+    <div id="srcDabang"><div id="dbList"></div><p class="hint">② 다방광고 원클릭에서 <b>매물장에 저장</b>한 매물과 사진을 그대로 불러옵니다. 표시사항도 ②에서 입력한 그대로 붙습니다.</p></div>
+    <div id="srcManual" class="hide">
+      <div class="grid">
+        <label class="f">동네 (동·읍·면)<input type="text" data-m="dong" placeholder="예: 봉천동"></label>
+        <label class="f">시·구<input type="text" data-m="gu" placeholder="예: 관악구"></label>
+        <label class="f">종류<input type="text" data-m="type" placeholder="예: 투룸 / 아파트 / 상가"></label>
+        <label class="f">거래 형태<select data-m="deal"><option>월세</option><option>전세</option><option>매매</option><option>단기임대</option></select></label>
+        <label class="f">가격<input type="text" data-m="price" placeholder="예: 보증금 1,000만원 / 월 55만원"></label>
+        <label class="f">면적<input type="text" data-m="area" placeholder="예: 전용 33㎡(10평)"></label>
+        <label class="f full">소재지 (표시사항용 — 호수는 쓰지 마세요)<input type="text" data-m="loc" placeholder="예: 서울 관악구 봉천동 100-1, 3층"></label>
+        <label class="f">건축물 용도<input type="text" data-m="use" placeholder="예: 다세대주택"></label>
+        <label class="f">층 / 총층<input type="text" data-m="floor" placeholder="예: 3층 / 지상 5층"></label>
+        <label class="f">방·욕실<input type="text" data-m="rooms" placeholder="예: 방 2 · 욕실 1"></label>
+        <label class="f">방향<input type="text" data-m="dir" placeholder="예: 남향(거실 기준)"></label>
+        <label class="f">사용승인일<input type="text" data-m="approve" placeholder="예: 2015.03.20"></label>
+        <label class="f">주차<input type="text" data-m="park" placeholder="예: 총 4대"></label>
+        <label class="f">입주가능일<input type="text" data-m="move" placeholder="예: 즉시입주"></label>
+        <label class="f">관리비<input type="text" data-m="mgmt" placeholder="예: 월 7만원(정액) / 포함: 수도·인터넷"></label>
+        <label class="f full">옵션<input type="text" data-m="options" placeholder="예: 에어컨, 세탁기, 냉장고"></label>
+      </div>
+    </div>
+    <label class="f" style="margin-top:10px">직접 확인한 장점 (한 줄에 하나 — 사실만)<textarea id="lPoints" placeholder="예: 봉천역 도보 7분(직접 걸어봄)&#10;남향이라 오후까지 밝음&#10;2024년 도배·장판 새로 함"></textarea></label>
+    <label class="f">동네 생활 메모 (선택 — 길게 쓰기에서 사용)<textarea id="lArea" placeholder="예: 길 건너 대형마트, 관악산 둘레길 입구 5분"></textarea></label>
+  </div>
+
+  <div data-kind="area" class="hide">
+    <div class="grid">
+      <label class="f">동네 이름<input type="text" data-a="dong" placeholder="예: 봉천동"></label>
+      <label class="f">시·구<input type="text" data-a="gu" placeholder="예: 관악구"></label>
+      <label class="f full">교통<textarea data-a="trans" placeholder="예: 2호선 봉천역·서울대입구역 이용, 강남역까지 지하철 약 20분"></textarea></label>
+      <label class="f full">생활 편의 (마트·시장·병원)<textarea data-a="life" placeholder="예: 봉천중앙시장, 대형마트 1곳, 내과·소아과 밀집"></textarea></label>
+      <label class="f full">학교·공원<textarea data-a="school" placeholder="예: 초등학교 2곳 도보권, 관악산 둘레길"></textarea></label>
+      <label class="f full">동네 분위기·주 수요층<textarea data-a="mood" placeholder="예: 직장인·대학생 1~2인 가구가 많고 원룸·투룸 수요가 꾸준함"></textarea></label>
+      <label class="f full">시세 이야기 (선택 — 확인한 숫자만)<textarea data-a="price" placeholder="예: 투룸 월세는 보증금 1,000만원에 월 50~65만원대 매물이 많음(2026년 11월 우리 사무소 접수 기준)"></textarea></label>
+    </div>
+    <label class="chk"><input type="checkbox" id="aWithList"> <span>② 매물장에서 <b>이 동네 광고 중인 매물</b>을 글 끝에 소개하기 (표시사항 자동 첨부)</span></label>
+  </div>
+
+  <div data-kind="tip" class="hide">
+    <label class="f">주제<select id="tTopic"></select></label>
+    <p class="hint" id="tDesc"></p>
+    <label class="f" style="margin-top:8px">우리 사무소가 일하는 동네 (선택)<input type="text" id="tDong" placeholder="예: 관악구 봉천동"></label>
+    <label class="f">우리 사무소 한마디 (선택 — 실제 경험)<textarea id="tMemo" placeholder="예: 최근 다가구 전세 상담에서 선순위 보증금을 확인하지 않아 계약을 미룬 경우가 있었습니다."></textarea></label>
+    <div class="note y">법령·기준이 바뀌는 내용(요율·신고 기준 등)은 <b>올리기 전에 최신 기준을 한 번 더 확인</b>하세요. 글 끝에 "작성일 기준" 문구가 자동으로 들어갑니다.</div>
+  </div>
+
+  <div data-kind="case" class="hide">
+    <div class="grid">
+      <label class="f">고객 유형 (익명)<input type="text" data-c="who" placeholder="예: 사회초년생 1인 가구"></label>
+      <label class="f">동네·매물 종류<input type="text" data-c="where" placeholder="예: 봉천동 투룸 전세"></label>
+      <label class="f full">어떤 상담이었나요?<textarea data-c="sit" placeholder="예: 전세 보증금 1억 5천, 첫 계약이라 무엇을 확인해야 할지 모름"></textarea></label>
+      <label class="f full">문제·걱정은 무엇이었나요?<textarea data-c="prob" placeholder="예: 마음에 든 집이 다가구라 다른 호실 보증금 규모를 알 수 없었음"></textarea></label>
+      <label class="f full">우리가 한 일<textarea data-c="act" placeholder="예: 임대인 동의를 받아 확정일자 부여현황 확인, 전세보증보험 가입 가능 여부 먼저 조회"></textarea></label>
+      <label class="f full">결과<textarea data-c="res" placeholder="예: 보증보험 가입 가능한 다른 집으로 계약, 입주 후 전입·확정일자까지 함께 처리"></textarea></label>
+      <label class="f full">비슷한 분께 드리는 팁<textarea data-c="tip" placeholder="예: 다가구는 등기부만으로는 부족 — 선순위 보증금을 꼭 확인"></textarea></label>
+    </div>
+    <label class="chk"><input type="checkbox" id="cConsent"> <span>고객 이름·연락처·정확한 주소(호수)는 쓰지 않았고, 사례 공개에 고객이 동의했습니다.</span></label>
+  </div>
+</section>
+
+<!-- 3. 사진 -->
+<section class="card">
+  <h2><span class="n">3</span>사진 <span class="chip" id="phCnt">0장</span></h2>
+  <div class="row"><label class="btn sm">📷 사진 추가<input type="file" id="phIn" accept="image/*" multiple hidden></label><span class="hint">네이버는 사진 5장 이상 글이 체류시간에 유리합니다. 순서 번호가 본문의 [사진 n] 자리와 맞습니다.</span></div>
+  <div class="photos" id="photos"></div>
+  <label class="chk"><input type="checkbox" id="wm" checked> <span>내려받을 때 사진 오른쪽 아래에 <b>사무소 이름·전화</b> 워터마크 넣기</span></label>
+</section>
+
+<!-- 4. 검색 설정 -->
+<section class="card">
+  <h2><span class="n">4</span>검색 키워드·말투</h2>
+  <div class="grid">
+    <label class="f">대표 키워드 (제목 앞쪽·본문에 자연스럽게 3~6번)<input type="text" id="kw" placeholder="예: 봉천동 투룸 월세"></label>
+    <label class="f">보조 키워드 (쉼표로, 선택)<input type="text" id="kw2" placeholder="예: 서울대입구역 투룸, 관악구 월세"></label>
+  </div>
+  <div class="kwchips" id="kwSug"></div>
+  <div class="grid" style="margin-top:10px">
+    <div><label class="f">말투</label><div class="seg" id="toneSeg" style="margin-top:4px"><button data-v="friendly" class="on">친근하게 (~해요)</button><button data-v="pro">전문가답게 (~합니다)</button></div></div>
+    <div><label class="f">길이</label><div class="seg" id="lenSeg" style="margin-top:4px"><button data-v="normal" class="on">보통 (1,200자+)</button><button data-v="long">길게 (2,000자+)</button></div></div>
+  </div>
+</section>
+
+<!-- 5. 사무소 -->
+<section class="card">
+  <h2><span class="n">5</span>사무소 정보 <span class="hint">② 다방·③ 쇼츠와 같이 씁니다</span></h2>
+  <div id="offWarn" class="note r hide" style="margin:0 0 10px">사무소 정보가 비어 있으면 매물 글을 올릴 수 없어요(표시·광고 필수 항목).</div>
+  <div class="grid">
+    <label class="f">사무소 명칭<input type="text" data-o="name"></label>
+    <label class="f">대표(개업공인중개사)<input type="text" data-o="ceo"></label>
+    <label class="f">등록번호<input type="text" data-o="regno"></label>
+    <label class="f">사무소 전화<input type="tel" data-o="tel"></label>
+    <label class="f full">사무소 소재지<input type="text" data-o="addr"></label>
+    <label class="f">상담 가능 시간 (선택)<input type="text" id="hours" placeholder="예: 평일 9시~19시, 토요일 예약"></label>
+    <label class="f">내 네이버 블로그 아이디 (선택)<input type="text" id="blogId" placeholder="예: ktma9028"></label>
+  </div>
+</section>
+
+<div class="sticky"><div class="row">
+  <button class="btn pri big" id="btnGen">✍ 글 만들기</button>
+  <button class="btn big" id="btnAI" style="flex:.6">🤖 AI로 다듬기</button>
+</div><div id="genMsg"></div></div>
+
+<!-- 6. 결과 -->
+<section class="card hide" id="outCard">
+  <h2><span class="n">6</span>완성된 글 <button class="btn sm" id="btnRe" style="margin-left:auto">🔁 다른 문장으로</button></h2>
+  <label class="f">제목 후보 (하나 고르고 고쳐 써도 돼요)</label>
+  <div class="titles" id="titles"></div>
+  <div class="seg" id="viewSeg" style="margin-top:10px"><button data-v="edit" class="on">✏ 본문 고치기</button><button data-v="pv">👀 블로그 모양 미리보기</button></div>
+  <div id="editBox">
+    <textarea id="body"></textarea>
+    <p class="hint">규칙: <b>■ </b>로 시작하면 소제목 · <b>[사진 3: 설명]</b>은 사진 자리 · <b>· 항목: 내용</b>이 3줄 이상 이어지면 표 · <b>Q. / A.</b>는 질문·답 · <b>✏</b> 표시는 직접 채울 곳</p>
+  </div>
+  <div id="pvBox" class="hide"><div id="preview" class="pv"></div></div>
+  <label class="f" style="margin-top:10px">태그 (쉼표로 구분, 최대 30개)<input type="text" id="tags"></label>
+  <label class="f" style="margin-top:10px">본문 끝에 자동으로 붙는 내용 (고칠 수 없음)</label>
+  <div class="foot" id="foot"></div>
+</section>
+
+<!-- 7. 검사 -->
+<section class="card hide" id="chkCard">
+  <h2><span class="n">7</span>올리기 전 검사</h2>
+  <div class="score"><div class="v" id="scoreV">0</div><div style="flex:1"><div class="bar"><i id="scoreBar"></i></div><div class="hint" id="scoreTxt"></div></div></div>
+  <div class="checks" id="checks"></div>
+</section>
+
+<!-- 8. 올리기 -->
+<section class="card hide" id="pubCard">
+  <h2><span class="n">8</span>네이버 블로그에 올리기</h2>
+  <div class="row">
+    <button class="btn sm" id="cpTitle">① 제목 복사</button>
+    <button class="btn sm pri" id="cpRich">② 본문 복사 (서식 포함)</button>
+    <button class="btn sm" id="cpPlain">본문 복사 (글자만)</button>
+    <button class="btn sm" id="cpTags">③ 태그 복사</button>
+    <button class="btn sm" id="dlPhotos">④ 사진 내려받기</button>
+    <button class="btn sm hide" id="shPhotos">📤 사진 휴대폰에 저장</button>
+    <a class="btn sm" id="openWrite" href="https://blog.naver.com/GoBlogWrite.naver" target="_blank" rel="noopener">✍ 네이버 글쓰기 열기</a>
+  </div>
+  <ol class="steps">
+    <li>글쓰기 화면 제목 칸에 <b>제목</b>을 붙여넣기</li>
+    <li>본문에 <b>서식 포함 본문</b>을 붙여넣기 → 회색 "사진 n" 상자 자리에 같은 번호 사진을 넣고 상자는 지우기</li>
+    <li>오른쪽 아래 <b>태그</b> 칸에 태그 붙여넣기</li>
+    <li>[발행] 옆 화살표에서 <b>예약 발행</b>을 쓰면 정해 둔 요일·시간에 올라갑니다</li>
+  </ol>
+  <div class="grid" style="margin-top:12px">
+    <label class="f">발행한 글 주소 (선택)<input type="url" id="pubUrl" placeholder="https://blog.naver.com/..."></label>
+    <label class="f">발행(예약)일<input type="date" id="pubDate"></label>
+  </div>
+  <div class="row" style="margin-top:10px"><button class="btn pri" id="btnRecord">✅ 발행 기록 남기기</button><span class="hint">매물 글은 거래완료되면 "글도 정리하세요" 알림을 드려요.</span></div>
+</section>
+
+<!-- 9. 기록 -->
+<section class="card">
+  <h2><span class="n">9</span>발행 계획·기록 <span class="hint" style="margin-left:auto">목표 <select id="goal" style="width:auto;min-height:36px;margin:0;padding:4px 8px"><option value="2">주 2회</option><option value="3">주 3회</option><option value="5">주 5회</option><option value="7">매일</option></select></span></h2>
+  <div class="week" id="week"></div>
+  <div id="warns"></div>
+  <div id="sugg"></div>
+  <ul class="hist" id="hist"></ul>
+</section>
+
+</div>
+
+<div class="modal hide" id="modal"><div class="box"><h3 id="mTitle"></h3><div id="mBody"></div><div class="row" id="mBtns" style="margin-top:12px;justify-content:flex-end"></div></div></div>
+<div class="toast" id="toast"></div>
+<div id="richTmp" style="position:fixed;left:-9999px;top:0;width:700px" contenteditable="true"></div>
+
+<script>
+(function(){
+"use strict";
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const LS={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){return false}}};
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(toast._t);toast._t=setTimeout(()=>t.classList.remove('on'),1900)}
+function modal(title,html,btns){$('#mTitle').textContent=title;$('#mBody').innerHTML=html;const b=$('#mBtns');b.innerHTML='';
+  btns.forEach(x=>{const e=document.createElement('button');e.className='btn sm '+(x.cls||'');e.textContent=x.t;e.onclick=async()=>{if(x.fn&&(await x.fn())===false)return;$('#modal').classList.add('hide')};b.appendChild(e)});
+  $('#modal').classList.remove('hide')}
+async function copy(text,msg){try{await navigator.clipboard.writeText(text);toast(msg||'복사했어요')}catch(e){
+  const ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);ta.select();let ok=false;try{ok=document.execCommand('copy')}catch(_){}ta.remove();toast(ok?(msg||'복사했어요'):'복사가 막혔어요 — 길게 눌러 복사하세요')}}
+const todayS=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
+const ymd=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+
+/* ---------- 금지·과장 표현 (② 다방과 같은 기준) ---------- */
+const BANNED=[['최저가','비교 근거 없으면 과장 광고 소지'],['최저','비교 근거 필요'],['최고급','과장 표현 소지'],['최고','과장 표현 소지'],['유일','근거 필요'],['100%','단정 표현'],['무조건','단정 표현'],['보장','수익·안전 보장 표현 금지'],['확정','미확정 사실 단정 소지'],['특가','가격 과장 소지'],['대박','과장 표현'],['초급매','근거 없으면 과장'],['급매','시세 대비 근거 있을 때만'],['마지막','허위 희소성 소지'],['역대급','과장 표현'],['완벽','과장 표현'],['신축','사용승인일 근거 필요'],['역세권','도보 거리(분)를 함께 쓰세요'],['안전한 집','권리관계 단정 금지'],['깡통','불안 조장 표현'],['실화','과장 표현 소지'],['투자 수익','수익 단정 표현 주의']];
+let office=LS.get('d1c.office',{});
+const OKWORDS=['채권최고액','최고액','확정일자','확정일','최고층','최저임금','최고가격'];
+function lint(t){t=String(t||'');OKWORDS.forEach(w=>{t=t.split(w).join(' ')});const f=[];BANNED.forEach(([w,why])=>{if(t.includes(w)&&!f.some(x=>x.w.includes(w)))f.push({w,why})});
+  const tel=(office.tel||'').replace(/\D/g,''),ag=(office.agent||'').replace(/\D/g,'');
+  (t.match(/0\d{1,2}[-.\s]?\d{3,4}[-.\s]?\d{4}/g)||[]).forEach(p=>{const d=p.replace(/\D/g,'');if(d!==tel&&!(ag&&ag.includes(d)))f.push({w:p,why:'사무소 등록 연락처가 아닌 번호 — 중개보조원 연락처 표기 금지'})});
+  return f}
+
+/* ---------- IndexedDB: ② 사진(d1c) 읽기 + ⑧ 자체 저장(bl) ---------- */
+function openDB(name){return new Promise(res=>{try{const r=indexedDB.open(name,1);r.onupgradeneeded=()=>{const s=name==='d1c'?'photos':'files';if(!r.result.objectStoreNames.contains(s))r.result.createObjectStore(s)};r.onsuccess=()=>res(r.result);r.onerror=()=>res(null)}catch(e){res(null)}})}
+const dbs={};
+async function idb(name,mode,fn){dbs[name]=dbs[name]||openDB(name);const db=await dbs[name];if(!db)return null;const st=name==='d1c'?'photos':'files';
+  return new Promise(r=>{try{const t=db.transaction(st,mode);const q=fn(t.objectStore(st));t.oncomplete=()=>r(q&&q.result);t.onerror=()=>r(null)}catch(e){r(null)}})}
+const blPut=(k,v)=>idb('bl','readwrite',s=>s.put(v,k)), blGet=k=>idb('bl','readonly',s=>s.get(k));
+const d1cGet=k=>idb('d1c','readonly',s=>s.get(k));
+
+/* ---------- ② 다방 자료 → 블로그 재료 (표시사항은 ②와 같은 규칙) ---------- */
+const num=v=>{const n=parseFloat(String(v??'').replace(/,/g,''));return isFinite(n)?n:null};
+function man(v){const n=num(v);if(n==null)return'';if(n>=10000){const e=Math.floor(n/10000),r=Math.round(n%10000);return e+'억'+(r?' '+r.toLocaleString()+'만':'')+'원'}return(Math.round(n*10)/10).toLocaleString()+'만원'}
+const manS=v=>man(v).replace(/원$/,'');
+const py=m=>{const n=num(m);return n==null?'':(Math.round(n*0.3025*10)/10)+'평'};
+const HOUSE=['단독주택','다가구주택','다세대주택','연립주택','아파트','오피스텔'],DETACHED=['단독주택','다가구주택'];
+function fromDabang(D){
+  const words=(D.addr||'').split(/\s+/);
+  const dong=words.find(w=>/[동읍면리가]$/.test(w)&&!/^\d/.test(w))||'';const gu=words.find(w=>/[구군]$/.test(w))||words.find(w=>/시$/.test(w))||'';
+  const land=D.type==='토지';
+  const useText=()=>{let u=D.use==='기타'?(D.useEtc||'기타'):(D.use||'');if(D.illegal)u+=' (위반건축물)';if(D.unreg)u+=' (미등기건물)';return u};
+  const floorText=()=>{if(D.floorMode==='lmh')return D.lmh||'';const f=String(D.floor||'').trim();if(!f)return'';return/^\d+$/.test(f)?f+'층':f};
+  const locText=()=>{const a=(D.addr||'').trim();if(land||DETACHED.includes(D.use))return a;const p=[a];if(!D.dongNone&&D.dong)p.push(D.dong);const f=floorText();if(f)p.push(f);return p.join(', ')};
+  let price='',priceShort='';
+  if(D.deal==='매매'){price='매매 '+man(D.price);priceShort='매매 '+manS(D.price)}
+  else if(D.deal==='전세'){price='전세 보증금 '+man(D.deposit);priceShort='전세 '+manS(D.deposit)}
+  else if(D.deal){price=(D.deal==='단기임대'?'단기임대 ':'월세 ')+'보증금 '+man(D.deposit)+' / 월 '+man(D.rent);priceShort=manS(D.deposit)+'/'+manS(D.rent)}
+  const area=D.area?(land?D.area+'㎡('+py(D.area)+')':'전용 '+D.area+'㎡('+py(D.area)+')'+(D.supply?' / 공급 '+D.supply+'㎡('+py(D.supply)+')':'')):'';
+  let move='';if(D.moveMode==='now')move='즉시입주';else if(D.moveMode==='date')move=(D.moveDate||'').replace(/-/g,'.');else if(D.moveMode==='nego')move=((D.moveMonth||'')+' '+(D.movePart||'')).trim()+' (협의 가능)';
+  const t=num(D.parkTotal);let park=t==null?'':(t===0?'주차 불가(대장상 0대)':'총 '+t+'대');if(D.parkMemo)park+=(park?', ':'')+D.parkMemo;
+  const inc=D.mgmtIncl||[];let mgmt='';const mt=D.mgmtType;
+  if(mt==='none')mgmt='관리비 없음';else if(mt==='unknown')mgmt='관리비 확인 불가(임대인 미제시)';
+  else if(mt==='actual')mgmt='사용량에 따른 실비 부과'+(D.mgmtAvg?' (월 평균 약 '+man(D.mgmtAvg)+')':'')+(inc.length?' / 포함: '+inc.join('·'):'');
+  else if(mt==='fixed'){const tt=num(D.mgmtTotal);mgmt='월 '+man(tt)+' (정액)';const d=Object.entries(D.mgmtDetail||{}).filter(([k,v])=>num(v)>0).map(([k,v])=>k+' '+man(v));
+    if(tt>=10&&d.length&&!D.mgmtNoDetail)mgmt+=' — '+d.join(', ');else if(tt>=10&&D.mgmtNoDetail)mgmt+=' — 항목별 금액은 임대인 미제시';else if(inc.length)mgmt+=' / 포함: '+inc.join('·')}
+  const L=[];L.push('· 소재지: '+locText());L.push('· 종류: '+(land?'토지':useText())+' / 거래형태: '+(D.deal||''));L.push('· 가격: '+price);L.push('· 면적: '+area);
+  if(!land){L.push('· 총 층수: 지상 '+(D.totalFloor||'-')+'층'+(num(D.baseFloor)?' / 지하 '+D.baseFloor+'층':'')+(floorText()?' / 해당층: '+floorText():''));
+    if(D.rooms||D.baths)L.push('· 방/욕실: '+(D.rooms||'-')+'개/'+(D.baths||'-')+'개');L.push('· 방향: '+(D.dir||'-')+' ('+(D.dirBase||'거실 기준')+')');
+    L.push('· 사용승인일: '+(D.approve||'').replace(/-/g,'.'));L.push('· 주차: '+park);L.push('· 입주가능일: '+move);if(mgmt)L.push('· 관리비: '+mgmt)}
+  const pts=(D.memo||'').split(/[,\n]|\.(?!\d)/).map(s=>s.trim()).filter(s=>s&&s.length<=60&&!lint(s).length).slice(0,5);
+  return{dong,gu,type:D.type||'',deal:D.deal||'',price,priceShort,area,areaPy:D.area?py(D.area):'',land,
+    floor:floorText()?(floorText()+(D.totalFloor?' / 지상 '+D.totalFloor+'층':'')):'',rooms:(D.rooms||D.baths)?'방 '+(D.rooms||'-')+' · 욕실 '+(D.baths||'-'):'',
+    dir:D.dir?D.dir+' ('+(D.dirBase||'거실 기준')+')':'',approve:(D.approve||'').replace(/-/g,'.'),park,move,mgmt,options:(D.options||[]),bldg:D.bldgName||'',
+    points:pts,block:L.join('\n'),use:useText()}}
+function fromManual(m){m=m||{};const g=k=>String(m[k]||'').trim();
+  const L=[];const add=(k,v)=>{if(v)L.push('· '+k+': '+v)};
+  add('소재지',g('loc'));L.push('· 종류: '+(g('use')||g('type'))+' / 거래형태: '+g('deal'));add('가격',g('price')?(g('price').startsWith(g('deal'))?g('price'):g('deal')+' '+g('price')):'');add('면적',g('area'));
+  add('층',g('floor'));add('방/욕실',g('rooms'));add('방향',g('dir'));add('사용승인일',g('approve'));add('주차',g('park'));add('입주가능일',g('move'));add('관리비',g('mgmt'));
+  const price=g('price')?(g('price').startsWith(g('deal'))?g('price'):g('deal')+' '+g('price')):'';
+  return{dong:g('dong'),gu:g('gu'),type:g('type'),deal:g('deal'),price,priceShort:g('price').replace(/보증금\s*|월\s*|원/g,'').replace(/\s*\/\s*/,'/'),area:g('area'),areaPy:(g('area').match(/\(([\d.]+평)\)/)||[])[1]||'',land:/토지/.test(g('type')),
+    floor:g('floor'),rooms:g('rooms'),dir:g('dir'),approve:g('approve'),park:g('park'),move:g('move'),mgmt:g('mgmt'),options:g('options').split(/[,·]/).map(s=>s.trim()).filter(Boolean),bldg:'',points:[],block:L.join('\n'),use:g('use')}}
+
+/* ---------- 상식 주제 (변하지 않는 원칙 위주, 바뀌는 숫자는 확인 문구) ---------- */
+const TIPS={
+ jeonse:{label:'전세 계약 전 꼭 확인할 5가지',kw:'전세 계약 체크리스트',desc:'등기부·건축물대장·선순위 보증금·세금 체납·보증보험',
+  intro:['전세는 보증금이 크기 때문에 계약서에 도장을 찍기 전 확인이 무엇보다 중요합니다.','처음 전세를 구하는 분들이 가장 많이 묻는 "계약 전에 뭘 봐야 하나요?"를 순서대로 정리했습니다.'],
+  secs:[['1. 등기부등본 — 집주인과 빚부터',['등기부등본은 인터넷등기소에서 누구나 열람할 수 있습니다. 갑구에서는 지금 소유자가 계약하러 나온 사람과 같은지, 압류·가압류·가처분·경매개시결정 같은 기록이 없는지 봅니다.','을구에서는 근저당권 채권최고액을 확인합니다. 채권최고액은 실제 대출금보다 크게(통상 대출금의 120~130%) 잡혀 있으므로, 이 금액과 내 보증금을 더한 값이 집값에 비해 너무 크지 않은지 따져봐야 합니다.','등기부는 열람한 시점의 기록이라 계약 당일과 잔금일에 한 번 더 떼어 보는 것이 안전합니다.']],
+   ['2. 건축물대장 — 불법 건축물인지',['건축물대장에 "위반건축물" 표시가 있으면 전세자금대출이나 보증보험이 거절될 수 있습니다.','주택이 아닌 용도(근린생활시설 등)로 등록된 곳을 주거용으로 쓰는 경우도 같은 문제가 생길 수 있어 용도를 꼭 확인합니다.']],
+   ['3. 다가구라면 — 다른 호실 보증금',['다가구주택은 건물 전체가 하나의 등기라, 먼저 들어온 다른 세입자들의 보증금이 내 보증금보다 앞설 수 있습니다.','임대인에게 확정일자 부여현황과 전입세대 확인을 요청해 선순위 보증금 규모를 확인하세요.']],
+   ['4. 집주인 세금 체납 여부',['집주인이 국세·지방세를 체납하면 경매 시 세금이 먼저 배당될 수 있습니다.','계약 전 임대인에게 납세증명서를 요청할 수 있고, 계약 후에는 일정 요건을 갖춘 임차인이 임대인의 미납 국세·지방세를 열람할 수 있습니다. 열람 요건과 방법은 국세청·지자체 안내에서 최신 기준을 확인하세요.']],
+   ['5. 전세보증보험 가입 가능 여부',['HUG·HF·SGI 등의 전세보증금 반환보증에 가입할 수 있는 집인지 계약 전에 확인하면, 위 항목들을 한 번 더 걸러 주는 효과가 있습니다.','가입 요건(보증금 한도, 부채비율 등)은 기관과 시기마다 다르니 계약 전 조회가 필요합니다.']],
+   ['계약 후 바로 할 일',['잔금일에 이사와 함께 전입신고를 하고 계약서에 확정일자를 받습니다. 전입과 점유를 마친 다음 날 0시부터 대항력이 생깁니다.','잔금 전 등기부를 다시 열람해 새로운 근저당이나 압류가 없는지 확인합니다.']]],
+  faq:[['등기부는 언제 떼어 봐야 하나요?','계약 직전, 그리고 잔금 당일에 다시 확인하는 것이 좋습니다.'],['채권최고액이 있으면 계약하면 안 되나요?','근저당 자체보다 "채권최고액 + 내 보증금"이 집값에 비해 얼마나 되는지가 중요합니다. 중개사와 함께 비율을 계산해 보세요.'],['보증보험은 꼭 들어야 하나요?','의무는 아니지만 보증금을 지키는 가장 확실한 방법 중 하나입니다.']]},
+ wolse:{label:'월세 계약할 때 놓치기 쉬운 것',kw:'월세 계약 주의사항',desc:'관리비 포함 항목·원상복구·주택임대차 신고',
+  intro:['월세는 보증금이 작아 확인을 소홀히 하기 쉽지만, 관리비와 퇴실 조건에서 다툼이 자주 생깁니다.','월세 계약 전후로 꼭 챙겨야 할 것들을 정리해 드립니다.'],
+  secs:[['1. 관리비에 무엇이 포함되는지',['같은 "관리비 7만원"이라도 수도·인터넷·청소비 포함 여부에 따라 실제 부담이 크게 달라집니다.','계약서 특약에 포함 항목과 별도 항목을 적어 두면 나중에 오해가 없습니다.']],
+   ['2. 옵션과 현재 상태를 사진으로',['에어컨·세탁기 같은 옵션은 작동 여부를 입주 전에 확인하고, 벽지·바닥 상태는 사진으로 남겨 두세요.','퇴실할 때 원상복구 범위를 두고 다툼이 생기면 입주 당시 사진이 가장 좋은 근거가 됩니다.']],
+   ['3. 전입신고와 확정일자',['월세도 보증금이 있다면 전입신고와 확정일자로 보증금을 지키는 것이 기본입니다.','전입신고는 주민센터나 정부24에서 할 수 있습니다.']],
+   ['4. 주택임대차 신고',['일정 금액을 넘는 임대차 계약(예: 보증금 6천만원 초과 또는 월세 30만원 초과, 대상 지역)은 계약일로부터 30일 이내에 신고해야 합니다.','신고하면 확정일자가 함께 부여됩니다. 신고 대상과 과태료 기준은 바뀔 수 있어 최신 안내를 확인하세요.']],
+   ['5. 중도 퇴실 조건',['계약 기간 중 나가야 할 때 새 세입자를 구하는 비용(중개보수)을 누가 낼지 특약으로 정해 두면 좋습니다.']]],
+  faq:[['월세도 확정일자가 필요한가요?','보증금이 있다면 받아 두는 것이 안전합니다.'],['관리비는 협의가 되나요?','건물마다 다르지만 포함 항목을 명확히 하는 것만으로도 분쟁을 줄일 수 있습니다.'],['임대차 신고는 누가 하나요?','임대인과 임차인이 공동으로 하되, 한쪽이 계약서를 제출하면 공동 신고로 봅니다.']]},
+ deungi:{label:'등기부등본 3분 만에 읽는 법',kw:'등기부등본 보는법',desc:'표제부·갑구·을구에서 볼 곳만',
+  intro:['등기부등본은 집의 "이력서"입니다. 처음 보면 복잡하지만 볼 곳은 정해져 있습니다.','계약 전 꼭 떼어 보라는 등기부등본, 어디를 봐야 하는지 짚어 드립니다.'],
+  secs:[['열람하는 곳',['대법원 인터넷등기소에서 주소로 검색해 열람할 수 있습니다. "말소사항 포함"으로 보면 지워진 기록까지 볼 수 있어 이력을 파악하기 좋습니다.']],
+   ['표제부 — 이 집이 맞는지',['주소, 건물 구조, 면적이 나옵니다. 집합건물(아파트·다세대)은 동·호수와 전용면적이 계약하려는 집과 같은지 확인합니다.']],
+   ['갑구 — 소유자와 위험 신호',['소유권에 관한 기록입니다. 마지막 소유자가 계약 상대방과 같은지 확인합니다.','압류, 가압류, 가처분, 경매개시결정, 신탁 등기가 보이면 계약 전에 반드시 중개사와 상의하세요. 신탁된 집은 신탁회사의 동의가 필요합니다.']],
+   ['을구 — 빚(근저당·전세권)',['근저당권의 채권최고액, 전세권 등이 나옵니다. 아무 기록이 없거나 "말소" 처리돼 있으면 해당 빚이 정리된 것입니다.','채권최고액은 실제 대출금보다 크게 잡히는 것이 일반적이라, 보수적으로 이 금액을 기준으로 계산합니다.']],
+   ['언제 다시 볼까',['등기부는 열람 시점의 기록입니다. 계약일과 잔금일에 다시 열람해 변동이 없는지 확인합니다.']]],
+  faq:[['열람과 발급의 차이는?','열람은 확인용, 발급은 제출용 증명서입니다. 계약 전 확인은 열람으로 충분합니다.'],['다가구도 등기부만 보면 되나요?','다가구는 다른 호실 보증금이 등기부에 나오지 않아 확정일자 부여현황 등을 함께 확인해야 합니다.'],['신탁 등기가 있으면?','신탁원부를 확인하고 신탁회사 동의 여부를 따져야 합니다. 꼭 전문가와 상의하세요.']]},
+ fee:{label:'중개보수 계산법 (주택)',kw:'부동산 중개보수 계산',desc:'거래금액별 상한요율 · 월세 환산',
+  intro:['"복비가 얼마예요?"는 상담에서 가장 많이 듣는 질문 중 하나입니다.','중개보수는 정해진 상한 안에서 중개사와 협의해 정합니다. 계산하는 방법을 정리했습니다.'],
+  secs:[['기본 계산',['중개보수 = 거래금액 × 상한요율 (한도액이 있으면 한도액 이내). 상한요율 안에서 협의해 정하며, 부가가치세는 별도입니다.']],
+   ['주택 매매 상한요율 (서울 기준)',['· 5천만원 미만: 0.6% (한도 25만원)','· 5천만원~2억원 미만: 0.5% (한도 80만원)','· 2억원~9억원 미만: 0.4%','· 9억원~12억원 미만: 0.5%','· 12억원~15억원 미만: 0.6%','· 15억원 이상: 0.7%']],
+   ['주택 임대차 상한요율 (서울 기준)',['· 5천만원 미만: 0.5% (한도 20만원)','· 5천만원~1억원 미만: 0.4% (한도 30만원)','· 1억원~6억원 미만: 0.3%','· 6억원~12억원 미만: 0.4%','· 12억원~15억원 미만: 0.5%','· 15억원 이상: 0.6%']],
+   ['월세는 이렇게 환산',['월세의 거래금액 = 보증금 + (월세 × 100). 이렇게 계산한 금액이 5천만원 미만이면 보증금 + (월세 × 70)으로 다시 계산합니다.','예) 보증금 1,000만원, 월세 50만원 → 1,000만 + (50만 × 100) = 6,000만원. 5천만원 이상이므로 그대로 6,000만원에 0.4%를 적용하면 24만원입니다(한도 30만원 이내, 부가세 별도).']],
+   ['꼭 알아 둘 점',['요율은 시·도 조례로 정하므로 지역마다 다를 수 있습니다(위 표는 2021년 10월 개정 서울시 조례 기준).','오피스텔·상가·토지는 주택과 요율이 다릅니다.']]],
+  faq:[['중개보수는 언제 내나요?','보통 잔금일에 거래가 완료될 때 지급합니다.'],['상한요율을 꼭 다 내야 하나요?','상한 안에서 협의하는 금액입니다. 계약 전에 미리 이야기하세요.'],['부가세는 왜 따로인가요?','일반과세자인 사무소는 부가세가 별도로 붙습니다.']]},
+ daehang:{label:'전입신고·확정일자·대항력 한 번에 정리',kw:'확정일자 대항력',desc:'헷갈리는 세 가지 차이',
+  intro:['"전입신고 했으니 괜찮겠죠?" — 반은 맞고 반은 틀립니다.','보증금을 지키는 두 가지 힘, 대항력과 우선변제권의 차이를 쉽게 정리했습니다.'],
+  secs:[['대항력 = 전입신고 + 실제 거주',['집이 팔리거나 주인이 바뀌어도 계약 기간 동안 계속 살 수 있고, 새 주인에게 보증금을 돌려달라고 할 수 있는 힘입니다.','전입신고와 점유(이사)를 마친 다음 날 0시부터 생깁니다.']],
+   ['우선변제권 = 대항력 + 확정일자',['집이 경매로 넘어가도 순서에 따라 보증금을 먼저 배당받을 수 있는 힘입니다.','확정일자는 주민센터, 정부24, 또는 주택임대차 신고로 받을 수 있습니다.']],
+   ['순서가 중요한 이유',['내 대항력이 생기는 시점(다음 날 0시)보다 먼저 등기된 근저당이 있으면 그 은행이 먼저입니다.','그래서 잔금일에 집주인이 새로 대출을 받지 않도록 특약을 넣고, 잔금 직전 등기부를 다시 확인합니다.']],
+   ['이사 나갈 때 주의',['보증금을 다 돌려받기 전에 전입을 옮기면 대항력이 사라질 수 있습니다. 부득이하면 임차권등기명령을 먼저 신청하세요.']]],
+  faq:[['확정일자는 언제 받나요?','계약서를 쓴 뒤 바로 받아도 되고, 늦어도 입주일에는 받아 두세요.'],['전입신고만 하면 경매 때 보증금을 받나요?','배당을 받으려면 확정일자까지 있어야 합니다.'],['가족만 전입해도 되나요?','가족이 전입·거주해도 대항력이 인정되는 경우가 많지만, 상황에 따라 다르니 상담받으세요.']]},
+ visit:{label:'집 보러 갈 때 체크리스트 10',kw:'집 보러 갈때 체크리스트',desc:'수압·곰팡이·소음 등 현장 확인',
+  intro:['사진으로 본 집과 실제 집은 다를 때가 많습니다.','집 보러 가는 날 10분만 투자하면 살면서 후회할 일을 크게 줄일 수 있습니다.'],
+  secs:[['물과 습기',['· 수압: 세면대·샤워기를 동시에 틀어 보기','· 배수: 물을 틀어 놓고 잘 빠지는지','· 곰팡이: 창틀·붙박이장 뒤·욕실 천장','· 누수 자국: 천장 얼룩, 벽지 들뜸']],
+   ['빛과 소리',['· 채광: 낮 시간에 방문해 해가 드는 방향 확인','· 소음: 큰길·학교·식당과의 거리, 창문을 닫았을 때 소리','· 층간: 위층 생활 소음이 들리는지']],
+   ['생활 조건',['· 관리비 포함 항목과 평균 금액','· 주차 가능 대수와 방식','· 쓰레기 배출 장소와 요일','· 휴대폰 신호와 인터넷 설치 가능 여부']],
+   ['서류도 함께',['마음에 드는 집이라면 그 자리에서 등기부등본과 건축물대장 확인을 중개사에게 요청하세요.']]],
+  faq:[['몇 번 보러 가는 게 좋나요?','가능하면 낮과 저녁 두 번 보면 채광과 소음을 모두 확인할 수 있습니다.'],['사진 찍어도 되나요?','세입자가 사는 집은 동의를 받고 찍으세요.'],['체크리스트를 다 통과해야 하나요?','완벽한 집은 드뭅니다. 나에게 중요한 3가지를 먼저 정해 두세요.']]},
+ renew:{label:'계약갱신청구권 쉽게 정리',kw:'계약갱신청구권',desc:'1회·2년·5% 이내, 행사 시기',
+  intro:['전세·월세 만기가 다가오면 "더 살 수 있나요? 얼마나 올릴 수 있나요?"를 많이 물으십니다.','주택임대차보호법의 계약갱신청구권을 핵심만 정리했습니다.'],
+  secs:[['무엇인가요',['임차인이 한 번 요구하면 2년 더 살 수 있는 권리입니다. 한 번만 쓸 수 있습니다.']],
+   ['언제 말해야 하나요',['계약 만료 6개월 전부터 2개월 전까지 임대인에게 알려야 합니다. 문자나 내용증명처럼 기록이 남는 방법이 좋습니다.']],
+   ['보증금·월세는 얼마까지',['갱신할 때 증액은 기존 금액의 5% 이내입니다. 지자체 조례로 더 낮게 정할 수 있습니다.']],
+   ['임대인이 거절할 수 있는 경우',['임대인이나 직계가족이 직접 들어와 살려는 경우, 월세를 2기 이상 연체한 경우 등 법에서 정한 사유가 있을 때입니다.']],
+   ['갱신 후 중간에 나가려면',['갱신된 계약에서는 임차인이 언제든 해지를 통보할 수 있고, 통보 후 3개월이 지나면 효력이 생깁니다.']]],
+  faq:[['묵시적 갱신과 다른가요?','네. 아무도 말하지 않아 자동 연장되는 것은 묵시적 갱신이고, 갱신청구권은 임차인이 요구해서 쓰는 권리입니다.'],['5%는 꼭 올려야 하나요?','5%는 상한입니다. 동결이나 더 낮은 인상도 가능합니다.'],['집주인이 바뀌면?','새 집주인에게도 행사할 수 있습니다.']]}
+};
+
+/* ---------- 상태 ---------- */
+let st=LS.get('bl.draft',null)||{kind:'listing',src:'dabang',listingId:null,manual:{},area:{},cs:{},topic:'jeonse',tone:'friendly',len:'normal',kw:'',kw2:'',seed:1,out:null};
+let cfg=LS.get('bl.cfg',{goal:3,hours:'',blogId:'',wm:true});
+let hist=LS.get('bl.history',[]);
+let photos=[]; // {blob,url}
+const saveDraft=()=>LS.set('bl.draft',st), saveCfg=()=>LS.set('bl.cfg',cfg), saveHist=()=>LS.set('bl.history',hist);
+const listings=()=>LS.get('d1c.listings',[]);
+
+/* ---------- 1. 글 종류 ---------- */
+const KHINT={listing:'— 매물 정보 + 직접 본 장점',area:'— 아는 만큼만 채우면 빈 칸은 빠져요',tip:'— 주제 하나 고르면 끝',case:'— 개인정보는 빼고'};
+function renderKind(){$$('#kinds button').forEach(b=>b.classList.toggle('on',b.dataset.k===st.kind));$$('[data-kind]').forEach(d=>d.classList.toggle('hide',d.dataset.kind!==st.kind));$('#kindHint').textContent=KHINT[st.kind];renderKwSug()}
+$$('#kinds button').forEach(b=>b.onclick=()=>{st.kind=b.dataset.k;st.kw='';$('#kw').value='';saveDraft();renderKind();if(st.kind==='listing'&&st.listingId)loadListingPhotos(st.listingId)});
+
+/* ---------- 2. 재료 ---------- */
+function renderSrc(){$$('#srcSeg button').forEach(b=>b.classList.toggle('on',b.dataset.s===st.src));$('#srcDabang').classList.toggle('hide',st.src!=='dabang');$('#srcManual').classList.toggle('hide',st.src!=='manual');if(st.src==='dabang')renderDbList()}
+$$('#srcSeg button').forEach(b=>b.onclick=()=>{st.src=b.dataset.s;saveDraft();renderSrc();renderKwSug()});
+function renderDbList(){const L=listings();
+  if(!L.length){$('#dbList').innerHTML='<div class="note y">② 다방 매물장이 비어 있어요. ② 탭에서 매물을 저장하거나, 위에서 <b>직접 입력</b>을 고르세요.</div>';return}
+  const posted=new Set(hist.filter(h=>h.listingId).map(h=>h.listingId));
+  $('#dbList').innerHTML=L.map(x=>{const i=fromDabang(x.data||{});const s=x.status==='거래완료'?'<span class="chip r">거래완료</span>':x.status==='보류'?'<span class="chip gr">보류</span>':'<span class="chip g">광고중</span>';
+    return`<button class="lst ${st.listingId===x.id?'on':''}" data-id="${esc(x.id)}"><div class="th" style="${x.thumb?'background-image:url('+x.thumb+')':''}"></div><div><div>${s} ${posted.has(x.id)?'<span class="chip">블로그 글 있음</span>':''}</div><div class="t1">${esc([i.dong,i.type,i.priceShort].filter(Boolean).join(' · '))}</div><div class="t2">${esc(i.area)}</div></div></button>`}).join('');
+  $$('#dbList .lst').forEach(b=>b.onclick=()=>pickListing(b.dataset.id))}
+async function pickListing(id){const x=listings().find(l=>l.id===id);if(!x)return;
+  if(x.status==='거래완료'){toast('거래완료된 매물은 광고 글을 쓸 수 없어요');return}
+  st.listingId=id;const i=fromDabang(x.data||{});if(!$('#lPoints').value.trim()&&i.points.length){$('#lPoints').value=i.points.join('\n');st.points=$('#lPoints').value}
+  st.kw='';$('#kw').value='';saveDraft();renderDbList();renderKwSug();await loadListingPhotos(id);toast('매물을 불러왔어요 · 사진 '+photos.length+'장')}
+async function loadListingPhotos(id){const bl=(await d1cGet(id))||[];if(bl.length){await setPhotos(bl);await blPut('photos',bl)}}
+$$('[data-m]').forEach(el=>{const v=(st.manual||{})[el.dataset.m];if(v!=null)el.value=v;el.oninput=el.onchange=()=>{st.manual[el.dataset.m]=el.value;saveDraft();renderKwSug()}});
+$$('[data-a]').forEach(el=>{el.value=(st.area||{})[el.dataset.a]||'';el.oninput=()=>{st.area[el.dataset.a]=el.value;saveDraft();renderKwSug()}});
+$$('[data-c]').forEach(el=>{el.value=(st.cs||{})[el.dataset.c]||'';el.oninput=()=>{st.cs[el.dataset.c]=el.value;saveDraft();renderKwSug()}});
+$('#lPoints').value=st.points||'';$('#lPoints').oninput=e=>{st.points=e.target.value;saveDraft()};
+$('#lArea').value=st.lArea||'';$('#lArea').oninput=e=>{st.lArea=e.target.value;saveDraft()};
+$('#aWithList').checked=!!st.aWithList;$('#aWithList').onchange=e=>{st.aWithList=e.target.checked;saveDraft()};
+$('#cConsent').checked=!!st.cConsent;$('#cConsent').onchange=e=>{st.cConsent=e.target.checked;saveDraft();if(st.out)runChecks()};
+$('#tTopic').innerHTML=Object.entries(TIPS).map(([k,t])=>`<option value="${k}">${esc(t.label)}</option>`).join('');
+$('#tTopic').value=st.topic||'jeonse';const tDesc=()=>{$('#tDesc').textContent=TIPS[$('#tTopic').value].desc};tDesc();
+$('#tTopic').onchange=e=>{st.topic=e.target.value;st.kw='';$('#kw').value='';tDesc();saveDraft();renderKwSug()};
+$('#tDong').value=st.tDong||'';$('#tDong').oninput=e=>{st.tDong=e.target.value;saveDraft();renderKwSug()};
+$('#tMemo').value=st.tMemo||'';$('#tMemo').oninput=e=>{st.tMemo=e.target.value;saveDraft()};
+
+/* 현재 매물 정보 */
+function curListing(){if(st.src==='dabang'){const x=listings().find(l=>l.id===st.listingId);return x?Object.assign(fromDabang(x.data||{}),{id:x.id}):null}
+  const m=fromManual(st.manual);return(m.dong||m.type||m.price)?m:null}
+function userPoints(){return($('#lPoints').value||'').split('\n').map(s=>s.replace(/^\s*(?:[-•·]|\d+[.)])\s*/,'').trim()).filter(Boolean)}
+
+/* ---------- 4. 키워드 ---------- */
+function kwSuggest(){const s=[];
+  if(st.kind==='listing'){const i=curListing();if(i){const ty=(i.type||'').replace(/\+$/,'');s.push([i.dong,ty,i.deal].filter(Boolean).join(' '),[i.gu,ty,i.deal].filter(Boolean).join(' '),[i.dong,ty].filter(Boolean).join(' '),[i.dong,'부동산'].filter(Boolean).join(' '))}}
+  else if(st.kind==='area'){const a=st.area||{};if(a.dong)s.push(a.dong+' 살기',a.dong+' 동네 정보',a.dong+' 부동산',(a.gu?a.gu+' ':'')+a.dong)}
+  else if(st.kind==='tip'){const t=TIPS[st.topic];s.push(t.kw);const d=(st.tDong||'').trim().split(/\s+/).pop();if(d)s.push(d+' '+t.kw.split(' ')[0],d+' 부동산')}
+  else if(st.kind==='case'){const w=(st.cs||{}).where||'';if(w)s.push(w,w+' 후기',w.split(/\s+/)[0]+' 부동산 상담')}
+  return[...new Set(s.map(x=>x.trim()).filter(x=>x&&x.split(' ').length>1))]}
+function renderKwSug(){const s=kwSuggest();if(!st.kw&&s[0]){st.kw=s[0];$('#kw').value=s[0]}
+  $('#kwSug').innerHTML=s.length?'<span class="hint" style="align-self:center">추천:</span>'+s.map(k=>`<button data-kw="${esc(k)}">${esc(k)}</button>`).join(''):'';
+  $$('#kwSug button').forEach(b=>b.onclick=()=>{$('#kw').value=b.dataset.kw;st.kw=b.dataset.kw;saveDraft()})}
+$('#kw').value=st.kw||'';$('#kw').oninput=e=>{st.kw=e.target.value.trim();saveDraft()};
+$('#kw2').value=st.kw2||'';$('#kw2').oninput=e=>{st.kw2=e.target.value;saveDraft()};
+function segBind(id,key){const s=$(id);s.querySelectorAll('button').forEach(b=>{b.classList.toggle('on',b.dataset.v===st[key]);b.onclick=()=>{st[key]=b.dataset.v;s.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));saveDraft()}})}
+segBind('#toneSeg','tone');segBind('#lenSeg','len');
+
+/* ---------- 5. 사무소 ---------- */
+function fillOffice(){$$('[data-o]').forEach(el=>el.value=office[el.dataset.o]||'');offWarn()}
+function offOk(){return['name','ceo','regno','tel','addr'].every(k=>(office[k]||'').trim())}
+function offWarn(){$('#offWarn').classList.toggle('hide',offOk()||st.kind!=='listing')}
+$$('[data-o]').forEach(el=>el.oninput=()=>{office=LS.get('d1c.office',{});office[el.dataset.o]=el.value.trim();LS.set('d1c.office',office);offWarn();if(st.out){st.out.foot=makeFoot();renderOut()}});
+$('#hours').value=cfg.hours||'';$('#hours').oninput=e=>{cfg.hours=e.target.value;saveCfg()};
+$('#blogId').value=cfg.blogId||'';$('#blogId').oninput=e=>{cfg.blogId=e.target.value.trim();saveCfg();setWriteLink()};
+function setWriteLink(){$('#openWrite').href=cfg.blogId?'https://blog.naver.com/'+encodeURIComponent(cfg.blogId)+'/postwrite':'https://blog.naver.com/GoBlogWrite.naver'}
+setWriteLink();
+function officeLine(){const o=office;return'[중개사무소] '+[o.name,'대표 '+(o.ceo||''),'등록번호 '+(o.regno||''),o.addr,'☎ '+(o.tel||'')].filter(Boolean).join(' · ')+(o.agent?'\n소속공인중개사 '+o.agent:'')}
+
+/* ---------- 3. 사진 ---------- */
+async function setPhotos(blobs){photos.forEach(p=>URL.revokeObjectURL(p.url));photos=(blobs||[]).map(b=>({blob:b,url:URL.createObjectURL(b)}));renderPhotos()}
+function renderPhotos(){$('#phCnt').textContent=photos.length+'장';
+  $('#photos').innerHTML=photos.map((p,i)=>`<div style="background-image:url(${p.url})"><b>${i+1}</b><button data-del="${i}" aria-label="빼기">×</button>${i?`<button class="mv" data-up="${i}">◀</button>`:''}</div>`).join('');
+  $$('#photos [data-del]').forEach(b=>b.onclick=async()=>{const i=+b.dataset.del;URL.revokeObjectURL(photos[i].url);photos.splice(i,1);await blPut('photos',photos.map(p=>p.blob));renderPhotos();if(st.out)renderOut()});
+  $$('#photos [data-up]').forEach(b=>b.onclick=async()=>{const i=+b.dataset.up;[photos[i-1],photos[i]]=[photos[i],photos[i-1]];await blPut('photos',photos.map(p=>p.blob));renderPhotos();if(st.out)renderOut()})}
+function loadImg(b){return new Promise(res=>{const im=new Image();im.onload=()=>res(im);im.onerror=()=>res(null);im.src=URL.createObjectURL(b)})}
+async function shrink(file,M=1600,q=.86){const im=await loadImg(file);if(!im)return null;const k=Math.min(1,M/Math.max(im.naturalWidth,im.naturalHeight));
+  const c=document.createElement('canvas');c.width=Math.round(im.naturalWidth*k);c.height=Math.round(im.naturalHeight*k);c.getContext('2d').drawImage(im,0,0,c.width,c.height);
+  return new Promise(r=>c.toBlob(b=>r(b),'image/jpeg',q))}
+$('#phIn').onchange=async e=>{const fs=[...e.target.files].slice(0,Math.max(0,20-photos.length));e.target.value='';
+  const add=(await Promise.all(fs.map(f=>shrink(f)))).filter(Boolean);await setPhotos(photos.map(p=>p.blob).concat(add));await blPut('photos',photos.map(p=>p.blob));toast(add.length+'장 추가');if(st.out)renderOut()};
+$('#wm').checked=cfg.wm!==false;$('#wm').onchange=e=>{cfg.wm=e.target.checked;saveCfg()};
+
+/* ---------- 글 만들기 (템플릿) ---------- */
+function rng(seed){let a=seed>>>0||1;return()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+const ieyo=w=>{const c=String(w||'').trim().slice(-1).charCodeAt(0);return w+((c>=0xAC00&&c<=0xD7A3&&!((c-0xAC00)%28))?'예요':'이에요')};
+const josa=(w,a,b)=>{const c=String(w||'').trim().slice(-1).charCodeAt(0);if(!(c>=0xAC00&&c<=0xD7A3))return w+a+'('+b+')';return w+(((c-0xAC00)%28)?a:b)};
+function makeFoot(){const k=st.kind;let f='';
+  if(k==='listing'){const i=curListing();if(i)f='[중개대상물 표시사항]\n'+i.block+'\n'+officeLine()}
+  else if(k==='area'&&st.aWithList){const L=areaListings();f=L.length?L.map((x,n)=>'[중개대상물 표시사항 '+(n+1)+']\n'+x.block).join('\n\n')+'\n'+officeLine():officeLine()}
+  else f=officeLine();
+  if(k==='tip')f+='\n※ 이 글은 '+todayS().replace(/-/g,'.')+' 작성 기준 일반 정보입니다. 법령·조례·기관 기준은 바뀔 수 있으니 계약 전 최신 기준을 확인하세요.';
+  if(k==='case')f+='\n※ 실제 상담을 바탕으로 개인정보를 빼고 재구성한 사례입니다. 같은 결과를 약속하지 않습니다.';
+  return f}
+function areaListings(){const d=(st.area||{}).dong;if(!d)return[];return listings().filter(x=>x.status==='광고중').map(x=>Object.assign(fromDabang(x.data||{}),{id:x.id})).filter(i=>i.dong===d).slice(0,3)}
+function closing(T,R){const o=office,h=cfg.hours;const L=[];
+  L.push(T.f?R(['궁금한 점은 언제든 편하게 물어봐 주세요.','글로 다 담지 못한 이야기는 상담에서 자세히 들려드릴게요.','방문 전에 연락 주시면 기다리고 있을게요.']):R(['문의 주시면 자세히 안내해 드리겠습니다.','방문 전 연락 주시면 일정에 맞춰 준비해 두겠습니다.','상담은 언제든 편하게 요청해 주십시오.']));
+  L.push('· 사무소: '+(o.name||'✏ 사무소 이름'));L.push('· 위치: '+(o.addr||'✏ 사무소 주소'));L.push('· 전화: '+(o.tel||'✏ 사무소 전화'));if(h)L.push('· 상담 시간: '+h);
+  return L.join('\n')}
+function photoMark(n,desc){return n<=Math.max(photos.length,st.kind==='listing'?6:3)?'[사진 '+n+': '+desc+']':''}
+
+function priceTalk(i,f){const L=[];
+  const m=String(i.price||'').match(/보증금\s*([\d억,\s]+만?원?)\s*\/\s*월\s*([\d,.]+)만/);
+  const mg=String(i.mgmt||'').match(/월\s*([\d,.]+)만원\s*\(정액\)/);
+  if(m){const rent=parseFloat(m[2].replace(/,/g,''));const tot=rent+(mg?parseFloat(mg[1].replace(/,/g,'')):0);
+    L.push(f?`보증금 ${m[1].trim()}에 월세 ${m[2]}만원 조건이에요.`:`보증금 ${m[1].trim()}, 월세 ${m[2]}만원 조건입니다.`);
+    if(mg)L.push(f?`정액 관리비까지 더하면 매달 나가는 고정비는 약 ${Math.round(tot*10)/10}만원이에요. (전기·가스 등 사용료는 별도일 수 있어요)`:`정액 관리비를 포함한 월 고정 지출은 약 ${Math.round(tot*10)/10}만원입니다(사용료 별도 가능).`);
+    L.push(f?`1년으로 계산하면 월세만 약 ${Math.round(rent*12).toLocaleString()}만원이라, 다른 집과 비교하실 때 기준으로 삼아 보세요.`:`연간 월세 합계는 약 ${Math.round(rent*12).toLocaleString()}만원으로, 비교 시 기준으로 활용하시기 바랍니다.`)}
+  else if(i.price)L.push(f?`가격은 ${ieyo(i.price)}.`:`가격은 ${i.price}입니다.`);
+  if(i.area&&i.areaPy)L.push(f?`면적은 ${i.area}로, 흔히 말하는 ${i.areaPy} 정도예요. 평수는 전용면적 기준이라 실제 쓰는 공간이에요.`:`면적은 ${i.area}이며, 평수는 실사용 공간인 전용면적 기준입니다.`);
+  if(i.approve)L.push(f?`사용승인일은 ${i.approve}이에요(건축물대장 기준).`:`사용승인일은 ${i.approve}입니다(건축물대장 기준).`);
+  return L}
+function genListing(T,R){const i=curListing();if(!i)throw new Error('매물을 고르거나 직접 입력해 주세요');
+  const kw=st.kw||[i.dong,i.type,i.deal].join(' '),pts=userPoints(),f=T.f;let ph=1;const P=d=>photoMark(ph++,d);
+  const head=[i.dong,i.type].filter(Boolean).join(' ');const o=[];
+  o.push(f?R([`안녕하세요, ${office.name||'✏ 사무소 이름'}입니다 😊\n오늘은 ${josa(kw,'을','를')} 찾는 분들께 직접 보고 온 매물 하나를 소개해 드릴게요.`,`안녕하세요! ${i.dong||'우리 동네'}에서 중개하는 ${office.name||'✏ 사무소 이름'}입니다.\n${kw}, 요즘 문의가 많아서 직접 확인한 집을 정리해 봤어요.`,`${josa(kw,'을','를')} 알아보고 계신가요?\n${office.name||'✏ 사무소 이름'}에서 발로 뛰어 확인한 매물을 보여드릴게요.`])
+    :R([`안녕하십니까. ${i.dong||''} 지역 중개를 맡고 있는 ${office.name||'✏ 사무소 이름'}입니다.\n${josa(kw,'을','를')} 찾는 분들께 현장 확인을 마친 매물을 정리해 드립니다.`,`${office.name||'✏ 사무소 이름'}입니다.\n이번 글에서는 ${kw} 매물 한 곳의 조건과 특징을 객관적으로 정리했습니다.`]));
+  o.push('');o.push(P('대표 사진 (외관 또는 거실)'));o.push('');
+  o.push('■ '+R([kw+' 한눈에 보기','매물 정보 요약',head+' 기본 정보']));
+  [['가격',i.price],['면적',i.area],['층',i.floor],['방·욕실',i.rooms],['방향',i.dir],['입주',i.move],['관리비',i.mgmt],['주차',i.park]].forEach(([k,v])=>{if(v)o.push('· '+k+': '+v)});
+  o.push('');
+  o.push('■ '+R(f?['직접 보고 느낀 장점','이 집, 이런 점이 좋았어요','현장에서 확인한 포인트']:['현장 확인 결과 장점','주요 특징','이 매물의 강점']));
+  if(pts.length){const fol=f?['현장에서 직접 확인한 부분이라 자신 있게 말씀드려요.','사진으로는 다 담기지 않으니 꼭 직접 보세요.','집 보러 오시면 이 부분부터 보여드릴게요.','상담하면서 손님들이 특히 반응이 좋았던 부분이에요.']:['현장 방문 시 직접 확인한 사항입니다.','방문 시 우선 확인하실 수 있도록 안내해 드립니다.','사진과 함께 현장에서 확인하시길 권합니다.'];
+    pts.forEach((p,n)=>{o.push((n+1)+'. '+p);o.push(fol[(n+st.seed)%fol.length]);const m=P(p);if(m)o.push(m);o.push('')})}
+  else{o.push('✏ 직접 확인한 장점을 2~3가지 적어 주세요. (2번 칸 "직접 확인한 장점")');o.push('')}
+  if(!i.land){const inner=[];if(i.rooms)inner.push(i.rooms+' 구조');if(i.dir)inner.push(i.dir+' 방향');
+    const opt=i.options.length?(f?`옵션으로 ${i.options.join(', ')}까지 갖춰져 있어요.`:`옵션: ${i.options.join(', ')}.`):'';
+    if(inner.length||opt){o.push('■ '+R(['내부 구조와 옵션','실내 살펴보기','구조·옵션']));
+      if(inner.length)o.push(f?ieyo(inner.join(', '))+'.':`${inner.join(', ')}입니다.`);if(opt)o.push(opt);o.push('');
+      const m1=P('방·주방'),m2=P('욕실');if(m1)o.push(m1);if(m2)o.push(m2);if(m1||m2)o.push('')}}
+  const pr=priceTalk(i,f);if(pr.length){o.push('■ '+kw+' '+R(['가격 살펴보기','가격·면적 정리','비용 계산해 보기']));pr.forEach(x=>o.push(x));o.push('')}
+  if(i.mgmt||i.move||i.park){o.push('■ '+R(['관리비·입주 조건','계약 전 알아 둘 조건','비용과 입주 일정']));
+    if(i.mgmt)o.push(f?`관리비는 ${ieyo(i.mgmt)}. 포함 항목은 계약서 특약에도 적어 드려요.`:`관리비는 ${i.mgmt}입니다. 포함 항목은 계약서 특약에 명시합니다.`);
+    if(i.move)o.push(f?`입주는 ${ieyo(i.move)}.`:`입주 가능일은 ${i.move}입니다.`);
+    if(i.park)o.push(f?`주차는 ${ieyo(i.park)}.`:`주차는 ${i.park}입니다.`);o.push('')}
+  const who=[];const ty=i.type||'';if(/원룸|오피스텔/.test(ty))who.push('출퇴근·통학이 편한 1인 가구');if(/투룸/.test(ty))who.push('공간을 나눠 쓰고 싶은 1~2인 가구');if(/쓰리룸|아파트/.test(ty))who.push('방이 여럿 필요한 가족');if(/상가|사무실/.test(ty))who.push('이 동네에서 영업·사무 공간을 찾는 분');
+  who.push(`${i.dong||'이 동네'}에서 ${i.deal||''} 조건을 찾는 분`.replace(/\s+/g,' '));
+  o.push('■ '+R(f?['이런 분께 잘 맞아요','추천드리는 분']:['적합한 수요','추천 대상']));who.forEach(w=>o.push('- '+w));o.push('');
+  if(st.len==='long'){
+    const am=(st.lArea||$('#lArea').value||'').trim();
+    if(am){o.push('■ '+(i.dong||'동네')+' 생활 메모');am.split('\n').filter(Boolean).forEach(l=>o.push('- '+l.trim()));const m=P('동네 모습');if(m)o.push(m);o.push('')}
+    o.push('■ '+R(['계약 전 함께 확인하는 것','계약 전 체크리스트']));
+    ['등기부등본으로 소유자와 근저당 확인','건축물대장으로 용도·위반건축물 여부 확인','관리비 포함 항목과 옵션 상태를 계약서 특약에 기록',i.deal==='매매'?'잔금일·대출 일정과 취득 관련 비용 미리 계산':'잔금일에 전입신고와 확정일자'].forEach(x=>o.push('- '+x));
+    o.push(f?'계약 전에 이 부분들은 저희가 함께 확인해 드려요.':'위 항목은 계약 전 사무소에서 함께 확인해 드립니다.');o.push('')}
+  o.push('■ '+R(f?['계약은 이렇게 진행돼요','계약까지 순서']:['계약 진행 절차','계약 진행 순서']));
+  [f?'1. 방문 예약 후 집 보기 — 사진과 실제를 비교해 보세요':'1. 방문 예약 후 현장 확인','2. 등기부등본·건축물대장 확인 — 계약 전 함께 열람합니다',i.deal==='매매'?'3. 가계약금·계약금 일정 협의':'3. 가계약금 입금 후 계약일 협의','4. 계약서 작성 — 관리비 포함 항목·옵션·특약 기록',i.deal==='매매'?'5. 잔금·소유권 이전 등기':'5. 잔금·입주 후 전입신고와 확정일자'].forEach(x=>o.push(x));o.push('');
+  o.push('■ 자주 묻는 질문');
+  o.push('Q. 바로 집을 볼 수 있나요?');o.push(f?'A. 네, 연락 주시면 가능한 시간을 맞춰 드려요.':'A. 연락 주시면 방문 가능한 시간을 조율해 드립니다.');
+  if(i.mgmt){o.push('Q. 관리비에는 무엇이 포함되나요?');o.push('A. '+(f?ieyo(i.mgmt)+'.':i.mgmt+'입니다.'))}
+  if(i.move){o.push('Q. 입주 날짜 조정이 되나요?');o.push(f?'A. 지금은 '+ieyo(i.move)+'. 날짜 조정은 임대인과 협의해 볼게요.':'A. 현재 입주 가능일은 '+i.move+'입니다. 조정은 임대인과 협의가 필요합니다.')}
+  o.push('');
+  o.push('■ '+R([kw+' 상담 안내','방문·상담 안내','문의하기']));o.push(closing(T,R));
+  const titles=[`${kw} | ${pts[0]||i.priceShort}`,`${kw} ${i.priceShort}${i.areaPy?' · '+i.areaPy:''}`,`${head} ${i.deal} 직접 보고 왔어요 (${i.priceShort})`,`${kw} 찾는다면? ${pts[0]||i.area}`,`[${i.dong||head}] ${i.type} ${i.deal} ${i.priceShort}${pts[1]?' · '+pts[1]:''}`].map(t=>t.replace(/\s+/g,' ').trim()).map(t=>f?t:t.replace(' 직접 보고 왔어요',' 현장 확인'));
+  const ty2=(i.type||'').replace(/\+$/,'');
+  const tags=[kw,i.dong+ty2,i.dong+i.deal,i.dong+'부동산',i.gu&&i.gu+ty2,i.gu&&i.gu+'부동산',ty2+i.deal,i.dong+ty2+i.deal,i.dong+'매물',i.gu+i.deal,'부동산','공인중개사',office.name];
+  return{titles,body:o.join('\n'),tags}}
+
+function genArea(T,R){const a=st.area||{};if(!a.dong)throw new Error('동네 이름을 넣어 주세요');const f=T.f,kw=st.kw||a.dong+' 살기';let ph=1;const P=d=>photoMark(ph++,d);const o=[];
+  o.push(f?R([`안녕하세요, ${a.dong}에서 매일 손님들과 집을 보러 다니는 ${office.name||'✏ 사무소 이름'}입니다 😊\n오늘은 ${kw}에 대해 현장에서 느낀 그대로 이야기해 볼게요.`,`"${a.dong} 살기 어때요?" 상담하면서 정말 자주 듣는 질문이에요.\n${office.name||'✏ 사무소 이름'}이 직접 다니며 확인한 ${a.dong} 이야기를 정리했어요.`])
+    :R([`안녕하십니까. ${a.gu?a.gu+' ':''}${a.dong} 지역 중개를 맡고 있는 ${office.name||'✏ 사무소 이름'}입니다.\n이번 글에서는 ${kw}의 장단점을 교통·생활·학교 순으로 정리합니다.`]));
+  o.push('');o.push(P(a.dong+' 대표 풍경'));o.push('');
+  const sec=(h,txt,phd)=>{if(!(txt||'').trim())return;o.push('■ '+h);txt.split('\n').map(s=>s.trim()).filter(Boolean).forEach(s=>o.push(s.length<40&&txt.split('\n').filter(Boolean).length>1?'- '+s:s));const m=phd&&P(phd);if(m)o.push(m);o.push('')};
+  sec(a.dong+' 교통',a.trans,'역·버스정류장');sec('생활 편의 — 마트·시장·병원',a.life,'시장·상가');sec('학교·공원',a.school,'공원·산책로');sec(R(['동네 분위기와 주 수요층','어떤 분들이 많이 살까']),a.mood,'골목 분위기');
+  if((a.price||'').trim()){o.push('■ '+a.dong+' 시세 이야기');a.price.split('\n').filter(Boolean).forEach(s=>o.push(s.trim()));o.push(f?'정확한 실거래가는 국토교통부 실거래가 공개시스템에서 확인할 수 있고, 매물마다 조건이 달라 상담 때 자세히 비교해 드려요.':'정확한 실거래가는 국토교통부 실거래가 공개시스템 기준이며, 개별 매물은 조건에 따라 차이가 있습니다.');o.push('')}
+  const filled=['trans','life','school','mood','price'].filter(k=>(a[k]||'').trim()).length;if(!filled){o.push('✏ 교통·생활·학교·분위기 중 아는 내용을 2번 칸에 적어 주세요.');o.push('')}
+  o.push('■ '+R(f?[kw+', 이런 분께 추천해요','정리하면']:['정리','이런 분께 적합합니다']));
+  o.push(f?`${josa(a.dong,'은','는')} 위에서 말씀드린 생활 조건이 맞는 분께 만족도가 높은 동네예요. 집을 고를 때는 동네 분위기뿐 아니라 건물 상태와 권리관계까지 함께 보셔야 해요.`:`${josa(a.dong,'은','는')} 위 조건을 중시하는 수요에 적합한 지역입니다. 매물 선택 시에는 입지와 함께 건물 상태·권리관계를 반드시 확인하시기 바랍니다.`);o.push('');
+  if(st.aWithList){const L=areaListings();if(L.length){o.push('■ 지금 소개 가능한 '+a.dong+' 매물');L.forEach((x,n)=>{o.push((n+1)+'. '+[x.type,x.deal,x.priceShort,x.area].filter(Boolean).join(' · '));if(x.points[0])o.push('   '+x.points[0])});o.push('(각 매물의 표시사항은 글 맨 아래에 있습니다)');o.push('')}}
+  o.push('■ '+a.dong+R([' 집 구할 때 체크할 것',' 집 볼 때 꼭 확인할 것']));
+  [(f?'역·정류장까지는 지도 앱 말고 직접 걸어서 시간을 재 보세요':'역·정류장까지 실제 도보 시간을 확인하십시오'),(f?'낮과 저녁에 한 번씩 가 보면 골목 분위기와 소음을 알 수 있어요':'낮·저녁 시간대 방문으로 소음과 분위기를 확인하십시오'),'관리비 포함 항목과 주차 조건 확인','계약 전 등기부등본·건축물대장 확인'].forEach(x=>o.push('- '+x));
+  o.push(f?`${kw}, 이 네 가지만 챙겨도 후회할 일이 크게 줄어요.`:`${josa(kw,'을','를')} 검토하실 때 위 네 가지는 기본으로 확인하시기 바랍니다.`);o.push('');
+  {o.push('■ 자주 묻는 질문');o.push(`Q. ${a.dong}에서 집 구할 때 언제가 좋나요?`);o.push(f?'A. 이사 수요가 몰리는 시기에는 매물이 빨리 나가요. 원하는 입주일 1~2달 전부터 알아보시는 걸 권해요.':'A. 이사 수요가 몰리는 시기에는 회전이 빠르므로 입주 희망일 1~2개월 전부터 알아보시길 권합니다.');
+    o.push('Q. 동네만 보고 계약해도 될까요?');o.push(f?'A. 동네가 좋아도 집마다 등기부·건축물대장 상태가 달라요. 계약 전 서류 확인은 꼭 함께 해요.':'A. 입지와 별개로 등기부·건축물대장 확인은 필수입니다.');o.push('')}
+  o.push(f?`${kw} 고민 중이시면 동네 이야기부터 편하게 나눠요.`:`${kw} 관련 문의는 아래로 연락 주십시오.`);o.push('');
+  o.push('■ '+a.dong+' 집 구하기 상담');o.push(closing(T,R));
+  const titles=[`${kw} 어때요? 교통·생활·학교 현장 정리`,`${kw}, 중개사가 직접 다녀 본 장단점`,`${a.gu?a.gu+' ':''}${a.dong} 동네 정보 총정리 (${new Date().getFullYear()})`,`${kw} 고민 중이라면 꼭 보세요`,`${a.dong} 부동산이 알려 주는 ${kw} 이야기`];
+  const tags=[kw,a.dong,a.dong+'살기',a.dong+'부동산',a.dong+'동네정보',a.gu,a.gu&&a.gu+'부동산',a.gu&&a.gu+a.dong,a.dong+'원룸',a.dong+'전세',a.dong+'월세','동네소개','부동산',office.name];
+  return{titles,body:o.join('\n'),tags}}
+
+function genTip(T,R){const t=TIPS[st.topic],f=T.f,kw=st.kw||t.kw;const dong=(st.tDong||'').trim();const o=[];let ph=1;const P=d=>photoMark(ph++,d);
+  o.push((f?`안녕하세요, ${dong?dong+'에서 일하는 ':''}${office.name||'✏ 사무소 이름'}입니다 😊\n`:`안녕하십니까. ${dong?dong+' ':''}${office.name||'✏ 사무소 이름'}입니다.\n`)+R(t.intro)+(f?`\n오늘은 ${kw}, 핵심만 정리해 드릴게요.`:`\n이번 글에서는 ${kw}의 핵심을 정리합니다.`));
+  o.push('');o.push(P('주제 대표 이미지 (체크리스트·서류 사진 등)'));o.push('');
+  const secs=t.secs;o.push('■ '+kw+' 한눈에 요약');secs.forEach(([h])=>o.push('- '+h.replace(/^\d+\.\s*/,'')));o.push('');
+  secs.forEach(([h,L],n)=>{o.push('■ '+h);L.forEach(x=>o.push(x));if(n===1){const m=P('관련 서류·화면 캡처');if(m)o.push(m)}o.push('')});
+  if(st.tMemo&&st.tMemo.trim()){o.push('■ '+R(f?['현장에서 본 이야기','중개사 한마디']:['현장 사례','실무자 의견']));o.push(st.tMemo.trim());o.push('')}
+  o.push('■ 자주 묻는 질문');t.faq.forEach(([q,a])=>{o.push('Q. '+q);o.push('A. '+a)});o.push('');
+  o.push('■ '+R(f?['혼자 확인하기 어렵다면','상담 안내']:['상담 안내','문의']));o.push(f?`${kw}, 글로 보면 쉬워 보여도 실제 서류 앞에서는 헷갈리기 마련이에요. 계약 전에 함께 확인해 드릴게요.`:`${kw}는 실제 서류에서 판단이 갈리는 경우가 많습니다. 계약 전 함께 검토해 드립니다.`);o.push(closing(T,R));
+  const titles=[`${kw} 핵심만 정리 (중개사가 알려 드림)`,`${t.label}`,`${kw}, 이것만 알면 됩니다`,`${dong?dong.split(/\s+/).pop()+' 중개사가 정리한 ':''}${t.label}`,`${kw} 헷갈린다면? ${new Date().getFullYear()}년 기준 정리`];
+  const tags=[kw,...t.kw.split(' '),t.kw.replace(/\s+/g,''),'부동산상식','부동산꿀팁','공인중개사','내집마련','전세','월세',dong&&dong.split(/\s+/).pop()+'부동산',office.name];
+  return{titles,body:o.join('\n'),tags}}
+
+function genCase(T,R){const c=st.cs||{},f=T.f;const w=(c.where||'').trim();if(!c.sit&&!c.prob&&!c.act)throw new Error('상담 내용(상황·문제·한 일)을 적어 주세요');
+  const kw=st.kw||w||'부동산 상담 사례';const o=[];let ph=1;const P=d=>photoMark(ph++,d);
+  o.push(f?R([`안녕하세요, ${office.name||'✏ 사무소 이름'}입니다 😊\n오늘은 최근 ${c.who?c.who+' 고객님과 ':''}함께한 ${kw} 상담 이야기를 나눠 볼게요.`,`비슷한 고민을 하는 분들께 도움이 될 것 같아, ${kw} 상담 사례를 정리해 봤어요.`])
+    :`안녕하십니까. ${office.name||'✏ 사무소 이름'}입니다.\n최근 진행한 ${kw} 상담 사례를 익명으로 정리해 공유합니다.`);
+  o.push('');o.push(P('상담 분위기 또는 동네 사진 (고객 얼굴 제외)'));o.push('');
+  const sec=(h,txt)=>{if(!(txt||'').trim())return;o.push('■ '+h);txt.split('\n').filter(Boolean).forEach(s=>o.push(s.trim()));o.push('')};
+  sec(f?'어떤 상담이었냐면요':'상담 개요',(c.who?(f?`${c.who} 고객님이셨어요.\n`:`고객: ${c.who}\n`):'')+(c.sit||''));
+  sec(f?'걱정하셨던 부분':'핵심 쟁점',c.prob);sec(f?'이렇게 풀어 갔어요':'진행 과정',c.act);
+  const m=P('관련 서류(개인정보 가린 것)');if(m){o.push(m);o.push('')}
+  sec(f?'결과는요':'결과',c.res);
+  if((c.tip||'').trim()){o.push('■ '+(f?'비슷한 상황이라면 꼭 챙기세요':'비슷한 상황을 위한 체크포인트'));c.tip.split('\n').filter(Boolean).forEach(s=>o.push('- '+s.replace(/^[-•]\s*/,'').trim()));o.push('')}
+  o.push('■ '+(f?'상담은 이렇게 진행돼요':'상담 진행 방식'));
+  ['1. 상황 듣기 — 예산·입주 시기·걱정되는 점','2. 서류 확인 — 등기부등본·건축물대장 등 필요한 서류 열람','3. 대안 비교 — 조건이 맞는 다른 선택지까지 함께 검토','4. 계약과 그 이후 — 잔금·입주·신고까지 일정 정리'].forEach(x=>o.push(x));
+  o.push(f?`이번 ${kw} 상담도 이 순서대로 진행했어요.`:`이번 ${kw} 상담 역시 위 절차로 진행했습니다.`);o.push('');
+  o.push('■ '+R(['상담 안내',kw+' 상담 받기']));o.push(f?'상황은 사람마다 달라서 같은 답이 늘 맞지는 않아요. 비슷한 고민이 있다면 편하게 이야기 나눠요.':'개별 상황에 따라 결론이 달라질 수 있으니 상담을 통해 확인하시기 바랍니다.');o.push(closing(T,R));
+  const titles=[`${kw} 상담 후기 — ${(c.prob||c.sit||'').split('\n')[0].slice(0,22)}`,`${kw}, 이렇게 해결했어요`,`[상담 사례] ${kw}${c.who?' · '+c.who:''}`,`${kw} 고민이라면 이 사례 보세요`,`${(c.who||'고객')}의 ${kw} 이야기`];
+  const tags=[kw,kw.replace(/\s+/g,''),...w.split(/\s+/),w.split(/\s+/)[0]&&w.split(/\s+/)[0]+'부동산','부동산상담','상담후기','공인중개사','부동산',office.name];
+  return{titles,body:o.join('\n'),tags}}
+
+function cleanTags(a){const s=[],seen=new Set();(a||[]).forEach(t=>{t=String(t||'').replace(/^#/,'').replace(/\s+/g,'').replace(/[^\w가-힣]/g,'');if(t&&t.length<=20&&!seen.has(t)&&!/undefined|null/.test(t)){seen.add(t);s.push(t)}});
+  (st.kw2||'').split(',').map(x=>x.replace(/\s+/g,'')).filter(Boolean).forEach(t=>{if(!seen.has(t)){seen.add(t);s.splice(1,0,t)}});return s.slice(0,30)}
+function generate(reseed){
+  if(reseed)st.seed=(st.seed||1)+1;st.kw=$('#kw').value.trim();
+  const r=rng(st.seed*7919+st.kind.length);const R=a=>a[Math.floor(r()*a.length)];const T={f:st.tone==='friendly'};
+  try{const g={listing:genListing,area:genArea,tip:genTip,case:genCase}[st.kind](T,R);
+    g.titles=[...new Set(g.titles.map(t=>t.trim()).filter(Boolean))];st.out={titles:g.titles,ti:0,title:g.titles[0],body:g.body,tags:cleanTags(g.tags),foot:makeFoot(),by:'template',kind:st.kind,listingId:st.kind==='listing'?(curListing()||{}).id||null:null};
+    saveDraft();showOut();$('#genMsg').innerHTML='';
+    if(!reseed)$('#outCard').scrollIntoView({behavior:'smooth',block:'start'});toast(reseed?'다른 문장으로 바꿨어요':'글을 만들었어요 — ✏ 표시가 있으면 채워 주세요')}
+  catch(e){$('#genMsg').innerHTML='<div class="note r">'+esc(e.message)+'</div>'}}
+$('#btnGen').onclick=()=>generate(false);$('#btnRe').onclick=()=>generate(true);
+
+/* ---------- AI 다듬기 ---------- */
+function use(name){try{if(window.claude&&typeof window.claude.use==='function')return window.claude.use(name)}catch(e){}return Promise.resolve(null)}
+function aiPrompt(){const k=st.kind;const nP=Math.max(photos.length,3);let facts='';
+  if(k==='listing'){const i=curListing();facts=i?('[매물 사실]\n'+i.block+'\n[중개사가 직접 확인한 장점]\n'+userPoints().map(p=>'- '+p).join('\n')+((st.lArea||'').trim()?'\n[동네 메모]\n'+st.lArea:'')):''}
+  else if(k==='area'){const a=st.area||{};facts='[동네 사실 — 중개사 메모]\n'+Object.entries({동네:(a.gu||'')+' '+(a.dong||''),교통:a.trans,생활:a.life,학교공원:a.school,분위기:a.mood,시세:a.price}).filter(([x,v])=>(v||'').trim()).map(([x,v])=>x+': '+v).join('\n')}
+  else if(k==='tip'){const t=TIPS[st.topic];facts='[주제] '+t.label+'\n[참고 초안 — 이 사실 범위 안에서만]\n'+t.secs.map(([h,L])=>h+'\n'+L.join('\n')).join('\n\n')+(st.tMemo?'\n[사무소 경험]\n'+st.tMemo:'')}
+  else{const c=st.cs||{};facts='[상담 사례 — 익명]\n'+Object.entries({고객:c.who,동네매물:c.where,상황:c.sit,쟁점:c.prob,한일:c.act,결과:c.res,팁:c.tip}).filter(([x,v])=>(v||'').trim()).map(([x,v])=>x+': '+v).join('\n')}
+  return'당신은 한국 공인중개사의 네이버 블로그 글 작가입니다. 아래 사실만 근거로 블로그 글 1편을 씁니다.\n\n[규칙]\n'+
+  '1. 사실에 없는 내용(역 거리, 학군, 리모델링, 채광, 시세 숫자 등)을 만들지 마세요.\n2. 숫자·날짜·금액은 사실과 글자 하나 다르지 않게.\n'+
+  '3. 쓰지 말 것: 최저가, 최고, 유일, 100%, 무조건, 보장, 확정, 특가, 대박, 초급매, 마지막, 역대급, 완벽, 안전한 집, 실화. "급매·신축·역세권"은 근거가 있을 때만.\n'+
+  '4. 호수, 고객·임대인 실명, 전화번호 금지(사무소 정보·표시사항은 앱이 자동으로 붙임).\n'+
+  '5. 대표 키워드 "'+(st.kw||'')+'"를 제목 앞쪽에 1번, 본문에 자연스럽게 3~6번. 보조 키워드: '+(st.kw2||'없음')+'.\n'+
+  '6. 형식: 소제목은 "■ "로 시작(5~7개), 사진 자리는 "[사진 n: 무엇]"으로 '+nP+'곳, 요약 정보는 "· 항목: 내용" 줄, 질문은 "Q. "/"A. ".\n'+
+  '7. 길이: 공백 제외 '+(st.len==='long'?'2,000~2,600':'1,200~1,600')+'자. 말투: '+(st.tone==='friendly'?'친근한 ~해요체, 이모지는 문단당 최대 1개':'정중한 ~합니다체, 이모지 없음')+'.\n'+
+  '8. 마지막 소제목은 상담 안내(사무소 이름 "'+(office.name||'')+'"만 언급).\n\n'+facts+'\n\n'+
+  '아래 JSON 하나로만 답하세요:\n{"titles":["제목 후보 5개, 각 20~40자"],"body":"본문","tags":["태그 15개, # 없이"]}'}
+function applyAI(j){if(!j||!j.body)throw new Error('본문이 없어요');const titles=(Array.isArray(j.titles)?j.titles:[j.title]).filter(Boolean).map(String).slice(0,5);
+  st.out={titles:titles.length?titles:[st.kw],ti:0,title:titles[0]||st.kw,body:String(j.body).replace(/\r/g,''),tags:cleanTags(j.tags),foot:makeFoot(),by:'ai',kind:st.kind,listingId:st.kind==='listing'?(curListing()||{}).id||null:null};saveDraft();showOut()}
+function parseAny(t){t=String(t||'').trim();const m=t.match(/\{[\s\S]*\}/);if(m){try{return JSON.parse(m[0])}catch(e){}}
+  const L=t.split('\n');const title=L.shift().replace(/^(제목\s*[:：]\s*|#+\s*)/,'').trim();return{titles:[title],body:L.join('\n').trim(),tags:(t.match(/#[^\s#]+/g)||[]).map(x=>x.slice(1))}}
+$('#btnAI').onclick=async()=>{
+  if(!st.kw)st.kw=$('#kw').value.trim();
+  const btn=$('#btnAI');const s=await use('sample').catch(()=>null);
+  if(s){btn.disabled=true;btn.innerHTML='<span class="spin"></span> AI가 쓰는 중…';
+    try{let j;if(typeof s.json==='function')j=await s.json(aiPrompt(),{modelTier:'default'});else{const r=await s(aiPrompt(),{modelTier:'default'});j=parseAny((r&&r.text)||'')}
+      applyAI(j);toast('AI가 글을 다듬었어요')}catch(e){$('#genMsg').innerHTML='<div class="note r">AI 처리 중 문제: '+esc(e.message||'')+' — [글 만들기]로 진행하세요.</div>'}
+    btn.disabled=false;btn.textContent='🤖 AI로 다듬기';return}
+  modal('AI로 다듬기 (Claude·ChatGPT 등)','<p class="hint" style="margin-top:0">① 아래 [요청문 복사] → ② Claude나 ChatGPT 대화창에 붙여넣기 → ③ 나온 답을 통째로 복사해 아래 칸에 붙여넣기 → [가져오기]</p><textarea id="aiPaste" placeholder="AI 답을 여기에 붙여넣으세요 ({&quot;titles&quot;: … 로 시작하는 내용)"></textarea><p class="hint">가져온 글도 아래 검사(금지어·키워드·표시사항)를 똑같이 거칩니다.</p>',
+   [{t:'요청문 복사',fn:()=>{copy(aiPrompt(),'요청문을 복사했어요 — AI 대화창에 붙여넣으세요');return false}},{t:'Claude 열기',fn:()=>{window.open('https://claude.ai/new','_blank','noopener');return false}},{t:'닫기'},{t:'가져오기',cls:'pri',fn:()=>{try{applyAI(parseAny($('#aiPaste').value));toast('AI 글을 가져왔어요');$('#outCard').scrollIntoView({behavior:'smooth'})}catch(e){toast('형식을 읽지 못했어요 — 답 전체를 붙여넣어 주세요');return false}}}])};
+
+/* ---------- 결과 표시 ---------- */
+function showOut(){['#outCard','#chkCard','#pubCard'].forEach(s=>$(s).classList.remove('hide'));$('#pubDate').value=$('#pubDate').value||todayS();renderOut()}
+function renderOut(){const o=st.out;if(!o)return;
+  $('#titles').innerHTML=o.titles.map((t,n)=>`<label class="${n===o.ti?'on':''}"><input type="radio" name="ti" value="${n}" ${n===o.ti?'checked':''}><input type="text" data-tn="${n}" value="${esc(n===o.ti?o.title:t)}" style="margin:0;min-height:40px;border:0;padding:4px"><span class="len" data-tl="${n}"></span></label>`).join('');
+  const updLen=()=>$$('[data-tn]').forEach(el=>{$('[data-tl="'+el.dataset.tn+'"]').textContent=el.value.length+'자'});updLen();
+  $$('#titles input[type=radio]').forEach(r=>r.onchange=()=>{o.ti=+r.value;o.title=$('[data-tn="'+r.value+'"]').value;saveDraft();renderOut()});
+  $$('[data-tn]').forEach(el=>el.oninput=()=>{o.titles[+el.dataset.tn]=el.value;if(+el.dataset.tn===o.ti)o.title=el.value;updLen();saveDraft();runChecks()});
+  $('#body').value=o.body;$('#tags').value=o.tags.join(', ');$('#foot').textContent=o.foot;
+  renderPreview();runChecks()}
+$('#body').oninput=()=>{st.out.body=$('#body').value;saveDraft();clearTimeout(renderOut._t);renderOut._t=setTimeout(()=>{runChecks();if(!$('#pvBox').classList.contains('hide'))renderPreview()},300)};
+$('#tags').oninput=()=>{st.out.tags=$('#tags').value.split(',').map(s=>s.trim().replace(/^#/,'')).filter(Boolean);saveDraft();runChecks()};
+$$('#viewSeg button').forEach(b=>b.onclick=()=>{$$('#viewSeg button').forEach(x=>x.classList.toggle('on',x===b));$('#editBox').classList.toggle('hide',b.dataset.v!=='edit');$('#pvBox').classList.toggle('hide',b.dataset.v!=='pv');if(b.dataset.v==='pv')renderPreview()});
+
+/* 본문 → HTML (미리보기 / 서식 복사 공용) */
+function toHtml(o,forCopy){const lines=(o.body+'\n\n━━━━━━━━━━\n'+o.foot).split('\n');const out=[];let para=[],tbl=[];
+  const flushP=()=>{if(para.length){out.push('<p>'+para.map(x=>x.includes('✏')&&!forCopy?'<span class="todo">'+esc(x)+'</span>':esc(x)).join('<br>')+'</p>');para=[]}};
+  const flushT=()=>{if(tbl.length>=3){out.push('<table'+(forCopy?' border="1" cellpadding="8" style="border-collapse:collapse;width:100%"':'')+'>'+tbl.map(([k,v])=>`<tr><td${forCopy?' style="background:#f6f7f8;font-weight:bold;width:30%"':''}>${esc(k)}</td><td>${esc(v)}</td></tr>`).join('')+'</table>')}else if(tbl.length){para.push(...tbl.map(([k,v])=>'· '+k+': '+v))}tbl=[]};
+  lines.forEach(raw=>{const l=raw.trimEnd();const tm=l.match(/^·\s*([^:：]{1,14})[:：]\s*(.+)$/);
+    if(tm){flushP();tbl.push([tm[1].trim(),tm[2].trim()]);return}flushT();
+    if(!l.trim()){flushP();return}
+    if(/^■\s*/.test(l)){flushP();out.push(forCopy?'<p><b><span style="font-size:19px">'+esc(l.replace(/^■\s*/,'■ '))+'</span></b></p>':'<h3>'+esc(l.replace(/^■\s*/,''))+'</h3>');return}
+    const pm=l.match(/^\[사진\s*(\d+)\s*[:：]?\s*([^\]]*)\]$/);
+    if(pm){flushP();const n=+pm[1],p=photos[n-1];
+      out.push(forCopy?`<p style="background:#eeeeee;color:#777;text-align:center;padding:24px">📷 사진 ${n} 넣는 자리 — ${esc(pm[2])} (사진을 넣고 이 줄은 지우세요)</p>`:`<div class="ph">${p?`<img src="${p.url}" alt="">`:''}📷 사진 ${n} — ${esc(pm[2])}${p?'':' <b>(사진 없음)</b>'}</div>`);return}
+    if(/^━{3,}$/.test(l)){flushP();out.push('<hr>');return}
+    if(/^Q\.\s/.test(l)){flushP();out.push('<p'+(forCopy?'':' class="q"')+'><b>'+esc(l)+'</b></p>');return}
+    if(/^\[중개대상물 표시사항/.test(l)||/^\[중개사무소\]/.test(l)){flushP();out.push('<p><b>'+esc(l)+'</b></p>');return}
+    para.push(l)});
+  flushT();flushP();
+  if(o.tags.length)out.push('<p'+(forCopy?' style="color:#1e6fd9"':' class="tags"')+'>'+esc(o.tags.map(t=>'#'+t).join(' '))+'</p>');
+  return out.join('\n')}
+function renderPreview(){const o=st.out;if(!o)return;$('#preview').innerHTML='<h1>'+esc(o.title)+'</h1>'+toHtml(o,false)}
+function plainText(o){return(o.body.replace(/^\[사진\s*(\d+)[^\]]*\]$/gm,'(사진 $1)')+'\n\n━━━━━━━━━━\n'+o.foot+(o.tags.length?'\n\n'+o.tags.map(t=>'#'+t).join(' '):'')).replace(/\n{3,}/g,'\n\n')}
+
+/* ---------- 검사 ---------- */
+const cnt=(t,w)=>{if(!w)return 0;let n=0,i=0;while((i=t.indexOf(w,i))>=0){n++;i+=w.length}return n};
+function runChecks(){const o=st.out;if(!o)return;const C=[];const add=(st_,msg,w)=>C.push({st:st_,msg,w:w||1});
+  const title=o.title||'',body=o.body||'',kw=(st.kw||'').trim();const chars=body.replace(/\s/g,'').length,target=st.len==='long'?2000:1200;
+  if(!kw)add('red','대표 키워드가 비어 있어요 (4번 칸)',2);
+  else{const ti=title.indexOf(kw);add(ti===0?'ok':ti>0&&ti<=12?'ok':ti>0?'warn':'red',ti<0?`제목에 대표 키워드 "${kw}"가 없어요`:ti<=12?`제목 앞쪽에 대표 키워드가 있어요`:`대표 키워드를 제목 앞쪽으로 옮기면 검색에 유리해요`,2);
+    const n=cnt(body,kw);add(n>=3&&n<=8?'ok':n>10?'red':'warn',n>10?`본문에 "${kw}" ${n}번 — 너무 많으면 저품질로 보일 수 있어요(3~8번 권장)`:n<3?`본문에 "${kw}" ${n}번 — 3번 이상 자연스럽게 넣어 보세요`:`본문 키워드 ${n}번 — 적당해요`,2)}
+  add(title.length>=15&&title.length<=40?'ok':'warn',`제목 ${title.length}자 (15~40자 권장)`);
+  add(chars>=target?'ok':chars>=target*.5?'warn':'red',`본문 ${chars.toLocaleString()}자(공백 제외) — 목표 ${target.toLocaleString()}자 이상`,2);
+  const hs=(body.match(/^■/gm)||[]).length;add(hs>=4?'ok':'warn',`소제목 ${hs}개 (4개 이상 권장)`);
+  const marks=(body.match(/^\[사진\s*\d+/gm)||[]).length;const nums=(body.match(/^\[사진\s*(\d+)/gm)||[]).map(x=>+x.replace(/\D/g,''));const maxN=nums.length?Math.max(...nums):0;
+  add(photos.length>=5?'ok':photos.length>=3?'warn':'red',`사진 ${photos.length}장 준비 · 본문 사진 자리 ${marks}곳 (5장 이상 권장)`+(maxN>photos.length?` — 사진 ${maxN}번 자리에 넣을 사진이 부족해요`:''));
+  const todo=(body.match(/✏/g)||[]).length+(title.includes('✏')?1:0);add(todo?'red':'ok',todo?`✏ 직접 채울 곳이 ${todo}군데 남았어요`:'채울 곳 없음',2);
+  const L=lint(title+'\n'+body);add(L.length?'red':'ok',L.length?'쓰지 말아야 할 표현: '+L.map(x=>`"${x.w}"(${x.why})`).join(', '):'과장·금지 표현 없음',2);
+  if(/\d{2,4}\s*호(?![가-힣])/.test(body)&&st.kind!=='tip')add('warn','본문에 "○○호" 표기가 있어요 — 호수는 광고에 쓰지 마세요');
+  if(st.kind==='listing'||(st.kind==='area'&&st.aWithList)){add(offOk()?'ok':'red',offOk()?'사무소 정보(명칭·소재지·등록번호·대표·전화) 완비':'사무소 정보가 비어 있어요 — 5번 칸 (표시·광고 필수)',2);
+    if(st.kind==='listing'){const i=curListing();const miss=i?['소재지','가격','면적'].filter(k=>!new RegExp('· '+k+': \\S').test(i.block)):['매물'];add(miss.length?'red':'ok',miss.length?'표시사항 빠짐: '+miss.join(', ')+' — ②에서 채우거나 직접 입력':'중개대상물 표시사항 자동 첨부됨',2);
+      const x=listings().find(l=>l.id===o.listingId);if(x&&x.status==='거래완료')add('red','이 매물은 거래완료 상태예요 — 광고 글을 올리면 안 돼요',3)}}
+  if(st.kind==='case')add(st.cConsent?'ok':'red',st.cConsent?'개인정보 제외·고객 동의 확인':'상담 사례: 개인정보 제외·고객 동의 체크가 필요해요 (2번 칸)',2);
+  add(o.tags.length>=5&&o.tags.length<=30?'ok':'warn',`태그 ${o.tags.length}개 (10~30개 권장)`);
+  const tot=C.reduce((a,c)=>a+c.w,0),got=C.reduce((a,c)=>a+(c.st==='ok'?c.w:c.st==='warn'?c.w*.5:0),0);const sc=Math.round(got/tot*100);const red=C.some(c=>c.st==='red');
+  $('#scoreV').textContent=sc;$('#scoreV').style.color=red?'var(--red)':sc>=85?'var(--grn)':'var(--yel)';$('#scoreBar').style.width=sc+'%';
+  $('#scoreTxt').textContent=red?'빨간 항목을 고치면 올릴 준비가 끝나요':sc>=85?'올릴 준비 완료!':'노란 항목을 손보면 더 좋아요';
+  $('#checks').innerHTML=C.sort((a,b)=>({red:0,warn:1,ok:2}[a.st]-{red:0,warn:1,ok:2}[b.st])).map(c=>`<div class="ck ${c.st}"><i>${c.st==='ok'?'✔':c.st==='warn'?'!':'✖'}</i><span>${esc(c.msg)}</span></div>`).join('');
+  return{red,sc}}
+
+/* ---------- 올리기 ---------- */
+function blocked(){const r=runChecks();if(r&&r.red){toast('빨간 검사 항목을 먼저 고쳐 주세요');$('#chkCard').scrollIntoView({behavior:'smooth'});return true}return false}
+$('#cpTitle').onclick=()=>copy(st.out.title,'제목을 복사했어요');
+$('#cpTags').onclick=()=>copy(st.out.tags.map(t=>'#'+t).join(' '),'태그를 복사했어요 — 태그 칸에 붙여넣으세요');
+$('#cpPlain').onclick=()=>{if(blocked())return;copy(plainText(st.out),'본문(글자만)을 복사했어요')};
+$('#cpRich').onclick=async()=>{if(blocked())return;const html=toHtml(st.out,true),txt=plainText(st.out);
+  try{if(window.ClipboardItem&&navigator.clipboard&&navigator.clipboard.write){await navigator.clipboard.write([new ClipboardItem({'text/html':new Blob([html],{type:'text/html'}),'text/plain':new Blob([txt],{type:'text/plain'})})]);toast('서식 포함 본문을 복사했어요 — 네이버 본문에 붙여넣으세요');return}}catch(e){}
+  const d=$('#richTmp');d.innerHTML=html;const r=document.createRange();r.selectNodeContents(d);const s=getSelection();s.removeAllRanges();s.addRange(r);let ok=false;try{ok=document.execCommand('copy')}catch(e){}s.removeAllRanges();d.innerHTML='';
+  if(ok)toast('서식 포함 본문을 복사했어요');else copy(txt,'서식 복사가 막혀 글자만 복사했어요')};
+function slug(){return(st.kw||'blog').replace(/[^\w가-힣]+/g,'-').replace(/^-|-$/g,'').slice(0,30)||'blog'}
+async function finalPhotos(){const out=[];const wm=cfg.wm!==false&&office.name;
+  for(let n=0;n<photos.length;n++){let b=photos[n].blob;
+    if(wm){const im=await loadImg(b);if(im){const c=document.createElement('canvas');c.width=im.naturalWidth;c.height=im.naturalHeight;const g=c.getContext('2d');g.drawImage(im,0,0);
+      const fs=Math.max(14,Math.round(c.width*0.028));g.font='700 '+fs+'px -apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif';const t=office.name+(office.tel?'  ☎ '+office.tel:'');
+      const w=g.measureText(t).width,pad=fs*.6,x=c.width-w-pad*2-fs*.6,y=c.height-fs*2.2;g.fillStyle='rgba(0,0,0,.45)';g.fillRect(x,y,w+pad*2,fs*1.6);g.fillStyle='#fff';g.textBaseline='middle';g.fillText(t,x+pad,y+fs*.8);
+      b=await new Promise(r=>c.toBlob(r,'image/jpeg',.9))}}
+    out.push({name:slug()+'-'+String(n+1).padStart(2,'0')+'.jpg',blob:b})}return out}
+/* 압축 없는 ZIP (사진은 이미 JPEG) */
+const CRC=(()=>{const t=new Uint32Array(256);for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;t[n]=c>>>0}return t})();
+function crc32(u){let c=0xFFFFFFFF;for(let i=0;i<u.length;i++)c=CRC[(c^u[i])&255]^(c>>>8);return(c^0xFFFFFFFF)>>>0}
+async function makeZip(files){const enc=new TextEncoder();const parts=[],cen=[];let off=0;
+  for(const f of files){const data=new Uint8Array(await f.blob.arrayBuffer()),nm=enc.encode(f.name),crc=crc32(data);
+    const h=new DataView(new ArrayBuffer(30));h.setUint32(0,0x04034b50,true);h.setUint16(4,20,true);h.setUint16(6,0x0800,true);h.setUint16(8,0,true);h.setUint32(14,crc,true);h.setUint32(18,data.length,true);h.setUint32(22,data.length,true);h.setUint16(26,nm.length,true);
+    parts.push(h,nm,data);
+    const c=new DataView(new ArrayBuffer(46));c.setUint32(0,0x02014b50,true);c.setUint16(4,20,true);c.setUint16(6,20,true);c.setUint16(8,0x0800,true);c.setUint32(16,crc,true);c.setUint32(20,data.length,true);c.setUint32(24,data.length,true);c.setUint16(28,nm.length,true);c.setUint32(42,off,true);
+    cen.push(c,nm);off+=30+nm.length+data.length}
+  const cs=cen.reduce((a,x)=>a+(x.byteLength||x.length),0);const e=new DataView(new ArrayBuffer(22));e.setUint32(0,0x06054b50,true);e.setUint16(8,files.length,true);e.setUint16(10,files.length,true);e.setUint32(12,cs,true);e.setUint32(16,off,true);
+  return new Blob([...parts,...cen,e],{type:'application/zip'})}
+function download(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1500)}
+$('#dlPhotos').onclick=async()=>{if(!photos.length){toast('사진이 없어요 — 3번 칸에서 추가하세요');return}toast('사진 준비 중…');const fs=await finalPhotos();
+  if(fs.length===1)download(fs[0].blob,fs[0].name);else download(await makeZip(fs),slug()+'-사진.zip');toast(fs.length+'장 내려받기')};
+if(navigator.canShare){try{if(navigator.canShare({files:[new File([new Blob(['x'])],'a.jpg',{type:'image/jpeg'})]}))$('#shPhotos').classList.remove('hide')}catch(e){}}
+$('#shPhotos').onclick=async()=>{if(!photos.length){toast('사진이 없어요');return}const fs=(await finalPhotos()).map(f=>new File([f.blob],f.name,{type:'image/jpeg'}));try{await navigator.share({files:fs,title:st.out.title})}catch(e){}};
+
+/* ---------- 기록·계획 ---------- */
+$('#btnRecord').onclick=()=>{const o=st.out;if(!o)return;if(blocked())return;
+  hist.unshift({id:'B'+Date.now().toString(36),date:$('#pubDate').value||todayS(),kind:st.kind,title:o.title,kw:st.kw,url:$('#pubUrl').value.trim(),listingId:o.listingId||null,by:o.by});
+  saveHist();$('#pubUrl').value='';renderHist();renderDbList();toast('발행 기록을 남겼어요')};
+const KN={listing:'매물',area:'동네',tip:'상식',case:'사례'};
+function weekDays(){const d=new Date();d.setHours(0,0,0,0);const dow=(d.getDay()+6)%7;d.setDate(d.getDate()-dow);return[...Array(7)].map((_,n)=>{const x=new Date(d);x.setDate(d.getDate()+n);return ymd(x)})}
+function renderHist(){$('#goal').value=String(cfg.goal||3);
+  const W=weekDays(),t=todayS(),names=['월','화','수','목','금','토','일'];const byDay=d=>hist.filter(h=>h.date===d).length;const wk=W.reduce((a,d)=>a+byDay(d),0);
+  $('#week').innerHTML=W.map((d,n)=>`<div class="${byDay(d)?'done':''} ${d===t?'today':''}">${names[n]}<b>${byDay(d)||'·'}</b></div>`).join('');
+  const L=listings();const warns=hist.filter(h=>h.listingId&&!h.cleared&&(L.find(x=>x.id===h.listingId)||{}).status==='거래완료');
+  $('#warns').innerHTML=`<div class="note ${wk>=cfg.goal?'g':'y'}" style="margin:0 0 8px">이번 주 ${wk}편 / 목표 ${cfg.goal}편${wk>=cfg.goal?' — 목표 달성! 👍':' — '+(cfg.goal-wk)+'편 남았어요'}</div>`+
+    warns.map(h=>`<div class="note r" style="margin:0 0 8px">거래완료된 매물 글: <b>${esc(h.title)}</b> — 블로그 글 제목에 [거래완료]를 붙이거나 비공개로 바꾸세요. ${h.url?`<a href="${esc(h.url)}" target="_blank" rel="noopener">글 열기</a> · `:''}<a href="#" data-clr="${esc(h.id)}">정리했어요</a></div>`).join('');
+  $$('[data-clr]').forEach(a=>a.onclick=e=>{e.preventDefault();const h=hist.find(x=>x.id===a.dataset.clr);if(h){h.cleared=true;saveHist();renderHist()}});
+  const posted=new Set(hist.map(h=>h.listingId).filter(Boolean));const todo=L.filter(x=>x.status==='광고중'&&!posted.has(x.id)).slice(0,3);
+  $('#sugg').innerHTML=todo.length?`<p class="hint" style="margin:0 0 6px"><b>다음 글 추천</b> — 광고 중인데 블로그 글이 없는 매물</p>`+todo.map(x=>{const i=fromDabang(x.data||{});return`<button class="lst" data-sg="${esc(x.id)}"><div class="th" style="${x.thumb?'background-image:url('+x.thumb+')':''}"></div><div><div class="t1">${esc([i.dong,i.type,i.priceShort].filter(Boolean).join(' · '))}</div><div class="t2">눌러서 이 매물로 글쓰기</div></div></button>`}).join(''):'';
+  $$('[data-sg]').forEach(b=>b.onclick=()=>{st.kind='listing';st.src='dabang';renderKind();renderSrc();pickListing(b.dataset.sg);scrollTo({top:0,behavior:'smooth'})});
+  $('#hist').innerHTML=hist.slice(0,30).map(h=>`<li><div><div class="t">${h.url?`<a href="${esc(h.url)}" target="_blank" rel="noopener">${esc(h.title)}</a>`:esc(h.title)}</div><div class="s">${esc(h.date.replace(/-/g,'.'))} · ${KN[h.kind]||''}${h.kw?' · '+esc(h.kw):''}${h.by==='ai'?' · AI':''}</div></div><button class="btn sm" data-hd="${esc(h.id)}" aria-label="기록 지우기">지우기</button></li>`).join('')||'<li class="s" style="color:var(--sub)">아직 발행 기록이 없어요.</li>';
+  $$('[data-hd]').forEach(b=>b.onclick=()=>{hist=hist.filter(h=>h.id!==b.dataset.hd);saveHist();renderHist();renderDbList()})}
+$('#goal').onchange=e=>{cfg.goal=+e.target.value;saveCfg();renderHist()};
+
+/* ---------- 시작 ---------- */
+addEventListener('storage',e=>{if(e.key==='d1c.listings'){renderDbList();renderHist()}if(e.key==='d1c.office'){office=LS.get('d1c.office',{});fillOffice()}});
+(async()=>{fillOffice();renderKind();renderSrc();renderHist();
+  const saved=await blGet('photos');if(saved&&saved.length)await setPhotos(saved);else if(st.kind==='listing'&&st.listingId)await loadListingPhotos(st.listingId);
+  if(st.out&&st.out.kind===st.kind)showOut()})();
+})();
+</script>
+</body>
+</html>
