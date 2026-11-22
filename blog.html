@@ -405,7 +405,7 @@ function fromDabang(D){
     dir:D.dir?D.dir+' ('+(D.dirBase||'거실 기준')+')':'',approve:(D.approve||'').replace(/-/g,'.'),park,move,mgmt,options:(D.options||[]),bldg:D.bldgName||'',
     points:pts,block:L.join('\n'),use:useText(),mgmtInc:inc.join('·'),mgmtEx,elev:D.elevator||'',pet:(D.options||[]).includes('반려동물 가능')?'가능':'',parkHow:D.parkMemo||'',
     priceTitle:priceTitle(D.deal,D.price,D.deposit,D.rent)}}
-function wonT(v){const n=num(v);if(n==null)return'';if(n>=10000){const e=Math.floor(n/10000),r=Math.round(n%10000);let rs='';if(r){rs=r%1000===0?(r/1000)+'천':r.toLocaleString()}return e+'억'+rs+'만 원'}return n.toLocaleString()+'만 원'}
+function wonT(v){const n=num(v);if(n==null)return'';if(n>=10000){const e=Math.floor(n/10000),r=Math.round(n%10000);let rs='';if(r){rs=r%1000===0?(r/1000)+'천':r.toLocaleString()}return e+'억'+(rs?rs+'만':'')+' 원'}return n.toLocaleString()+'만 원'}
 function priceTitle(deal,price,dep,rent){if(deal==='매매')return wonT(price);if(deal==='전세')return wonT(dep);if(deal)return num(dep)!=null?(wonT(dep).replace(' 원','')+'/'+wonT(rent)):'';return''}
 function fromManual(m){m=m||{};const g=k=>String(m[k]||'').trim();
   const L=[];const add=(k,v)=>{if(v)L.push('· '+k+': '+v)};
