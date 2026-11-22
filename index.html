@@ -90,9 +90,8 @@ async function rpc(fn,args){const r=await fetch(SB_URL+'/rest/v1/rpc/'+fn,{metho
 const TOOLS=[
   {id:'lh',num:'⑤',short:'LH 신호등',name:'LH 전세임대 사전점검 신호등',desc:'등기부 PDF·사진 판독 → 공시가격 자동 조회 → LH 통과 가능성 신호등',page:'lh.html',state:'on'},
   {id:'dabang',num:'②',short:'다방광고',name:'다방광고 원클릭',desc:'1회 입력 → 표시광고 검사 → 다방·네이버·블로그·당근·밴드 원고 + 다방 자동입력',page:'dabang.html',state:'on'},
-  {id:'land',num:'④',short:'토지 시세',name:'토지 얼마나 해요?',desc:'주소 1개 → 실거래·공시지가 근거 시세 범위 → 고객용 상담 리포트 PDF',page:'land.html',state:'new'},
-  {id:'bid',num:'⑦',short:'입찰서류',name:'경매·공매 입찰서류',desc:'사건번호·입찰가 → 기일입찰표·위임장·준비물 PDF 자동 작성',state:'soon',
-    plan:['사건번호·입찰자 유형 입력','입찰가 칸별 자동 배치 + 한글 금액','최저가 150% 초과 경고·미만 차단','기일입찰표·위임장·준비물 체크리스트 PDF']},
+  {id:'land',num:'④',short:'토지 시세',name:'토지 얼마나 해요?',desc:'주소 1개 → 실거래·공시지가 근거 시세 범위 → 고객용 상담 리포트 PDF',page:'land.html',state:'on'},
+  {id:'bid',num:'⑦',short:'입찰서류',name:'경매 입찰서류 자동작성',desc:'사건번호·입찰가 → 새 기일입찰표·위임장·준비물 체크리스트 PDF, "0 하나 더" 실수 방지',page:'bid.html',state:'new'},
   {id:'vacancy',num:'⑥',short:'공실클럽',name:'공실클럽',desc:'수수료 0원 중개사 공동중개 네트워크',state:'soon',
     plan:['공실 30초 등록(주소·호실·금액·사진·수수료 분배)','지도 검색(13개 권역·유형·금액)','14일마다 "아직 공실인가요?" 자동 확인','공동중개 문의 일지']},
   {id:'shorts',num:'③',short:'AI쇼츠',name:'AI쇼츠 자동 업로드',desc:'매물 사진 → 대본·자막·음성 → 승인 후 유튜브 예약 업로드',state:'soon',
@@ -132,6 +131,7 @@ function renderHome(){
   const dday=s=>{if(!s)return 99;const d=new Date(s);d.setHours(0,0,0,0);return Math.round((d-today)/864e5)};
   const onAd=dl.filter(x=>x.status==='광고중'),soon=onAd.filter(x=>dday(x.adEnd)<=3),noDown=dl.filter(x=>x.status==='거래완료'&&!x.takenDown);
   const hist=LSget('sise.history',[]);
+  const bidsUp=LSget('bid.history',[]).map(b=>Object.assign({},b,{dd:b.date?dday(b.date):-1})).filter(b=>b.dd>=0).sort((a,b)=>a.dd-b.dd);
   const wonShort=v=>v>=1e8?(v/1e8).toFixed(v>=1e9?1:2).replace(/\.?0+$/,'')+'억':Math.round(v/1e4).toLocaleString()+'만';
   p.innerHTML=`<div class="home">
     ${me?'':`<div class="card login"><b>로그인</b> <span style="color:var(--sub);font-size:13.5px">— ⑤ LH 신호등·④ 토지 시세·② 건축물대장 자동조회에 쓰는 공용 계정입니다.</span>
@@ -146,6 +146,7 @@ function renderHome(){
       <button class="stat good" data-go="lh"><b>⑤ LH 매물장</b><div class="v">${me?(lhCount==null?'…':lhCount):'-'}</div><div class="s">${me?'등록한 매물':'로그인하면 보여요'}</div></button>
       <button class="stat" data-go="land"><b>④ 토지 시세 상담</b><div class="v">${hist.length}</div><div class="s">${hist[0]?'최근: '+esc(hist[0].address.split(' ').slice(-3).join(' ')):'아직 조회 없음'}</div></button>
     </div>
+    ${bidsUp.length?`<h2 class="sec">다가오는 입찰기일</h2><div class="card"><ul class="recent">${bidsUp.slice(0,5).map(b=>`<li><span>${esc(b.court)} ${esc(b.case)} · ${esc(b.name||'')}${b.type==='agent'?'(대리)':''}</span><span>${b.dd===0?'오늘':'D-'+b.dd}${b.price?' · '+wonShort(b.price):''}</span></li>`).join('')}</ul></div>`:''}
     ${hist.length?`<h2 class="sec">최근 토지 시세 상담</h2><div class="card"><ul class="recent">${hist.slice(0,5).map(h=>`<li><span>${esc(h.address)}</span><span>${wonShort(h.lo)}~${wonShort(h.hi)}</span></li>`).join('')}</ul></div>`:''}
     <h2 class="sec">도구 7종</h2>
     <div class="grid">${TOOLS.map(t=>`<button class="tool ${t.state==='soon'?'dim':''}" data-go="${t.id}">${BADGE[t.state]}<span class="num">${t.num}</span><h3>${esc(t.name)}</h3><p>${esc(t.desc)}</p></button>`).join('')}</div>

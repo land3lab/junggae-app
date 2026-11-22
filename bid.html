@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>경매 입찰서류 자동작성 — 중개사무소 앱 ⑦</title>
+<script>if(/[?&]embed=1/.test(location.search))document.documentElement.classList.add("embed")</script>
+<meta name="theme-color" content="#1f4d3f">
+<link rel="icon" href="icon.svg">
+<style>
+:root{--bg:#f6f5f1;--card:#fff;--ink:#1d2321;--sub:#56605b;--line:#e1dfd7;--brand:#1f4d3f;--brand-soft:#e5efea;
+  --red:#b42318;--red-soft:#fdecea;--yel:#7a5400;--yel-soft:#fff4d6;--grn:#17733f;--grn-soft:#e4f4ea;--r:14px}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;font-size:16px;line-height:1.55;-webkit-text-size-adjust:100%}
+header{background:var(--brand);color:#fff;padding:16px}
+header h1{margin:0;font-size:19px;letter-spacing:-.3px}
+header p{margin:2px 0 0;font-size:13px;opacity:.85}
+.embed header{display:none}
+.wrap{max-width:820px;margin:0 auto;padding:12px 12px 40px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px;margin:0 0 12px}
+.card h2{font-size:16.5px;margin:0 0 10px;display:flex;align-items:center;gap:8px}
+.n{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--brand);color:#fff;font-size:13px;flex:none}
+label.f{display:block;font-size:13.5px;color:var(--sub);font-weight:600}
+input[type=text],input[type=tel],input[type=date],select{width:100%;min-height:46px;border:1px solid #cfccc2;border-radius:10px;padding:10px 12px;font:inherit;color:var(--ink);background:#fff;margin-top:4px}
+input:focus,select:focus{outline:2px solid #8fb5a6;border-color:var(--brand)}
+input.money{font-size:19px;font-weight:800;letter-spacing:.3px;text-align:right}
+input.bad{border-color:var(--red);background:#fffafa}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.grid3{display:grid;grid-template-columns:1.6fr 1fr 1fr;gap:10px}
+.full{grid-column:1/-1}
+.casebox{display:grid;grid-template-columns:1fr auto 1.3fr auto;gap:6px;align-items:end}
+.casebox span{padding-bottom:12px;font-weight:700}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.btn{min-height:46px;border:1px solid #cfccc2;background:#fff;border-radius:10px;padding:10px 16px;font:inherit;font-weight:700;color:var(--ink);cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center}
+.btn.pri{background:var(--brand);border-color:var(--brand);color:#fff}
+.btn.sm{min-height:44px;padding:8px 12px;font-size:14px}
+.btn:disabled{opacity:.45;cursor:default}
+.seg{display:flex;border:1px solid #cfccc2;border-radius:10px;overflow:hidden;margin-top:4px}
+.seg button{flex:1;min-height:46px;border:0;background:#fff;font:inherit;font-weight:700;color:var(--sub);cursor:pointer}
+.seg button+button{border-left:1px solid #cfccc2}
+.seg button.on{background:var(--brand);color:#fff}
+.hint{font-size:13px;color:var(--sub);margin:4px 0 0}
+.note{padding:11px 14px;border-radius:12px;font-size:14px;margin:10px 0 0}
+.note.y{background:var(--yel-soft);color:var(--yel)} .note.r{background:var(--red-soft);color:var(--red)} .note.g{background:var(--grn-soft);color:var(--grn)} .note.b{background:var(--brand-soft);color:var(--brand)}
+.chk{display:flex;align-items:flex-start;gap:9px;min-height:44px;font-size:14.5px;cursor:pointer;padding:9px 0}
+.chk input{width:22px;height:22px;accent-color:var(--brand);flex:none;margin:0}
+.kor{font-size:14.5px;color:var(--brand);font-weight:700;margin-top:4px;min-height:22px;word-break:keep-all}
+.ratio{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.ratio span{font-size:13.5px;background:#f1f0eb;border-radius:8px;padding:4px 10px}
+.ratio span.hot{background:var(--red-soft);color:var(--red);font-weight:700}
+/* 자릿수 대조판 */
+.dg{overflow-x:auto;margin-top:12px;border:1px solid var(--line);border-radius:12px;padding:10px;background:#faf9f6}
+.dg table{border-collapse:collapse;margin:0 auto}
+.dg th{font-size:12px;color:var(--sub);font-weight:600;padding:2px 4px;white-space:nowrap;text-align:right}
+.dg td{width:30px;height:36px;border:1px solid #c9c6bb;background:#fff;text-align:center;font-size:18px;font-weight:800;font-variant-numeric:tabular-nums}
+.dg td.u{border:0;background:transparent;width:auto;font-size:13px;font-weight:600;padding-left:4px}
+.dg tr.units td{height:auto;border:0;background:transparent;font-size:10.5px;color:var(--sub);font-weight:600}
+.dg tr.min td{color:#8a908c;font-weight:700}
+.dg tr.price td.v{color:var(--brand)}
+.dg tr.price.hot td.v{color:var(--red);background:#fff6f5}
+.issues{margin:0;padding:0;list-style:none}
+.issues li{display:flex;gap:8px;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--line);font-size:14.5px}
+.issues li:last-child{border:0}
+.issues i{font-style:normal;flex:none;font-size:12px;font-weight:800;border-radius:6px;padding:2px 7px;margin-top:2px}
+.issues .r i{background:var(--red-soft);color:var(--red)} .issues .y i{background:var(--yel-soft);color:var(--yel)} .issues .g i{background:var(--grn-soft);color:var(--grn)}
+.bar{position:sticky;bottom:0;background:rgba(246,245,241,.97);padding:10px 0;display:flex;gap:8px;flex-wrap:wrap;z-index:5}
+.bar .btn{flex:1}
+.hide{display:none!important}
+.toast{position:fixed;left:50%;bottom:84px;transform:translateX(-50%);background:#1d2321;color:#fff;padding:10px 16px;border-radius:10px;font-size:14px;opacity:0;pointer-events:none;transition:.2s;z-index:80;max-width:90vw}
+.toast.show{opacity:1}
+details.more{margin-top:8px}
+details.more summary{cursor:pointer;font-size:14px;color:var(--brand);font-weight:700;min-height:40px;display:flex;align-items:center}
+@media (max-width:560px){.grid,.grid3{grid-template-columns:1fr}.casebox{grid-template-columns:1fr auto 1.2fr auto}}
+
+/* ---------- 출력물 ---------- */
+#report,#pvbar{display:none}
+.rp{font-family:"Malgun Gothic","Apple SD Gothic Neo","Noto Sans KR",sans-serif;color:#000;position:relative}
+.rp .ftitle{text-align:center;font-size:22pt;font-weight:800;letter-spacing:6mm;margin:0 0 5mm;padding-left:6mm}
+.rp .fhead{display:flex;justify-content:space-between;font-size:11.5pt;margin:0 0 2mm;font-weight:700}
+.rp table{width:100%;border-collapse:collapse;table-layout:fixed}
+.rp th,.rp td{border:1px solid #000;padding:1.4mm 2mm;font-size:10pt;vertical-align:middle}
+.rp th{font-weight:700;text-align:center;background:#f3f3f3;line-height:1.3}
+.rp td.val{font-size:11.5pt;font-weight:700}
+.rp td.val.sm{font-size:10pt}
+.rp .seal{float:right;color:#555;font-weight:400}
+.rp .tiny{font-size:8.5pt;font-weight:400;color:#333}
+.rp table.ft tr{height:10.5mm}
+.rp table.pt{margin-top:3mm}
+.rp table.pt th.lab{font-size:11.5pt}
+.rp table.pt td.d{height:15mm;text-align:center;font-size:17pt;font-weight:800;padding:0;font-variant-numeric:tabular-nums}
+.rp table.pt td.won{text-align:center;font-weight:700;font-size:11pt;padding:0}
+.rp table.pt tr.u td{border-top:1px solid #000;border-bottom:0;font-size:8pt;text-align:center;padding:.6mm 0;background:#fafafa}
+.rp table.pt tr.u td.blank{background:#fff}
+.rp .caution{border:1px solid #000;border-top:0;border-bottom:0;padding:1.6mm 3mm;font-size:9.5pt;font-weight:700}
+.rp table.mt{margin-top:3mm}
+.rp table.mt td{height:15mm}
+.rp .notes{margin-top:4mm;font-size:8.6pt;line-height:1.55}
+.rp .notes ol{margin:1mm 0 0;padding-left:5mm}
+.rp .poa-t{text-align:center;font-size:22pt;font-weight:800;letter-spacing:8mm;margin:2mm 0 8mm;padding-left:8mm}
+.rp .poa-mid{margin:7mm 0;font-size:11.5pt;line-height:2}
+.rp .poa-mid .c{text-align:center;letter-spacing:4mm;font-weight:700;margin:3mm 0}
+.rp .poa-mid .what{border-bottom:1px solid #000;padding:1mm 2mm;font-weight:700;font-size:12pt}
+.rp .poa-foot{margin-top:6mm;font-size:10pt;line-height:1.8}
+.rp .court-to{text-align:right;font-size:14pt;font-weight:800;margin-top:10mm;letter-spacing:1mm}
+.rp table.poa tr{height:11mm}
+/* 준비 확인서 */
+.rp.chkp h1{font-size:16pt;margin:0 0 1mm;color:#1f4d3f}
+.rp.chkp .meta{font-size:9pt;color:#555;margin-bottom:3mm}
+.rp.chkp h2{font-size:11.5pt;margin:4.5mm 0 1.5mm;border-left:4px solid #1f4d3f;padding-left:2.5mm}
+.rp.chkp table th,.rp.chkp table td{border:1px solid #bbb;font-size:9.6pt;padding:1.3mm 2mm}
+.rp.chkp table th{background:#f1f3f2;text-align:left;width:32mm}
+.rp.chkp .bigp{font-size:15pt;font-weight:800;color:#1f4d3f}
+.rp.chkp ul.cl{list-style:none;margin:0;padding:0;font-size:10pt;columns:2;column-gap:6mm}
+.rp.chkp ul.cl li{padding:.9mm 0 .9mm 6.5mm;position:relative;break-inside:avoid}
+.rp.chkp ul.cl li::before{content:"";position:absolute;left:0;top:1.7mm;width:3.6mm;height:3.6mm;border:1.3px solid #1f4d3f;border-radius:.6mm}
+.rp.chkp ol.flow{margin:0;padding-left:5mm;font-size:9.8pt;line-height:1.6}
+.rp.chkp .warnbox{border:1.5px solid #b42318;border-radius:2mm;padding:2.5mm 3mm;font-size:9.6pt;color:#7a1a12;margin-top:2mm}
+.rp.chkp .disc{font-size:8.4pt;color:#444;border-top:1px solid #999;margin-top:4mm;padding-top:1.5mm}
+.rp.sample::before{content:attr(data-wm);position:absolute;left:50%;top:46%;transform:translate(-50%,-50%) rotate(-28deg);font-size:30pt;font-weight:800;color:rgba(180,35,24,.13);white-space:nowrap;pointer-events:none;z-index:2}
+@media screen{
+  body.pv{overflow:hidden}
+  body.pv #pvbar{display:flex;position:fixed;left:0;right:0;top:0;z-index:60;background:#1d2321;color:#fff;padding:8px 10px;gap:8px;align-items:center}
+  #pvbar b{flex:1;font-size:15px}
+  #pvbar .btn{min-height:44px}
+  #pvbar .btn.ghost{background:transparent;color:#fff;border-color:#6b7470}
+  body.pv #report{display:block;position:fixed;inset:60px 0 0 0;z-index:55;overflow:auto;background:#6b7470;padding:16px 0 40px}
+  #report .rp{width:210mm;min-height:297mm;padding:14mm;margin:0 auto 18px;background:#fff;box-shadow:0 4px 18px rgba(0,0,0,.3);font-size:11pt;line-height:1.45;zoom:var(--pz,1)}
+  #report .rp::after{content:attr(data-p);position:absolute;right:6mm;bottom:4mm;font-size:8.5pt;color:#999}
+  #report .rp.over{outline:3px solid #d97706}
+  #pvwarn{margin:0 auto 12px;max-width:210mm;background:#fff4d6;color:#7a5400;padding:10px 14px;border-radius:10px;font-size:14px;zoom:var(--pz,1)}
+}
+@media print{
+  @page{size:A4;margin:14mm}
+  html,body{background:#fff}
+  body>*:not(#report){display:none!important}
+  #report{display:block!important;position:static!important;padding:0!important;background:#fff!important}
+  #pvwarn{display:none}
+  .rp{page-break-after:always;-webkit-print-color-adjust:exact;print-color-adjust:exact}.rp:last-child{page-break-after:auto}
+}
+</style>
+</head>
+<body>
+<header><h1>경매 입찰서류 자동작성</h1><p>중개사무소 앱 ⑦ · 사건번호·입찰가 → 기일입찰표·위임장·준비물 체크리스트 PDF (무료)</p></header>
+<div class="wrap" id="app">
+
+  <div class="note b" style="margin:0 0 12px">2026년 11월 2일부터 쓰는 <b>새 기일입찰표</b>(입찰가격·보증금액 칸이 위아래로 배치된 양식) 기준으로 작성합니다. 입력한 내용은 이 기기에만 저장되고 서버로 보내지 않습니다.</div>
+
+  <!-- 1. 사건 -->
+  <section class="card">
+    <h2><span class="n">1</span>사건 정보</h2>
+    <div class="grid">
+      <label class="f full">법원(집행관)
+        <input type="text" list="courts" data-k="court" placeholder="예: 서울중앙지방법원 / 수원지방법원 성남지원">
+      </label>
+      <div class="full">
+        <label class="f">사건번호</label>
+        <div class="casebox">
+          <input type="text" data-k="cy" inputmode="numeric" maxlength="4" placeholder="2026">
+          <span>타경</span>
+          <input type="text" data-k="cn" inputmode="numeric" maxlength="7" placeholder="12345">
+          <span>호</span>
+        </div>
+      </div>
+      <label class="f">물건번호 <span style="font-weight:400">(여러 개일 때 꼭)</span>
+        <input type="text" data-k="item" inputmode="numeric" maxlength="4" placeholder="없으면 비움">
+      </label>
+      <label class="f">입찰기일(매각기일)
+        <input type="date" data-k="date">
+      </label>
+      <label class="f">감정가 <span style="font-weight:400">(선택)</span>
+        <input type="text" class="money" data-k="appr" data-money inputmode="numeric" placeholder="0">
+      </label>
+      <label class="f">최저매각가격
+        <input type="text" class="money" data-k="min" data-money inputmode="numeric" placeholder="0">
+      </label>
+      <div>
+        <label class="f">매수신청보증 비율</label>
+        <div class="seg" id="rateSeg"><button data-rate="10">10%</button><button data-rate="20">20%</button><button data-rate="30">30%</button></div>
+        <p class="hint">재매각 등 특별매각조건이면 20~30% — 매각물건명세서 확인</p>
+      </div>
+      <label class="f">보증금액
+        <input type="text" class="money" data-k="depo" data-money inputmode="numeric" placeholder="자동 계산">
+        <p class="hint" id="depoHint">최저매각가격 × 비율로 자동 계산(직접 고칠 수 있음)</p>
+      </label>
+    </div>
+    <div class="row" style="margin-top:10px">
+      <a class="btn sm" href="https://www.courtauction.go.kr/" target="_blank" rel="noopener">법원경매정보에서 사건 확인 ↗</a>
+      <span class="hint" style="margin:0">최저가·보증 비율·기일은 사건 공고와 꼭 대조하세요.</span>
+    </div>
+  </section>
+
+  <!-- 2. 입찰자 -->
+  <section class="card">
+    <h2><span class="n">2</span>입찰자</h2>
+    <div class="seg" id="typeSeg"><button data-type="self">본인 입찰</button><button data-type="agent">대리인 입찰</button></div>
+    <h3 style="font-size:15px;margin:14px 0 6px">본인 <span class="hint" id="selfHint" style="font-weight:400"></span></h3>
+    <div class="grid">
+      <label class="f">성명<input type="text" data-k="self.name" autocomplete="off"></label>
+      <label class="f">전화번호<input type="tel" data-k="self.tel" inputmode="tel" placeholder="010-0000-0000"></label>
+      <label class="f">주민등록번호<input type="text" data-k="self.rrn" data-rrn inputmode="numeric" maxlength="14" placeholder="000000-0000000" autocomplete="off"></label>
+      <label class="f agentOnly">직업 <span style="font-weight:400">(위임장용)</span><input type="text" data-k="self.job"></label>
+      <label class="f full">주소<input type="text" data-k="self.addr"></label>
+    </div>
+    <div class="agentOnly">
+      <h3 style="font-size:15px;margin:16px 0 6px;display:flex;align-items:center;gap:8px;flex-wrap:wrap">대리인 <button class="btn sm" id="fillOffice" type="button" style="font-weight:600">내 사무소 정보로 채우기</button></h3>
+      <div class="grid">
+        <label class="f">성명<input type="text" data-k="agent.name" autocomplete="off"></label>
+        <label class="f">본인과의 관계<input type="text" data-k="agent.rel" list="rels" placeholder="예: 지인, 배우자, 매수신청대리인"></label>
+        <label class="f">주민등록번호<input type="text" data-k="agent.rrn" data-rrn inputmode="numeric" maxlength="14" placeholder="000000-0000000" autocomplete="off"></label>
+        <label class="f">전화번호<input type="tel" data-k="agent.tel" inputmode="tel"></label>
+        <label class="f">직업 <span style="font-weight:400">(위임장용)</span><input type="text" data-k="agent.job" placeholder="예: 공인중개사"></label>
+        <label class="f full">주소<input type="text" data-k="agent.addr"></label>
+      </div>
+      <div class="note y">개업공인중개사가 <b>보수를 받고</b> 입찰을 대리하려면 법원에 <b>매수신청대리인 등록</b>이 되어 있어야 합니다. 이 도구는 서류 작성 보조만 합니다.</div>
+    </div>
+    <label class="chk" style="margin-top:6px"><input type="checkbox" data-k="saveRrn"><span>주민등록번호도 이 기기에 저장 <span class="hint" style="display:block;margin:0">끄면 화면을 닫을 때 지워집니다(권장: 끔)</span></span></label>
+  </section>
+
+  <!-- 3. 입찰가 -->
+  <section class="card">
+    <h2><span class="n">3</span>입찰가격</h2>
+    <label class="chk" style="padding-top:0"><input type="checkbox" data-k="hand"><span>입찰가는 법원에서 <b>손으로 쓸게요</b> <span class="hint" style="display:block;margin:0">입찰가격 칸만 비워서 출력합니다(보증금액은 채움)</span></span></label>
+    <div id="priceBox">
+      <div class="grid">
+        <label class="f">입찰가격<input type="text" class="money" data-k="price" data-money inputmode="numeric" placeholder="0"></label>
+        <label class="f">한 번 더 입력(확인)<input type="text" class="money" data-k="price2" data-money inputmode="numeric" placeholder="같은 금액"></label>
+      </div>
+      <div class="kor" id="kor"></div>
+      <div class="ratio" id="ratio"></div>
+    </div>
+    <div class="dg" id="dg"></div>
+    <label class="chk hide" id="overWrap"><input type="checkbox" data-k="overOk"><span id="overTxt"></span></label>
+    <div style="margin-top:10px">
+      <label class="f">보증의 제공방법</label>
+      <div class="seg" id="methodSeg"><button data-method="cash">현금·자기앞수표</button><button data-method="bond">보증서</button></div>
+    </div>
+  </section>
+
+  <!-- 4. 점검·출력 -->
+  <section class="card">
+    <h2><span class="n">4</span>제출 전 점검</h2>
+    <ul class="issues" id="issues"></ul>
+    <details class="more">
+      <summary>출력 옵션</summary>
+      <label class="chk"><input type="checkbox" data-k="incCheck"><span>준비물 체크리스트·입찰 당일 순서 포함 <span class="hint" style="display:block;margin:0">마지막 쪽 · 법원에 내지 않는 내부 확인용</span></span></label>
+      <label class="chk"><input type="checkbox" data-k="sample"><span>"옮겨쓰기 견본" 워터마크 넣기 <span class="hint" style="display:block;margin:0">법원 비치 용지에 손으로 옮겨 적을 때 · 고객 사전 확인용</span></span></label>
+    </details>
+  </section>
+
+  <div class="bar">
+    <button class="btn" id="btnReset" type="button" style="flex:0 0 auto">새로 작성</button>
+    <button class="btn" id="btnPv" type="button">👀 미리보기</button>
+    <button class="btn pri" id="btnPdf" type="button">📄 PDF 저장(인쇄)</button>
+  </div>
+  <p class="hint" style="text-align:center">PDF 저장: 인쇄 화면에서 대상을 "PDF로 저장", 용지 A4, 배율 100%(기본) · 위임장은 입찰표 <b>뒷면</b>에 양면 인쇄해도 됩니다.</p>
+</div>
+
+<datalist id="courts"></datalist>
+<datalist id="rels"><option value="지인"><option value="배우자"><option value="자녀"><option value="부모"><option value="형제자매"><option value="직원"><option value="매수신청대리인"></datalist>
+<div id="pvbar"><b id="pvTitle">미리보기</b><button class="btn pri" id="pvPrint">📄 PDF 저장(인쇄)</button><button class="btn ghost" id="pvClose">닫기</button></div>
+<div id="report"></div>
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+"use strict";
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const LS={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const SS={get(k,d){try{const v=sessionStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{sessionStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.remove('show'),2400)}
+
+/* ---------- 법원 목록(본원·지원) ---------- */
+const COURTS=['서울중앙지방법원','서울동부지방법원','서울남부지방법원','서울북부지방법원','서울서부지방법원',
+ '의정부지방법원','의정부지방법원 고양지원','의정부지방법원 남양주지원',
+ '인천지방법원','인천지방법원 부천지원',
+ '수원지방법원','수원지방법원 성남지원','수원지방법원 여주지원','수원지방법원 평택지원','수원지방법원 안산지원','수원지방법원 안양지원',
+ '춘천지방법원','춘천지방법원 강릉지원','춘천지방법원 원주지원','춘천지방법원 속초지원','춘천지방법원 영월지원',
+ '대전지방법원','대전지방법원 홍성지원','대전지방법원 논산지원','대전지방법원 천안지원','대전지방법원 공주지원','대전지방법원 서산지원',
+ '청주지방법원','청주지방법원 충주지원','청주지방법원 제천지원','청주지방법원 영동지원',
+ '대구지방법원','대구지방법원 서부지원','대구지방법원 안동지원','대구지방법원 경주지원','대구지방법원 김천지원','대구지방법원 상주지원','대구지방법원 의성지원','대구지방법원 영덕지원','대구지방법원 포항지원',
+ '부산지방법원','부산지방법원 동부지원','부산지방법원 서부지원','울산지방법원',
+ '창원지방법원','창원지방법원 마산지원','창원지방법원 진주지원','창원지방법원 통영지원','창원지방법원 밀양지원','창원지방법원 거창지원',
+ '광주지방법원','광주지방법원 목포지원','광주지방법원 장흥지원','광주지방법원 순천지원','광주지방법원 해남지원',
+ '전주지방법원','전주지방법원 군산지원','전주지방법원 정읍지원','전주지방법원 남원지원','제주지방법원'];
+$('#courts').innerHTML=COURTS.map(c=>`<option value="${c}">`).join('');
+
+/* ---------- 상태 ---------- */
+const DEF={court:'',cy:String(new Date().getFullYear()),cn:'',item:'',date:'',appr:0,min:0,rate:10,depo:0,depoManual:false,
+  type:'self',self:{name:'',tel:'',rrn:'',job:'',addr:''},agent:{name:'',rel:'',rrn:'',tel:'',job:'',addr:''},
+  hand:false,price:0,price2:0,overOk:false,method:'cash',saveRrn:false,incCheck:true,sample:false};
+const clone=o=>JSON.parse(JSON.stringify(o));
+function loadD(){const s=LS.get('bid.draft',null);const d=Object.assign(clone(DEF),s||{});d.self=Object.assign(clone(DEF.self),d.self||{});d.agent=Object.assign(clone(DEF.agent),d.agent||{});
+  const r=SS.get('bid.rrn',null);if(r){if(!d.self.rrn)d.self.rrn=r.s||'';if(!d.agent.rrn)d.agent.rrn=r.a||''}
+  d.overOk=false;d.price2=0;return d}
+let D=loadD();
+function saveD(){const c=clone(D);c.overOk=false;c.price2=0;if(!D.saveRrn){c.self.rrn='';c.agent.rrn=''}
+  LS.set('bid.draft',c);SS.set('bid.rrn',{s:D.self.rrn,a:D.agent.rrn})}
+const getK=k=>k.split('.').reduce((o,p)=>o?.[p],D);
+function setK(k,v){const ps=k.split('.');let o=D;ps.slice(0,-1).forEach(p=>o=o[p]);o[ps.at(-1)]=v}
+
+/* ---------- 숫자·금액 ---------- */
+const num=s=>{const n=String(s??'').replace(/[^\d]/g,'');return n?Math.min(Number(n),999999999999):0};
+const comma=n=>n?Number(n).toLocaleString('ko-KR'):'';
+const won=n=>(n||0).toLocaleString('ko-KR')+'원';
+function hangul(n){n=Math.floor(n||0);if(!n)return'영';const d=['','일','이','삼','사','오','육','칠','팔','구'],u=['','십','백','천'],big=['','만','억','조'];let s='',i=0;
+  while(n>0){const g=n%10000;if(g){let gs='';for(let j=0;j<4;j++){const x=Math.floor(g/10**j)%10;if(x)gs=d[x]+u[j]+gs}s=gs+big[i]+s}n=Math.floor(n/10000);i++}return s}
+function wonShort(v){if(!v)return'0원';const e=Math.floor(v/1e8),m=Math.floor(v%1e8/1e4),r=v%1e4;return[(e?e.toLocaleString()+'억':''),(m?m.toLocaleString()+'만':''),(r?r.toLocaleString():'')].filter(Boolean).join(' ')+'원'}
+const UNITS=['천억','백억','십억','억','천만','백만','십만','만','천','백','십','일'];
+function cells(n){const s=n?String(n):'';const a=Array(12).fill('');if(s.length>12)return a;for(let i=0;i<s.length;i++)a[12-s.length+i]=s[i];return a}
+const fmtRrn=s=>{const d=String(s||'').replace(/\D/g,'').slice(0,13);return d.length>6?d.slice(0,6)+'-'+d.slice(6):d};
+const needDepo=()=>Math.ceil((D.min||0)*(D.rate||10)/100);
+const depo=()=>D.depoManual&&D.depo?D.depo:needDepo();
+function caseNo(){return (D.cy||'____')+' 타경 '+(D.cn||'______')+' 호'}
+function caseShort(){return (D.cy||'')+'타경'+(D.cn||'')+(D.item?' ('+D.item+')':'')}
+function dateParts(){if(!D.date)return null;const [y,m,d]=D.date.split('-').map(Number);return{y,m,d}}
+
+/* ---------- 입력 연결 ---------- */
+function writeForm(){
+  $$('[data-k]').forEach(el=>{const v=getK(el.dataset.k);
+    if(el.type==='checkbox')el.checked=!!v;
+    else if(el.hasAttribute('data-money'))el.value=comma(el.dataset.k==='depo'?depo():v);
+    else if(el.hasAttribute('data-rrn'))el.value=fmtRrn(v);
+    else el.value=v??''});
+  segs()}
+function segs(){
+  $$('#rateSeg button').forEach(b=>b.classList.toggle('on',+b.dataset.rate===D.rate));
+  $$('#typeSeg button').forEach(b=>b.classList.toggle('on',b.dataset.type===D.type));
+  $$('#methodSeg button').forEach(b=>b.classList.toggle('on',b.dataset.method===D.method));
+  $$('.agentOnly').forEach(e=>e.classList.toggle('hide',D.type!=='agent'));
+  $('#selfHint').textContent=D.type==='agent'?'(입찰 명의자 — 위임하는 사람)':'';
+  $('#priceBox').classList.toggle('hide',D.hand)}
+$$('[data-k]').forEach(el=>{
+  const ev=el.type==='checkbox'?'change':'input';
+  el.addEventListener(ev,()=>{const k=el.dataset.k;
+    if(el.type==='checkbox'){setK(k,el.checked);if(k==='hand'){segs()}}
+    else if(el.hasAttribute('data-money')){const n=num(el.value);
+      if(k==='depo'){D.depo=n;D.depoManual=!!n&&n!==needDepo()}else{setK(k,n);if(k==='price')D.overOk=false}
+      const pos=el.value.length-el.selectionStart;el.value=comma(n);try{const p=Math.max(0,el.value.length-pos);el.setSelectionRange(p,p)}catch(e){}
+      if(k==='min'&&!D.depoManual){$('[data-k=depo]').value=comma(needDepo())}}
+    else if(el.hasAttribute('data-rrn')){const v=fmtRrn(el.value);el.value=v;setK(k,v.replace(/\D/g,''))}
+    else if(['cy','cn','item'].includes(k)){const v=el.value.replace(/\D/g,'');el.value=v;setK(k,v)}
+    else setK(k,el.value);
+    if(k==='overOk')$('#overWrap input').checked=D.overOk;
+    saveD();update()})});
+$$('#rateSeg button').forEach(b=>b.onclick=()=>{D.rate=+b.dataset.rate;D.depoManual=false;$('[data-k=depo]').value=comma(needDepo());saveD();segs();update()});
+$$('#typeSeg button').forEach(b=>b.onclick=()=>{D.type=b.dataset.type;saveD();segs();update()});
+$$('#methodSeg button').forEach(b=>b.onclick=()=>{D.method=b.dataset.method;saveD();segs();update()});
+$('#fillOffice').onclick=()=>{const o=Object.assign({},LS.get('sise.office',{}),LS.get('d1c.office',{}));
+  const name=o.ceo||o.rep,tel=o.tel,addr=o.addr;
+  if(!name&&!tel&&!addr){toast('저장된 사무소 정보가 없어요 — ② 다방광고 「사무소 정보」 탭에서 먼저 입력하세요');return}
+  if(name)D.agent.name=name;if(tel)D.agent.tel=tel;if(addr)D.agent.addr=addr;if(!D.agent.job)D.agent.job='공인중개사';
+  saveD();writeForm();update();toast('사무소 정보로 채웠어요 — 대리인 주소는 신분증 주소와 같은지 확인하세요')};
+$('#btnReset').onclick=()=>{if(!confirm('입력한 내용을 모두 지우고 새로 작성할까요?'))return;
+  const keep={incCheck:D.incCheck,sample:D.sample,saveRrn:D.saveRrn,court:D.court};D=Object.assign(clone(DEF),keep);
+  try{sessionStorage.removeItem('bid.rrn')}catch(e){}saveD();writeForm();update();scrollTo({top:0,behavior:'smooth'})};
+
+/* ---------- 검사 ---------- */
+function check(){
+  const R=[],Y=[],G=[];const p=D.price,m=D.min,dp=depo();
+  if(!D.court.trim())R.push(['법원을 입력하세요','court']);
+  else if(!/법원/.test(D.court))Y.push(['법원 이름이 정확한지 확인하세요(예: 수원지방법원 성남지원)','court']);
+  if(!/^\d{4}$/.test(D.cy)||!D.cn)R.push(['사건번호(연도·번호)를 입력하세요','cn']);
+  else{const y=+D.cy,now=new Date().getFullYear();if(y<now-10||y>now)Y.push([`사건 연도 ${y}년이 맞는지 확인하세요`,'cy'])}
+  const dp_=dateParts();
+  if(!dp_)R.push(['입찰기일을 입력하세요','date']);
+  else{const t=new Date();t.setHours(0,0,0,0);const dd=Math.round((new Date(dp_.y,dp_.m-1,dp_.d)-t)/864e5);
+    if(dd<0)R.push([`입찰기일이 이미 지났어요(${-dd}일 전)`,'date']);
+    else if(dd===0)Y.push(['오늘이 입찰기일입니다 — 법원경매정보에서 변경·취하 여부를 마지막으로 확인하세요','date']);
+    else{const w=new Date(dp_.y,dp_.m-1,dp_.d).getDay();if(w===0||w===6)Y.push(['입찰기일이 주말이에요 — 날짜를 다시 확인하세요','date'])}}
+  if(!m)R.push(['최저매각가격을 입력하세요','min']);
+  if(D.appr&&m&&m>D.appr)Y.push(['최저매각가격이 감정가보다 높아요 — 두 칸이 바뀌지 않았는지 확인하세요','min']);
+  if(m){if(D.depoManual&&dp<needDepo())R.push([`보증금액이 부족해요 — 최저매각가격의 ${D.rate}%는 ${won(needDepo())}입니다(부족하면 입찰 무효)`,'depo']);
+    else G.push([`보증금액 ${won(dp)} (최저매각가격의 ${D.rate}%${D.depoManual?' 이상, 직접 입력':''})`,'depo'])}
+  if(!D.self.name.trim())R.push([D.type==='agent'?'본인(위임인) 성명을 입력하세요':'입찰자 성명을 입력하세요','self.name']);
+  if(!D.self.addr.trim())Y.push(['본인 주소를 입력하세요(주민등록상 주소)','self.addr']);
+  if(D.self.rrn&&D.self.rrn.length!==13)Y.push(['본인 주민등록번호 13자리를 확인하세요','self.rrn']);
+  if(!D.self.rrn)Y.push(['본인 주민등록번호가 비어 있어요(출력 후 손으로 써도 됩니다)','self.rrn']);
+  if(D.type==='agent'){
+    if(!D.agent.name.trim())R.push(['대리인 성명을 입력하세요','agent.name']);
+    if(!D.agent.rel.trim())Y.push(['본인과의 관계를 입력하세요','agent.rel']);
+    if(!D.agent.addr.trim())Y.push(['대리인 주소를 입력하세요','agent.addr']);
+    if(D.agent.rrn&&D.agent.rrn.length!==13)Y.push(['대리인 주민등록번호 13자리를 확인하세요','agent.rrn']);
+    if(!D.agent.rrn)Y.push(['대리인 주민등록번호가 비어 있어요(출력 후 손으로 써도 됩니다)','agent.rrn']);
+    G.push(['대리 입찰 — 위임장이 함께 출력됩니다(본인 인감 날인 + 인감증명서 첨부)',''])}
+  let block=false,over=null;
+  if(D.hand){Y.push(['입찰가격 칸을 비워 출력합니다 — 법원에서 쓸 때 아래 「자릿수 대조판」의 최저가 줄과 자릿수를 꼭 비교하세요','hand'])}
+  else if(!p){R.push(['입찰가격을 입력하세요','price']);block=true}
+  else{
+    if(String(p).length>12){R.push(['입찰가격이 너무 커요(1조 원 이상)','price']);block=true}
+    if(m&&p<m){R.push([`입찰가격이 최저매각가격(${won(m)})보다 낮아요 — 최저가 미만 입찰은 무효라 출력을 막았습니다`,'price']);block=true}
+    if(D.price2!==p){R.push([D.price2?'확인용으로 다시 입력한 금액이 달라요 — 두 칸을 똑같이 맞춰야 출력됩니다':'입찰가격을 확인 칸에 한 번 더 입력하세요(0 하나 더 쓰기 방지)','price2']);block=true}
+    if(m&&p>=m){const r=p/m;const dl=String(p).length-String(m).length;
+      if(dl>=1)over={lv:'r',t:`입찰가격이 최저매각가격보다 자릿수가 ${dl}자리 많아요(${(r*100).toFixed(0)}%). 0을 더 쓴 건 아닌가요? ${wonShort(p)}이 정말 맞으면 체크하세요.`};
+      else if(r>1.5)over={lv:'y',t:`최저매각가격의 ${(r*100).toFixed(1)}%예요(150% 초과). "0 하나 더 쓴 건 아닌가요?" — ${wonShort(p)}이 맞으면 체크하세요.`};
+      if(!over&&D.appr&&p>D.appr*1.5)over={lv:'y',t:`감정가의 ${(p/D.appr*100).toFixed(0)}%예요. ${wonShort(p)}이 맞으면 체크하세요.`};
+      if(over){if(!D.overOk){R.push(['금액 확인 체크가 필요해요 — 입찰가격 아래 경고를 읽고 체크하세요','overOk']);block=true}}
+      else if(!block)G.push([`입찰가격 ${won(p)} — 최저가 대비 ${(r*100).toFixed(1)}%${D.appr?' · 감정가 대비 '+(p/D.appr*100).toFixed(1)+'%':''}`,'price'])}}
+  if(D.method==='bond')Y.push(['보증서(보증보험증권)로 제공 — 보증서 원본을 매수신청보증봉투에 넣으세요','']);
+  return{R,Y,G,block:block||R.length>0,over}}
+
+/* ---------- 화면 갱신 ---------- */
+function update(){
+  const p=D.price,m=D.min,dp=depo(),C=check();
+  $('#kor').textContent=p&&!D.hand?'금 '+hangul(p)+'원정':'';
+  const rt=[];if(p&&m)rt.push(`<span class="${p/m>1.5?'hot':''}">최저가 대비 ${(p/m*100).toFixed(1)}%</span>`);
+  if(p&&D.appr)rt.push(`<span>감정가 대비 ${(p/D.appr*100).toFixed(1)}%</span>`);
+  if(p&&m&&p>=m)rt.push(`<span>최저가보다 ${wonShort(p-m)} 높음</span>`);
+  $('#ratio').innerHTML=D.hand?'':rt.join('');
+  $('#depoHint').textContent=m?`최저매각가격의 ${D.rate}% = ${won(needDepo())}${D.depoManual?' · 직접 입력값 사용 중':''} · ${hangul(dp)}원`:'최저매각가격 × 비율로 자동 계산(직접 고칠 수 있음)';
+  const row=(cls,lab,n)=>`<tr class="${cls}"><th>${lab}</th>${cells(n).map(c=>`<td class="v">${c}</td>`).join('')}<td class="u">원</td></tr>`;
+  $('#dg').innerHTML=`<div class="hint" style="margin:0 0 6px;text-align:center">자릿수 대조판 — 세 줄의 칸 위치를 눈으로 맞춰 보세요</div><table>
+    <tr class="units"><th></th>${UNITS.map(u=>`<td>${u}</td>`).join('')}<td></td></tr>
+    ${row('min','최저매각가격',m)}${row('price'+(C.over?' hot':''),'입찰가격',D.hand?0:p)}${row('','보증금액',dp)}</table>`;
+  $('#overWrap').classList.toggle('hide',!C.over||D.hand);$('#overWrap input').checked=!!D.overOk;
+  if(C.over){$('#overTxt').innerHTML=esc(C.over.t);$('#overWrap').style.color=C.over.lv==='r'?'var(--red)':'var(--yel)'}
+  ['price','price2'].forEach(k=>{const el=$(`[data-k=${k}]`);el.classList.toggle('bad',!!(p&&((k==='price'&&m&&p<m)||(k==='price2'&&D.price2&&D.price2!==p))))});
+  $('#issues').innerHTML=[...C.R.map(x=>['r','필수',x]),...C.Y.map(x=>['y','확인',x]),...C.G.map(x=>['g','OK',x])]
+    .map(([c,l,[t,k]])=>`<li class="${c}"${k?` data-go="${k}" style="cursor:pointer"`:''}><i>${l}</i><span>${esc(t)}</span></li>`).join('')||'<li class="g"><i>OK</i><span>문제 없음</span></li>';
+  $$('#issues [data-go]').forEach(li=>li.onclick=()=>{const el=$(`[data-k="${li.dataset.go}"]`);if(el&&el.offsetParent){el.scrollIntoView({behavior:'smooth',block:'center'});setTimeout(()=>el.focus({preventScroll:true}),350)}});
+  const blk=C.block&&!(D.hand&&!C.R.length);
+  $('#btnPdf').disabled=blk;$('#btnPdf').title=blk?'제출 전 점검의 「필수」 항목을 먼저 해결하세요':'';
+  return C}
+
+/* ---------- 출력물 ---------- */
+function bidSheet(){
+  const dp=dateParts(),A=D.type==='agent',s=D.self,a=D.agent;
+  const v=x=>esc(x||''),seal='<span class="seal">(인)</span>';
+  const pc=cells(D.hand?0:D.price),dc=cells(depo());
+  const cellRow=arr=>arr.map(c=>`<td class="d">${c}</td>`).join('');
+  const unitRow=`<tr class="u"><td class="blank"></td>${UNITS.map(u=>`<td>${u}</td>`).join('')}<td class="blank"></td></tr>`;
+  const cb=on=>on?'■':'□';
+  return `<div class="rp ${D.sample?'sample':''}" data-wm="옮겨쓰기 견본">
+  <div class="ftitle">기일입찰표</div>
+  <div class="fhead"><span>${v(D.court)||'　　　　지방법원'} 집행관 귀하</span><span>입찰기일 : ${dp?dp.y+'년 '+dp.m+'월 '+dp.d+'일':'　　년　　월　　일'}</span></div>
+  <table class="ft">
+    <colgroup><col style="width:11mm"><col style="width:13mm"><col style="width:30mm"><col style="width:54mm"><col style="width:26mm"><col style="width:48mm"></colgroup>
+    <tr><th colspan="2">사건<br>번호</th><td colspan="2" class="val" style="text-align:center;font-size:13pt">${v(D.cy)||'　　'} 타경 ${v(D.cn)||'　　　　'} 호</td>
+      <th>물건<br>번호</th><td class="val" style="text-align:center">${v(D.item)} <div class="tiny" style="text-align:left">※ 물건번호가 여러 개 있는 경우에는 꼭 기재</div></td></tr>
+    <tr><th rowspan="6">입<br>찰<br>자</th><th rowspan="3">본인</th><th>성　　명</th><td class="val">${v(s.name)}${seal}</td><th>전화번호</th><td class="val sm">${v(s.tel)}</td></tr>
+    <tr><th>주민(사업자)<br>등록번호</th><td class="val sm">${v(fmtRrn(s.rrn))}</td><th>법인등록<br>번호</th><td></td></tr>
+    <tr><th>주　　소</th><td colspan="3" class="val sm">${v(s.addr)}</td></tr>
+    <tr><th rowspan="3">대리인</th><th>성　　명</th><td class="val">${A?v(a.name):''}${seal}</td><th>본인과의<br>관계</th><td class="val sm">${A?v(a.rel):''}</td></tr>
+    <tr><th>주민등록번호</th><td class="val sm">${A?v(fmtRrn(a.rrn)):''}</td><th>전화번호</th><td class="val sm">${A?v(a.tel):''}</td></tr>
+    <tr><th>주　　소</th><td colspan="3" class="val sm">${A?v(a.addr):''}</td></tr>
+  </table>
+  <table class="pt">
+    <colgroup><col style="width:26mm">${'<col style="width:12mm">'.repeat(12)}<col style="width:12mm"></colgroup>
+    ${unitRow}
+    <tr><th class="lab">입찰<br>가격</th>${cellRow(pc)}<td class="won">원</td></tr>
+  </table>
+  <div class="caution">※ 입찰가격에 숫자 '0'을 한 번 더 쓰지 않도록 주의하세요. 입찰가격은 고칠 수 없으니 잘못 쓴 경우 새 용지에 다시 쓰세요.</div>
+  <table class="pt" style="margin-top:0">
+    <colgroup><col style="width:26mm">${'<col style="width:12mm">'.repeat(12)}<col style="width:12mm"></colgroup>
+    ${unitRow}
+    <tr><th class="lab">보증<br>금액</th>${cellRow(dc)}<td class="won">원</td></tr>
+  </table>
+  <table class="mt">
+    <colgroup><col style="width:26mm"><col style="width:66mm"><col style="width:90mm"></colgroup>
+    <tr><th>보증의<br>제공방법</th><td class="val" style="font-size:11pt">${cb(D.method==='cash')} 현금·자기앞수표<br>${cb(D.method==='bond')} 보증서</td>
+      <td style="font-size:10.5pt;line-height:2">보증을 반환 받았습니다.<br><span style="padding-left:20mm">입찰자</span><span style="display:inline-block;width:30mm"></span>(인)</td></tr>
+  </table>
+  <div class="notes"><b>주의사항(요약)</b><ol>
+    <li>입찰표는 물건마다 별도의 용지를 사용하십시오. 다만 일괄입찰 시에는 1매의 용지를 사용하십시오.</li>
+    <li>입찰가격은 수정할 수 없으므로, 수정이 필요하면 새 용지를 사용하십시오.</li>
+    <li>대리인이 입찰하는 때에는 본인과 대리인의 인적사항 및 본인과의 관계를 모두 기재하고, 본인의 위임장과 인감증명을 이 입찰표에 첨부하십시오.</li>
+    <li>한 번 제출된 입찰표는 취소·변경이나 교환이 불가능합니다.</li>
+    <li>보증의 제공방법(현금·자기앞수표 또는 보증서) 중 하나를 선택하여 표시하십시오.</li></ol>
+    <div class="tiny" style="margin-top:1.5mm">중개사무소 앱 ⑦로 작성 · 제출 전 법원 비치 기일입찰표(2026.11.2. 시행 양식)와 항목을 대조하십시오.</div></div>
+  </div>`}
+function poaSheet(){
+  const s=D.self,a=D.agent,v=x=>esc(x||'');
+  const person=(lab,p,sealTxt)=>`<table class="poa">
+    <colgroup><col style="width:24mm"><col style="width:28mm"><col style="width:58mm"><col style="width:24mm"><col style="width:48mm"></colgroup>
+    <tr><th rowspan="3">${lab}</th><th>성　　명</th><td class="val">${v(p.name)}<span class="seal">${sealTxt}</span></td><th>직　　업</th><td class="val sm">${v(p.job)}</td></tr>
+    <tr><th>주민등록번호</th><td class="val sm">${v(fmtRrn(p.rrn))}</td><th>전화번호</th><td class="val sm">${v(p.tel)}</td></tr>
+    <tr><th>주　　소</th><td colspan="3" class="val sm">${v(p.addr)}</td></tr></table>`;
+  return `<div class="rp ${D.sample?'sample':''}" data-wm="옮겨쓰기 견본">
+  <div class="poa-t">위임장</div>
+  ${person('대<br>리<br>인',a,'(인)')}
+  <div class="poa-mid">위 사람을 대리인으로 정하고 다음 사항을 위임함.
+    <div class="c">다　음</div>
+    <div class="what">${v(D.court)||'　　　　지방법원'}　${v(D.cy)||'　　'} 타경 ${v(D.cn)||'　　　　'} 호${D.item?' (물건번호 '+v(D.item)+')':''} 부동산 경매사건에 관한 입찰행위 일체</div>
+  </div>
+  ${person('본<br>인<br>1',s,'(인감인)')}
+  <div style="height:4mm"></div>
+  ${person('본<br>인<br>2',{},'(인감인)')}
+  <div class="poa-foot">* 본인의 인감증명서를 첨부하십시오.<br>* 본인이 법인인 경우에는 주민등록번호란에 사업자등록번호를 기재하십시오.<br>* 본인이 1명이면 「본인 2」란은 비워 두십시오.</div>
+  <div class="court-to">${v(D.court)||'　　　　지방법원'} 귀중</div>
+  </div>`}
+function checkSheet(){
+  const A=D.type==='agent',dp=dateParts(),p=D.price,m=D.min,dpo=depo();
+  const o=Object.assign({},LS.get('sise.office',{}),LS.get('d1c.office',{}));
+  const off=[o.name,(o.ceo||o.rep)?'대표 '+(o.ceo||o.rep):'',o.tel].filter(Boolean).map(esc).join(' · ');
+  const wk=dp?['일','월','화','수','목','금','토'][new Date(dp.y,dp.m-1,dp.d).getDay()]:'';
+  const items=A?['대리인 신분증(주민등록증·운전면허증·여권)','대리인 도장(막도장 가능)','위임장 — 본인 인감도장 날인','본인 인감증명서(최근 발급분, 통상 3개월 이내)','기일입찰표(대리인 란·본인과의 관계 기재)',D.method==='cash'?`보증금 자기앞수표 ${won(dpo)} (1장 권장)`:'보증서(보증보험증권) 원본','농지면 농지취득자격증명(매각결정기일까지 제출)','봉투에 쓸 볼펜·인주']
+    :['본인 신분증(주민등록증·운전면허증·여권)','본인 도장(막도장 가능)','기일입찰표',D.method==='cash'?`보증금 자기앞수표 ${won(dpo)} (1장 권장)`:'보증서(보증보험증권) 원본','농지면 농지취득자격증명(매각결정기일까지 제출)','봉투에 쓸 볼펜·인주'];
+  return `<div class="rp chkp">
+  <div class="meta">입찰 준비 확인서 · 법원에 제출하지 않는 내부 확인용 · 작성 ${new Date().toLocaleDateString('ko-KR')}</div>
+  <h1>${esc(D.court)} ${esc(caseShort())}</h1>
+  <table>
+    <tr><th>입찰기일</th><td>${dp?`${dp.y}년 ${dp.m}월 ${dp.d}일(${wk})`:'-'} · 입찰 시작·마감 시각은 법원마다 다르니 매각기일 공고 확인</td></tr>
+    <tr><th>입찰자</th><td>${esc(D.self.name)}${A?` · 대리인 ${esc(D.agent.name)}(${esc(D.agent.rel)})`:' (본인 입찰)'}</td></tr>
+    <tr><th>감정가 / 최저가</th><td>${D.appr?won(D.appr):'-'} / ${won(m)}</td></tr>
+    <tr><th>입찰가격</th><td>${D.hand?'법원에서 직접 기재 (칸 비워 출력)':`<span class="bigp">${won(p)}</span><br>금 ${hangul(p)}원정 · 최저가 대비 ${m?(p/m*100).toFixed(1):'-'}%${D.appr?' · 감정가 대비 '+(p/D.appr*100).toFixed(1)+'%':''}`}</td></tr>
+    <tr><th>보증금액</th><td><b>${won(dpo)}</b> (금 ${hangul(dpo)}원정 · 최저가의 ${D.rate}%${D.depoManual?' 이상':''}) · ${D.method==='cash'?'현금·자기앞수표':'보증서'}</td></tr>
+  </table>
+  <h2>준비물</h2>
+  <ul class="cl">${items.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>
+  <h2>봉투 작성</h2>
+  <ol class="flow">
+    <li><b>매수신청보증봉투</b>(작은 흰 봉투): 사건번호·물건번호·제출자 성명 기재·날인 → 수표(또는 보증서) 넣고 봉함</li>
+    <li><b>입찰봉투</b>(큰 황색 봉투): 입찰표${A?'·위임장·인감증명서':''}와 보증봉투를 함께 넣고, 겉면에 사건번호·물건번호 기재 후 봉함</li>
+    <li>집행관에게 신분증 제시 → 입찰봉투 제출 → <b>입찰자용 수취증</b>을 받아 보관(떨어지면 이것으로 보증금 반환)</li>
+  </ol>
+  <h2>입찰 당일 순서</h2>
+  <ol class="flow">
+    <li>아침에 법원경매정보에서 사건의 <b>변경·연기·취하</b> 여부 확인</li>
+    <li>입찰 법정 도착 → 게시판에서 당일 사건 확인 → 기일입찰표·봉투 수령(비치 양식 확인)</li>
+    <li>입찰 마감 전 제출 → 개찰 → 최고가매수신고인 결정, 떨어지면 수취증으로 보증금 즉시 반환</li>
+  </ol>
+  <div class="warnbox"><b>마지막 확인</b> — 입찰가격·보증금액 칸의 자릿수를 최저매각가격(${won(m)})과 나란히 놓고 비교하세요. 입찰가격은 고칠 수 없으며 제출 후 취소·변경이 안 됩니다. 낙찰 후 대금을 내지 못하면 보증금을 돌려받지 못합니다.</div>
+  <div class="disc">이 자료는 서류 작성 보조용입니다. 사건 정보·보증 비율·양식은 법원경매정보와 매각물건명세서, 법원 비치 양식으로 최종 확인하십시오.${off?'<br>작성 도움: '+off:''}</div>
+  </div>`}
+function build(){const out=[bidSheet()];if(D.type==='agent')out.push(poaSheet());if(D.incCheck)out.push(checkSheet());$('#report').innerHTML=out.join('');
+  const pages=$$('#report .rp');pages.forEach((pg,i)=>pg.setAttribute('data-p',(i+1)+' / '+pages.length+'쪽'));return pages}
+function saveHistory(){if(!D.cn)return;const id=[D.court,D.cy,D.cn,D.item].join('|');const h=LS.get('bid.history',[]).filter(x=>x.id!==id);
+  h.unshift({id,court:D.court,case:caseShort(),date:D.date,price:D.hand?0:D.price,min:D.min,type:D.type,name:D.self.name,at:new Date().toISOString()});LS.set('bid.history',h.slice(0,40))}
+function ready(){const C=update();if(C.block&&!(D.hand&&!C.R.length)){toast('제출 전 점검의 「필수」 항목을 먼저 해결하세요');const f=$('#issues li.r');if(f)f.scrollIntoView({behavior:'smooth',block:'center'});return false}return true}
+
+/* ---------- 미리보기 ---------- */
+function fitPreview(){const w=document.documentElement.clientWidth;const z=Math.min(1,(w-16)/(210*96/25.4));document.documentElement.style.setProperty('--pz',z.toFixed(3))}
+function openPreview(){const C=update();const pages=build();saveHistory();
+  $('#pvTitle').textContent='미리보기 · A4 '+pages.length+'쪽'+(C.block?' · 필수 항목 미해결':'');
+  $('#pvPrint').disabled=C.block&&!(D.hand&&!C.R.length);
+  document.body.classList.add('pv');fitPreview();$('#report').scrollTop=0;
+  const isOver=p=>p.offsetHeight/p.offsetWidth>297/210+0.01;const over=pages.map((p,i)=>isOver(p)?i+1:0).filter(Boolean);
+  pages.forEach(p=>p.classList.toggle('over',isOver(p)));
+  const old=$('#pvwarn');if(old)old.remove();
+  const msgs=[];if(C.block)msgs.push('「필수」 항목이 남아 있어 PDF 저장은 막혀 있어요. 화면을 닫고 점검 목록을 확인하세요.');
+  if(over.length)msgs.push(over.join('·')+'쪽이 A4 한 장보다 길어요. 주소를 줄여 쓰면 맞습니다.');
+  if(msgs.length){const d=document.createElement('div');d.id='pvwarn';d.textContent=msgs.join(' ');$('#report').prepend(d)}
+  history.pushState({pv:1},'')}
+function closePreview(fromPop){if(!document.body.classList.contains('pv'))return;document.body.classList.remove('pv');if(!fromPop&&history.state&&history.state.pv)history.back()}
+$('#btnPv').onclick=openPreview;
+$('#btnPdf').onclick=()=>{if(!ready())return;build();saveHistory();window.print()};
+$('#pvPrint').onclick=()=>{if(!ready())return;window.print()};
+$('#pvClose').onclick=()=>closePreview();
+addEventListener('popstate',()=>closePreview(true));
+addEventListener('resize',()=>{if(document.body.classList.contains('pv'))fitPreview()});
+addEventListener('keydown',e=>{if(e.key==='Escape')closePreview()});
+addEventListener('beforeprint',()=>{if(!$('#report').innerHTML)build()});
+
+writeForm();update();
+})();
+</script>
+</body>
+</html>

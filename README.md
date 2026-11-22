@@ -6,5 +6,6 @@
 - `lh.html` — ⑤ LH 전세임대 사전점검 신호등
 - `dabang.html` — ② 다방광고 원클릭 (기기 저장, 주소→건축물대장 자동조회 `junggae_building`)
 - `land.html` — ④ 토지 얼마나 해요? (토지특성·공시지가 `sise_land`, 토지 실거래 `sise_trades`, 키 미등록 시 국토부 CSV 업로드)
+- `bid.html` — ⑦ 경매 입찰서류 자동작성 (새 기일입찰표 2026.11.2 양식 기준, 위임장·준비 확인서, 자릿수 대조판·이중입력 검사, 서버 없음·기기 저장 `bid.draft`/`bid.history`)
 - 백엔드: Supabase(yangseongi 프로젝트 `lh` 스키마, 공개 RPC `lh_*`·`sise_*`·`junggae_*`, 공용 로그인)
 - 정적 사이트 — 빌드 없음. Vercel에서 Framework "Other"로 그대로 배포.
