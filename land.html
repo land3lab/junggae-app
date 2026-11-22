@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>토지 얼마나 해요? — 중개사무소 앱 ④</title>
+<script>if(/[?&]embed=1/.test(location.search))document.documentElement.classList.add("embed")</script>
+<meta name="theme-color" content="#1f4d3f">
+<link rel="icon" href="icon.svg">
+<style>
+:root{--bg:#f6f5f1;--card:#fff;--ink:#1d2321;--sub:#56605b;--line:#e1dfd7;--brand:#1f4d3f;--brand-soft:#e5efea;
+  --red:#b42318;--red-soft:#fdecea;--yel:#7a5400;--yel-soft:#fff4d6;--grn:#17733f;--grn-soft:#e4f4ea;--r:14px}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;font-size:16px;line-height:1.55;-webkit-text-size-adjust:100%}
+header{background:var(--brand);color:#fff;padding:16px}
+header h1{margin:0;font-size:19px;letter-spacing:-.3px}
+header p{margin:2px 0 0;font-size:13px;opacity:.85}
+.embed header{display:none}
+.wrap{max-width:820px;margin:0 auto;padding:12px 12px 60px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px;margin:0 0 12px}
+.card h2{font-size:16.5px;margin:0 0 10px;display:flex;align-items:center;gap:8px}
+.n{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--brand);color:#fff;font-size:13px}
+label.f{display:block;font-size:13.5px;color:var(--sub);font-weight:600}
+input[type=text],input[type=tel],input[type=password],input[type=number],select,textarea{width:100%;min-height:46px;border:1px solid #cfccc2;border-radius:10px;padding:10px 12px;font:inherit;color:var(--ink);background:#fff;margin-top:4px}
+textarea{min-height:130px;resize:vertical;line-height:1.6}
+input:focus,select:focus,textarea:focus{outline:2px solid #8fb5a6;border-color:var(--brand)}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.grid .full{grid-column:1/-1}
+.btn{min-height:46px;border:1px solid #cfccc2;background:#fff;border-radius:10px;padding:10px 16px;font:inherit;font-weight:700;color:var(--ink);cursor:pointer}
+.btn.pri{background:var(--brand);border-color:var(--brand);color:#fff}
+.btn.sm{min-height:44px;padding:8px 12px;font-size:14px}
+.btn:disabled{opacity:.5;cursor:default}
+.desc{margin:0 0 10px;font-size:14px;color:var(--sub)}
+.hint{font-size:13px;color:var(--sub)}
+.note{padding:12px 14px;border-radius:12px;font-size:14px;margin:10px 0}
+.note.y{background:var(--yel-soft);color:var(--yel)} .note.r{background:var(--red-soft);color:var(--red)} .note.g{background:var(--grn-soft);color:var(--grn)} .note.b{background:var(--brand-soft);color:var(--brand)}
+.chk{display:flex;align-items:center;gap:8px;min-height:44px;font-size:14.5px;cursor:pointer}
+.chk input{width:22px;height:22px;accent-color:var(--brand)}
+.facts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.fact{background:#faf9f6;border:1px solid var(--line);border-radius:10px;padding:10px}
+.fact b{display:block;font-size:12.5px;color:var(--sub);font-weight:600}
+.fact span{font-size:15.5px;font-weight:700}
+.big{font-size:26px;font-weight:800;letter-spacing:-.5px;color:var(--brand)}
+.methods{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.m{border:1px solid var(--line);border-radius:12px;padding:12px;background:#fff}
+.m h3{margin:0 0 4px;font-size:15px}
+.m .v{font-size:18px;font-weight:800}
+.conf{display:inline-block;font-size:12.5px;font-weight:700;padding:2px 8px;border-radius:6px}
+.conf.hi{background:var(--grn-soft);color:var(--grn)} .conf.mid{background:var(--yel-soft);color:var(--yel)} .conf.lo{background:var(--red-soft);color:var(--red)}
+table.t{width:100%;border-collapse:collapse;font-size:13.5px}
+table.t th,table.t td{border-bottom:1px solid var(--line);padding:7px 6px;text-align:right;white-space:nowrap}
+table.t th{color:var(--sub);font-weight:600;background:#faf9f6}
+table.t td:first-child,table.t th:first-child{text-align:left}
+.tw{overflow-x:auto}
+.bars{display:flex;align-items:flex-end;gap:4px;height:120px;margin:8px 0 2px}
+.bars div{flex:1;background:#9fc2b4;border-radius:4px 4px 0 0;position:relative;min-width:8px}
+.bars div:last-child{background:var(--brand)}
+.barl{display:flex;gap:4px;font-size:11.5px;color:var(--sub)}.barl span{flex:1;text-align:center;min-width:8px}
+.prog{height:8px;background:#ebe9e2;border-radius:99px;overflow:hidden;margin:8px 0}
+.prog i{display:block;height:100%;background:var(--brand);width:0;transition:width .2s}
+.choice{display:block;width:100%;text-align:left;margin:6px 0}
+.hide{display:none!important}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#1d2321;color:#fff;padding:10px 16px;border-radius:10px;font-size:14px;opacity:0;pointer-events:none;transition:.2s;z-index:50}
+.toast.show{opacity:1}
+.bar{position:sticky;bottom:0;background:rgba(246,245,241,.96);padding:10px 0;display:flex;gap:8px;flex-wrap:wrap}
+.bar .btn{flex:1}
+/* ---------- 리포트(인쇄) ---------- */
+#report{display:none}
+@media (max-width:560px){.grid,.methods{grid-template-columns:1fr}.facts{grid-template-columns:1fr 1fr}.big{font-size:23px}}
+@media print{
+  @page{size:A4;margin:14mm}
+  body{background:#fff;font-size:11pt}
+  body>*:not(#report){display:none!important}
+  #report{display:block!important}
+  .rp{page-break-after:always}.rp:last-child{page-break-after:auto}
+  .rp h1{font-size:18pt;margin:0 0 2mm;color:#1f4d3f}
+  .rp h2{font-size:12.5pt;margin:6mm 0 2mm;border-left:4px solid #1f4d3f;padding-left:3mm}
+  .rp .meta{font-size:9.5pt;color:#555}
+  .rp table{width:100%;border-collapse:collapse;font-size:9.5pt}
+  .rp th,.rp td{border:1px solid #ccc;padding:1.6mm 2mm;text-align:right}
+  .rp th{background:#f1f3f2}
+  .rp td:first-child,.rp th:first-child{text-align:left}
+  .rp .range{font-size:20pt;font-weight:800;color:#1f4d3f;margin:2mm 0}
+  .rp .box{border:1.5px solid #1f4d3f;border-radius:3mm;padding:4mm;margin:3mm 0}
+  .rp .disc{font-size:8.5pt;color:#444;border-top:1px solid #999;margin-top:6mm;padding-top:2mm}
+  .rp .ment{white-space:pre-wrap;font-size:10pt;line-height:1.6}
+  .rp .office{font-size:9.5pt;text-align:right;margin-top:4mm}
+}
+</style>
+</head>
+<body>
+<header><h1>토지 얼마나 해요?</h1><p>중개사무소 앱 ④ · 주소 하나 → 근거가 보이는 시세 범위 → 고객용 상담 리포트</p></header>
+<div class="wrap" id="app"></div>
+<div id="report"></div>
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+"use strict";
+const SB_URL="https://dwtylilyvmvbpsryvlcg.supabase.co", SB_KEY="sb_publishable_Vht7Hh-4GF-mpbnprPp3FQ_AgGPTKTH", TK="junggae-token";
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const LS={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.remove('show'),2000)}
+function token(){try{return localStorage.getItem(TK)||''}catch(e){return''}}
+async function rpc(fn,args){
+  let r;try{r=await fetch(SB_URL+'/rest/v1/rpc/'+fn,{method:'POST',headers:{apikey:SB_KEY,'Content-Type':'application/json'},body:JSON.stringify(args||{})})}catch(e){throw new Error('인터넷 연결을 확인하세요')}
+  const t=await r.text();let j=null;try{j=t?JSON.parse(t):null}catch(e){}
+  if(!r.ok){const m=(j&&(j.message||j.hint))||('서버 오류 '+r.status);if(m==='AUTH_REQUIRED'){try{localStorage.removeItem(TK)}catch(e){}S.me=null;render();throw new Error('로그인이 만료됐어요. 다시 로그인하세요')}throw new Error(m)}
+  return j}
+
+/* ---------- 숫자 표기 ---------- */
+const PY=0.3025;
+function won(v){if(v==null||!isFinite(v))return'-';v=Math.round(v);const eok=Math.floor(v/1e8),man=Math.round((v%1e8)/1e4);
+  if(eok>0)return eok+'억'+(man?' '+man.toLocaleString()+'만':'')+'원';return man.toLocaleString()+'만원'}
+function wonShort(v){if(v==null||!isFinite(v))return'-';if(v>=1e8){const x=v/1e8;return(x>=10?x.toFixed(1):x.toFixed(2)).replace(/\.?0+$/,'')+'억'}return Math.round(v/1e4).toLocaleString()+'만'}
+const perPy=v=>v/PY; // 원/㎡ → 원/평
+const fmtM2=v=>Math.round(v).toLocaleString()+'원/㎡';
+const fmtPy=v=>wonShort(perPy(v))+'원/평';
+function quant(a,q){if(!a.length)return null;const s=[...a].sort((x,y)=>x-y);const p=(s.length-1)*q,b=Math.floor(p),r=p-b;return s[b+1]!==undefined?s[b]+r*(s[b+1]-s[b]):s[b]}
+const normUse=s=>String(s||'').replace(/지역$/,'').replace(/\s/g,'');
+const ymdList=(n)=>{const d=new Date();const out=[];for(let i=0;i<n;i++){const x=new Date(d.getFullYear(),d.getMonth()-i,1);out.push(x.getFullYear()+String(x.getMonth()+1).padStart(2,'0'))}return out};
+
+/* ---------- 상태 ---------- */
+const S={me:null,step:'input',addr:LS.get('sise.lastAddr',''),land:null,trades:null,tradeSrc:'',noKey:false,
+  opt:LS.get('sise.opt',{months:36,scope:'dong',jimok:true,use:false,share:false,lo:1.3,hi:1.8}),
+  office:LS.get('sise.office',{}),ment:{seller:'',buyer:''},busy:false,progress:0};
+
+/* ---------- 화면 ---------- */
+function render(){
+  const tk=token();
+  if(!tk){renderLogin();return}
+  const A=$('#app');
+  A.innerHTML=`
+  <div class="card">
+    <h2><span class="n">1</span>대상 토지 주소</h2>
+    <p class="desc">지번 주소를 넣으세요. 토지특성(지목·면적·용도지역)과 개별공시지가 이력을 자동으로 가져옵니다.</p>
+    <label class="f">지번 주소<input type="text" id="addr" placeholder="예: 양주시 백석읍 가업리 산 1 / 관악구 봉천동 100-1" value="${esc(S.addr)}" enterkeyhint="search"></label>
+    <details style="margin-top:8px"><summary class="hint" style="min-height:44px;display:flex;align-items:center;cursor:pointer">비교 조건 바꾸기</summary>
+      <div class="grid" style="margin-top:6px">
+        <label class="f">비교 기간<select id="o-months">${[12,24,36].map(m=>`<option value="${m}" ${S.opt.months==m?'selected':''}>최근 ${m/12}년(${m}개월)</option>`).join('')}</select></label>
+        <label class="f">비교 범위<select id="o-scope"><option value="dong" ${S.opt.scope==='dong'?'selected':''}>같은 동·리</option><option value="sgg" ${S.opt.scope==='sgg'?'selected':''}>같은 시·군·구 전체</option></select></label>
+        <label class="chk"><input type="checkbox" id="o-jimok" ${S.opt.jimok?'checked':''}>같은 지목만</label>
+        <label class="chk"><input type="checkbox" id="o-use" ${S.opt.use?'checked':''}>같은 용도지역만</label>
+        <label class="chk full"><input type="checkbox" id="o-share" ${S.opt.share?'checked':''}>지분거래도 포함(기본은 제외)</label>
+      </div>
+    </details>
+    <div class="row" style="margin-top:10px"><button class="btn pri" id="go" style="flex:1" ${S.busy?'disabled':''}>🔎 시세 범위 계산</button></div>
+    <div id="msg"></div>
+  </div>
+  <div id="result"></div>
+  <p class="hint" style="text-align:center">로그인: ${esc(S.me?.office||'')} ${esc(S.me?.name||'')} · <a href="#" id="logout" style="color:var(--sub)">로그아웃</a></p>`;
+  $('#go').onclick=run;
+  $('#addr').addEventListener('keydown',e=>{if(e.key==='Enter')run()});
+  ['months','scope'].forEach(k=>$('#o-'+k).onchange=e=>{S.opt[k]=k==='months'?+e.target.value:e.target.value;LS.set('sise.opt',S.opt);if(S.land)recompute()});
+  ['jimok','use','share'].forEach(k=>$('#o-'+k).onchange=e=>{S.opt[k]=e.target.checked;LS.set('sise.opt',S.opt);if(S.trades)renderResult()});
+  $('#logout').onclick=e=>{e.preventDefault();try{localStorage.removeItem(TK)}catch(_){}S.me=null;render()};
+  if(S.land)renderResult();
+}
+function renderLogin(){
+  $('#app').innerHTML=`<div class="card"><h2>로그인</h2>
+  <p class="desc">중개사무소 앱 회원 전용입니다(⑤ LH 신호등과 같은 계정). 공공데이터 조회 한도를 지키기 위해 로그인이 필요해요.</p>
+  <div class="grid"><label class="f">휴대폰 번호<input type="tel" id="ph" inputmode="numeric" placeholder="01012345678"></label>
+  <label class="f">숫자 비밀번호<input type="password" id="pin" inputmode="numeric" placeholder="6~8자리"></label></div>
+  <div class="row" style="margin-top:10px"><button class="btn pri" id="lg" style="flex:1">로그인</button>
+  <a class="btn" href="lh.html" target="_top" style="text-decoration:none;display:inline-flex;align-items:center">처음이면 가입하기</a></div><div id="lmsg"></div></div>`;
+  const go=async()=>{try{const j=await rpc('lh_login',{p_phone:$('#ph').value,p_pin:$('#pin').value});if(j.error){$('#lmsg').innerHTML='<div class="note r">'+esc(j.error)+'</div>';return}
+    localStorage.setItem(TK,j.token);S.me=j.member;render()}catch(e){$('#lmsg').innerHTML='<div class="note r">'+esc(e.message)+'</div>'}};
+  $('#lg').onclick=go;$('#pin').addEventListener('keydown',e=>{if(e.key==='Enter')go()});
+}
+
+/* ---------- 조회 ---------- */
+async function run(addrOrPnu){
+  const q=(typeof addrOrPnu==='string'?addrOrPnu:$('#addr').value).trim();
+  if(!q){$('#msg').innerHTML='<div class="note y">주소를 넣어 주세요.</div>';return}
+  if(typeof addrOrPnu!=='string'){S.addr=q;LS.set('sise.lastAddr',q)}
+  S.busy=true;$('#go').disabled=true;$('#msg').innerHTML='<div class="note b">토지 정보 가져오는 중…</div>';$('#result').innerHTML='';
+  try{
+    const j=await rpc('sise_land',{p_token:token(),p_addr:q});
+    if(!j.ok){$('#msg').innerHTML='<div class="note r">'+esc(j.message)+'</div>';return}
+    S.land=j;
+    // 입력한 번지와 다른 필지가 잡혔으면 고르게 함
+    const typed=(q.match(/(산\s*)?\d+(-\d+)?\s*$/)||[''])[0].replace(/\s/g,'');
+    const got=String(j.address||'').replace(/\s/g,'');
+    let pick='';
+    if(typed&&!/^\d{19}$/.test(q)&&!got.endsWith(typed)&&(j.choices||[]).length){
+      pick='<div class="note y">입력한 번지(<b>'+esc(typed)+'</b>)와 다른 필지가 먼저 잡혔어요: <b>'+esc(j.address)+'</b>. 맞는 필지를 고르세요.'+
+        j.choices.map(c=>'<button class="btn sm choice" data-pnu="'+esc(c.pnu)+'">'+esc(c.address)+'</button>').join('')+'</div>';
+    }
+    $('#msg').innerHTML=pick;
+    $$('#msg [data-pnu]').forEach(b=>b.onclick=()=>run(b.dataset.pnu));
+    if(!j.land){$('#msg').innerHTML+='<div class="note r">이 필지의 토지특성 자료가 없어요(신규 분할·행정구역 변경 등). 공시지가 이력만 표시합니다.</div>'}
+    await recompute();
+  }catch(e){$('#msg').innerHTML='<div class="note r">'+esc(e.message)+'</div>'}
+  finally{S.busy=false;const g=$('#go');if(g)g.disabled=false}
+}
+async function recompute(){
+  S.trades=null;S.noKey=false;
+  const lawd=S.land.pnu.slice(0,5);const months=ymdList(S.opt.months);
+  $('#result').innerHTML='<div class="card"><b>실거래 사례 모으는 중…</b> <span class="hint" id="pc">0/'+months.length+'개월</span><div class="prog"><i id="pb"></i></div></div>';
+  const all=[];let done=0,fail=0,noKey=false,lastErr='';
+  const queue=[...months];
+  async function worker(){while(queue.length){const ym=queue.shift();
+    try{const r=await rpc('sise_trades',{p_token:token(),p_lawd:lawd,p_ymd:ym});
+      if(r.ok)(r.items||[]).forEach(x=>all.push(x));else{if(r.code==='NO_KEY'){noKey=true;queue.length=0}else{fail++;lastErr=r.message}}}
+    catch(e){fail++;lastErr=e.message}
+    done++;const pb=$('#pb'),pc=$('#pc');if(pb)pb.style.width=(done/months.length*100)+'%';if(pc)pc.textContent=done+'/'+months.length+'개월'}}
+  await Promise.all([worker(),worker(),worker(),worker()]);
+  S.noKey=noKey;
+  if(!noKey){S.trades=all.map(x=>({dong:x.dong||'',jibun:x.jibun||'',jimok:x.jimok||'',use:x.use||'',area:+x.area||0,amount:+x.amount||0,ymd:(x.y||'')+'.'+String(x.m||'').padStart(2,'0')+(x.d?'.'+String(x.d).padStart(2,'0'):''),share:x.share||'',cancel:x.cancel||''}));
+    S.tradeSrc='국토교통부 실거래가 공개(토지 매매), 최근 '+S.opt.months+'개월'+(fail?` · ${fail}개월 조회 실패(${lastErr})`:'')}
+  renderResult();
+}
+
+/* ---------- CSV(국토부 실거래가 공개시스템 다운로드) ---------- */
+async function readCsv(file){
+  const buf=await file.arrayBuffer();let txt=new TextDecoder('utf-8').decode(buf);
+  if(txt.includes('�')||!/시군구/.test(txt)){try{txt=new TextDecoder('euc-kr').decode(buf)}catch(e){}}
+  const lines=txt.split(/\r?\n/);const hi=lines.findIndex(l=>/시군구/.test(l)&&/거래금액/.test(l));
+  if(hi<0)throw new Error('토지 매매 실거래 CSV가 아닌 것 같아요(시군구·거래금액 열이 없음)');
+  const parse=l=>{const out=[];let cur='',q=false;for(const ch of l){if(ch==='"'){q=!q}else if(ch===','&&!q){out.push(cur);cur=''}else cur+=ch}out.push(cur);return out.map(s=>s.trim())};
+  const h=parse(lines[hi]);const col=re=>h.findIndex(x=>re.test(x));
+  const c={sgg:col(/시군구/),jibun:col(/번지/),jimok:col(/지목/),use:col(/용도지역/),area:col(/(계약|거래)면적/),amt:col(/거래금액/),ym:col(/계약년월/),d:col(/계약일/),share:col(/지분/),cancel:col(/해제/)};
+  const rows=[];
+  for(const l of lines.slice(hi+1)){if(!l.trim())continue;const r=parse(l);if(r.length<4)continue;
+    const ym=String(r[c.ym]||'');rows.push({dong:r[c.sgg]||'',jibun:c.jibun>=0?r[c.jibun]:'',jimok:c.jimok>=0?r[c.jimok]:'',use:c.use>=0?r[c.use]:'',
+      area:+String(r[c.area]||'').replace(/,/g,'')||0,amount:+String(r[c.amt]||'').replace(/,/g,'')||0,ymd:ym.slice(0,4)+'.'+ym.slice(4,6)+(c.d>=0&&r[c.d]?'.'+String(r[c.d]).padStart(2,'0'):''),
+      share:c.share>=0?r[c.share]:'',cancel:c.cancel>=0&&r[c.cancel]&&r[c.cancel]!=='-'?r[c.cancel]:''})}
+  if(!rows.length)throw new Error('거래 행을 찾지 못했어요');
+  return rows;
+}
+
+/* ---------- 계산 ---------- */
+function analyze(){
+  const L=S.land,ld=L.land||{};
+  const area=+ld.lndpclAr||0;
+  const prices=(L.prices||[]).filter(p=>p.price>0);
+  const nowP=prices.length?prices[prices.length-1]:null;
+  const p5=prices.length>=2?prices[Math.max(0,prices.length-6)]:null;
+  const cagr=(nowP&&p5&&nowP.year>p5.year)?Math.pow(nowP.price/p5.price,1/(nowP.year-p5.year))-1:null;
+  const dongNm=String(ld.ldCodeNm||L.address||'').trim().split(/\s+/).filter(x=>!/^산$/.test(x)).slice(-1)[0]||'';
+  let comps=[];
+  if(S.trades){
+    comps=S.trades.filter(t=>t.area>0&&t.amount>0&&!t.cancel);
+    if(!S.opt.share)comps=comps.filter(t=>!/지분/.test(t.share));
+    if(S.opt.scope==='dong'&&dongNm)comps=comps.filter(t=>t.dong.includes(dongNm));
+    if(S.opt.jimok&&ld.lndcgrCodeNm)comps=comps.filter(t=>t.jimok===ld.lndcgrCodeNm);
+    if(S.opt.use&&ld.prposArea1Nm)comps=comps.filter(t=>normUse(t.use)===normUse(ld.prposArea1Nm));
+    comps.forEach(t=>t.unit=t.amount*1e4/t.area);
+    comps.sort((a,b)=>b.ymd.localeCompare(a.ymd));
+  }
+  const units=comps.map(t=>t.unit);const n=units.length;
+  const conf=n>=10?'hi':n>=3?'mid':'lo';
+  let m1=null;
+  if(n&&area){const q1=n>=4?quant(units,.25):Math.min(...units),q3=n>=4?quant(units,.75):Math.max(...units),md=quant(units,.5);
+    m1={lo:q1*area,mid:md*area,hi:q3*area,uLo:q1,uMid:md,uHi:q3,n}}
+  let m2=null;
+  if(nowP&&area){m2={lo:nowP.price*area*S.opt.lo,hi:nowP.price*area*S.opt.hi,mid:nowP.price*area*(S.opt.lo+S.opt.hi)/2,base:nowP.price*area}}
+  const ratio=(m1&&nowP)?m1.uMid/nowP.price:null;
+  let w1=n>=5?0.7:n>=3?0.5:0;
+  if(!m2)w1=m1?1:0;if(!m1)w1=0;
+  const mix=k=>(m1?m1[k]*w1:0)+(m2?m2[k]*(1-w1):0);
+  const final=(m1||m2)?{lo:mix('lo'),mid:mix('mid'),hi:mix('hi'),w1}:null;
+  return{area,prices,nowP,cagr,dongNm,comps,n,conf,m1,m2,ratio,final,ld};
+}
+const CONF_TXT={hi:'높음',mid:'보통',lo:'낮음'};
+
+/* ---------- 결과 ---------- */
+function renderResult(){
+  const R=$('#result');if(!R||!S.land)return;
+  const A=analyze();S.A=A;const L=S.land,ld=A.ld;
+  let h='';
+  h+=`<div class="card"><h2><span class="n">2</span>대상 토지</h2>
+    <div style="font-weight:700;margin-bottom:8px">${esc(L.address)} <a class="hint" target="_blank" rel="noopener" href="https://map.kakao.com/link/map/${encodeURIComponent(L.address||'대상지')},${L.y},${L.x}">지도 ↗</a></div>
+    <div class="facts">
+      <div class="fact"><b>지목</b><span>${esc(ld.lndcgrCodeNm||'-')}</span></div>
+      <div class="fact"><b>면적</b><span>${A.area?A.area.toLocaleString()+'㎡':'-'}</span><div class="hint">${A.area?(A.area*PY).toFixed(1)+'평':''}</div></div>
+      <div class="fact"><b>용도지역</b><span>${esc(ld.prposArea1Nm||'-')}</span>${ld.prposArea2Nm&&ld.prposArea2Nm!=='지정되지않음'?'<div class="hint">'+esc(ld.prposArea2Nm)+'</div>':''}</div>
+      <div class="fact"><b>이용상황</b><span>${esc(ld.ladUseSittnNm||'-')}</span></div>
+      <div class="fact"><b>도로접면</b><span>${esc(ld.roadSideCodeNm||'-')}</span></div>
+      <div class="fact"><b>지형</b><span>${esc([ld.tpgrphHgCodeNm,ld.tpgrphFrmCodeNm].filter(Boolean).join('·')||'-')}</span></div>
+    </div>
+    ${A.prices.length?`<div style="margin-top:12px"><b>개별공시지가 추이</b> <span class="hint">${A.nowP.year}년 ${fmtM2(A.nowP.price)} (${fmtPy(A.nowP.price)})${A.cagr!=null?' · 최근 5년 연평균 '+(A.cagr*100).toFixed(1)+'%':''}</span>
+      ${bars(A.prices.slice(-10))}</div>`:'<div class="note y">공시지가 이력이 없어요.</div>'}
+  </div>`;
+  // 실거래
+  h+=`<div class="card"><h2><span class="n">3</span>비교 실거래 사례</h2>`;
+  if(S.noKey&&!S.trades){
+    h+=`<div class="note y"><b>실거래 자동조회는 아직 준비 중이에요</b>(국토부 API 키 등록 대기). 지금은 국토부 실거래가 공개시스템에서 <b>토지 매매 CSV</b>를 내려받아 올리면 똑같이 계산됩니다.</div>
+      <ol class="desc" style="padding-left:20px"><li><a href="https://rt.molit.go.kr/pt/xls/xls.do?mobileAt=" target="_blank" rel="noopener">rt.molit.go.kr 조건별 자료제공</a> → <b>토지</b> · 매매 선택</li><li>지역: <b>${esc((ld.ldCodeNm||'').split(' ').slice(0,-1).join(' ')||'해당 시·군·구')}</b>, 기간: 최근 ${S.opt.months/12}년</li><li>CSV 다운로드 → 아래에 올리기</li></ol>
+      <label class="btn pri" style="display:inline-flex;align-items:center">📄 실거래 CSV 올리기<input type="file" id="csv" accept=".csv,text/csv" hidden></label>`;
+  }
+  if(S.trades){
+    h+=`<p class="desc">${esc(S.tradeSrc)} · 조건: ${S.opt.scope==='dong'?esc(A.dongNm)+' 안':'시·군·구 전체'}${S.opt.jimok?' · 지목 '+esc(ld.lndcgrCodeNm||''):''}${S.opt.use?' · '+esc(ld.prposArea1Nm||''):''} · 해제거래${S.opt.share?'':'·지분거래'} 제외</p>`;
+    if(!A.n)h+=`<div class="note r">조건에 맞는 거래가 없어요. 위의 「비교 조건 바꾸기」에서 범위를 넓혀 보세요(시·군·구 전체, 지목 해제).</div>`;
+    else{
+      h+=`<div class="row" style="margin-bottom:6px"><b>${A.n}건</b> <span class="conf ${A.conf}">신뢰도 ${CONF_TXT[A.conf]}</span><span class="hint">㎡당 중앙값 ${fmtM2(A.m1.uMid)} (${fmtPy(A.m1.uMid)})</span></div>
+      <div class="tw"><table class="t"><tr><th>계약일</th><th>위치</th><th>지목</th><th>면적(㎡)</th><th>거래금액</th><th>㎡당</th><th>평당</th></tr>
+      ${A.comps.slice(0,30).map(t=>`<tr><td>${esc(t.ymd)}</td><td style="text-align:left">${esc(t.dong.split(' ').slice(-1)[0])} ${esc(t.jibun)}</td><td style="text-align:left">${esc(t.jimok)}</td><td>${t.area.toLocaleString()}</td><td>${wonShort(t.amount*1e4)}</td><td>${Math.round(t.unit).toLocaleString()}</td><td>${wonShort(perPy(t.unit))}</td></tr>`).join('')}
+      </table></div>${A.n>30?'<p class="hint">최근 30건만 표시 · 계산은 '+A.n+'건 전체</p>':''}`;
+    }
+    if(S.tradeSrc.startsWith('업로드'))h+=`<div class="row" style="margin-top:8px"><label class="btn sm" style="display:inline-flex;align-items:center">다른 CSV 올리기<input type="file" id="csv" accept=".csv,text/csv" hidden></label></div>`;
+  }
+  h+='</div>';
+  // 산정
+  if(A.final){
+    const f=A.final;
+    h+=`<div class="card"><h2><span class="n">4</span>시세 범위</h2>
+      <div class="big">${wonShort(f.lo)} ~ ${wonShort(f.hi)}원</div>
+      <div class="hint">중심값 약 ${won(f.mid)} · 평당 ${A.area?wonShort(perPy(f.lo/A.area))+' ~ '+wonShort(perPy(f.hi/A.area))+'원':'-'}</div>
+      <div class="hint" style="margin-top:4px">반영 비율: 실거래 비교 ${Math.round(f.w1*100)}% · 공시지가 배율 ${Math.round((1-f.w1)*100)}% ${A.n<3&&A.m2?'(비교사례 3건 미만이라 공시지가 기준만 사용)':''}</div>
+      <div class="methods" style="margin-top:12px">
+        <div class="m"><h3>① 실거래 비교</h3>${A.m1?`<div class="v">${wonShort(A.m1.lo)} ~ ${wonShort(A.m1.hi)}</div><div class="hint">㎡당 ${A.n>=4?'하위25%~상위25%':'최저~최고'} ${Math.round(A.m1.uLo).toLocaleString()}~${Math.round(A.m1.uHi).toLocaleString()}원 × ${A.area.toLocaleString()}㎡ · ${A.n}건 <span class="conf ${A.conf}">${CONF_TXT[A.conf]}</span></div>`:'<div class="hint">비교사례 없음</div>'}</div>
+        <div class="m"><h3>② 공시지가 배율</h3>${A.m2?`<div class="v">${wonShort(A.m2.lo)} ~ ${wonShort(A.m2.hi)}</div><div class="hint">공시지가 합계 ${wonShort(A.m2.base)} × ${S.opt.lo}~${S.opt.hi}배</div>
+          <div class="row" style="margin-top:6px"><label class="f" style="flex:1">하한 배율<input type="number" step="0.05" min="0.5" max="10" id="lo" value="${S.opt.lo}"></label><label class="f" style="flex:1">상한 배율<input type="number" step="0.05" min="0.5" max="10" id="hi" value="${S.opt.hi}"></label></div>
+          <div class="hint">${A.ratio?'이 지역 실거래 중앙값은 공시지가의 <b>'+A.ratio.toFixed(2)+'배</b>입니다. ':''}기본값 1.3~1.8배는 토지 공시가격 현실화율(약 65%) 기준이에요. 지역 사정에 맞게 고치세요.</div>`:'<div class="hint">공시지가 없음</div>'}</div>
+      </div>
+      <div class="note y" style="margin-top:12px">참고용 시세 범위이며 <b>감정평가가 아닙니다</b>. 개별 필지의 도로·형상·인허가·지분 여부에 따라 실제 가격은 달라질 수 있어요.</div>
+    </div>`;
+    // 상담 멘트
+    const sm=S.ment.seller||mentSeller(A),bm=S.ment.buyer||mentBuyer(A);
+    h+=`<div class="card"><h2><span class="n">5</span>상담 멘트</h2><p class="desc">자동으로 만든 초안입니다. 고쳐 쓰면 리포트에 그대로 들어가요.</p>
+      <label class="f">매도자용<textarea id="mS">${esc(sm)}</textarea></label>
+      <label class="f" style="margin-top:8px">매수자용<textarea id="mB">${esc(bm)}</textarea></label>
+      <div class="row" style="margin-top:6px"><button class="btn sm" id="mReset">초안으로 되돌리기</button></div></div>`;
+    // 사무소
+    const o=S.office;
+    h+=`<div class="card"><h2><span class="n">6</span>리포트에 들어갈 사무소 정보</h2><div class="grid">
+      <label class="f">상호<input type="text" data-o="name" value="${esc(o.name||S.me?.office||'')}"></label>
+      <label class="f">대표 공인중개사<input type="text" data-o="rep" value="${esc(o.rep||S.me?.name||'')}"></label>
+      <label class="f">등록번호<input type="text" data-o="reg" value="${esc(o.reg||S.me?.reg_no||'')}"></label>
+      <label class="f">전화<input type="tel" data-o="tel" value="${esc(o.tel||'')}"></label>
+      <label class="f full">소재지<input type="text" data-o="addr" value="${esc(o.addr||'')}"></label>
+      <label class="f full">고객 이름 <span class="hint">(선택, 표지에 「OOO 님」)</span><input type="text" id="cust" value="${esc(S.cust||'')}"></label></div></div>
+    <div class="bar"><button class="btn pri" id="pdf">📄 리포트 PDF 저장(인쇄)</button><button class="btn" id="share">💬 카톡용 요약 복사</button></div>`;
+  }
+  R.innerHTML=h;
+  const csv=$('#csv');if(csv)csv.onchange=async e=>{const f=e.target.files[0];if(!f)return;try{S.trades=await readCsv(f);S.tradeSrc='업로드한 국토부 실거래 CSV('+f.name+') · '+S.trades.length+'건';S.ment={seller:'',buyer:''};renderResult();toast('CSV를 읽었어요')}catch(err){toast(err.message)}};
+  ['lo','hi'].forEach(k=>{const el=$('#'+k);if(el)el.onchange=()=>{const v=+el.value;if(v>0){S.opt[k]=v;LS.set('sise.opt',S.opt);S.ment={seller:'',buyer:''};renderResult()}}});
+  const ms=$('#mS');if(ms){ms.oninput=()=>S.ment.seller=ms.value;$('#mB').oninput=()=>S.ment.buyer=$('#mB').value;$('#mReset').onclick=()=>{S.ment={seller:'',buyer:''};renderResult()}}
+  $$('[data-o]').forEach(i=>i.oninput=()=>{S.office[i.dataset.o]=i.value;LS.set('sise.office',S.office)});
+  const cu=$('#cust');if(cu)cu.oninput=()=>S.cust=cu.value;
+  const pb=$('#pdf');if(pb)pb.onclick=()=>{saveHistory();buildReport();window.print()};
+  const sb=$('#share');if(sb)sb.onclick=async()=>{saveHistory();const t=summaryText();try{await navigator.clipboard.writeText(t);toast('복사했어요 — 카톡에 붙여넣으세요')}catch(e){prompt('복사하세요',t)}};
+  if(A.final)saveHistory(true);
+}
+function bars(ps){const mx=Math.max(...ps.map(p=>p.price));
+  return '<div class="bars">'+ps.map(p=>`<div style="height:${Math.max(4,p.price/mx*100)}%" title="${p.year}년 ${p.price.toLocaleString()}원/㎡"></div>`).join('')+'</div><div class="barl">'+ps.map(p=>`<span>${String(p.year).slice(2)}</span>`).join('')+'</div>'}
+
+function mentSeller(A){const f=A.final;const lines=[];
+  lines.push(`${S.land.address} ${A.ld.lndcgrCodeNm||''} ${A.area?A.area.toLocaleString()+'㎡('+(A.area*PY).toFixed(0)+'평)':''}의 현재 시세는 약 ${wonShort(f.lo)}~${wonShort(f.hi)}원 범위로 보입니다.`);
+  if(A.m1)lines.push(`최근 ${S.opt.months/12}년 ${S.opt.scope==='dong'?A.dongNm:'인근'} 같은 조건 토지 ${A.n}건이 평당 ${wonShort(perPy(A.m1.uLo))}~${wonShort(perPy(A.m1.uHi))}원(중간값 ${wonShort(perPy(A.m1.uMid))}원)에 거래됐습니다.`);
+  lines.push(`빠른 매도를 원하시면 하단(${wonShort(f.lo)}원) 근처, 시간 여유가 있으시면 중심값(${wonShort(f.mid)}원)에서 시작해 반응을 보시길 권합니다.`);
+  if(A.conf==='lo')lines.push('다만 주변 거래가 적어 범위의 정확도가 낮습니다. 매수 문의 반응을 보며 조정이 필요합니다.');
+  return lines.join('\n')}
+function mentBuyer(A){const f=A.final;const lines=[];
+  lines.push(`이 토지의 적정 시세는 약 ${wonShort(f.lo)}~${wonShort(f.hi)}원 범위입니다(평당 ${A.area?wonShort(perPy(f.lo/A.area))+'~'+wonShort(perPy(f.hi/A.area)):'-'}원).`);
+  if(A.nowP)lines.push(`${A.nowP.year}년 개별공시지가는 ㎡당 ${A.nowP.price.toLocaleString()}원${A.cagr!=null?', 최근 5년간 연평균 '+(A.cagr*100).toFixed(1)+'% 올랐습니다':''}.`);
+  lines.push(`매도 호가가 상단(${wonShort(f.hi)}원)을 넘는다면 근거를 확인하고 협상하시는 것이 좋습니다.`);
+  lines.push(`계약 전 토지이용계획확인원(${A.ld.prposArea1Nm||'용도지역'})·도로 접면(${A.ld.roadSideCodeNm||'-'})·인허가 가능 여부를 꼭 함께 확인하세요.`);
+  return lines.join('\n')}
+function summaryText(){const A=S.A,f=A.final;return `[토지 시세 상담] ${S.land.address}
+· ${A.ld.lndcgrCodeNm||''} ${A.area.toLocaleString()}㎡(${(A.area*PY).toFixed(1)}평) · ${A.ld.prposArea1Nm||''}
+· 시세 범위: ${wonShort(f.lo)} ~ ${wonShort(f.hi)}원 (중심 ${wonShort(f.mid)}원)
+· 근거: 실거래 ${A.n}건${A.m1?'(평당 중앙값 '+wonShort(perPy(A.m1.uMid))+'원)':''}${A.nowP?' · '+A.nowP.year+'년 공시지가 ㎡당 '+A.nowP.price.toLocaleString()+'원':''}
+※ 참고용 시세 범위이며 감정평가가 아닙니다.
+${S.office.name||S.me?.office||''} ${S.office.tel||''}`.trim()}
+function saveHistory(silent){const A=S.A;if(!A||!A.final)return;const h=LS.get('sise.history',[]).filter(x=>x.pnu!==S.land.pnu);
+  h.unshift({pnu:S.land.pnu,address:S.land.address,lo:A.final.lo,hi:A.final.hi,n:A.n,at:new Date().toISOString()});LS.set('sise.history',h.slice(0,30))}
+
+/* ---------- 리포트 ---------- */
+function buildReport(){
+  const A=S.A,f=A.final,o=S.office,L=S.land,today=new Date().toLocaleDateString('ko-KR');
+  const off=[o.name||S.me?.office,o.rep||S.me?.name?'대표 '+(o.rep||S.me?.name):'',o.reg||S.me?.reg_no?'등록번호 '+(o.reg||S.me?.reg_no):'',o.tel,o.addr].filter(Boolean).map(esc).join(' · ');
+  const ms=($('#mS')||{}).value||mentSeller(A),mb=($('#mB')||{}).value||mentBuyer(A);
+  $('#report').innerHTML=`
+  <div class="rp">
+    <div class="meta">토지 시세 상담 리포트 · ${today}</div>
+    <h1>${S.cust?esc(S.cust)+' 님 · ':''}${esc(L.address)}</h1>
+    <table><tr><th>지목</th><td>${esc(A.ld.lndcgrCodeNm||'-')}</td><th>면적</th><td>${A.area.toLocaleString()}㎡ (${(A.area*PY).toFixed(1)}평)</td></tr>
+    <tr><th>용도지역</th><td>${esc(A.ld.prposArea1Nm||'-')}</td><th>이용상황</th><td>${esc(A.ld.ladUseSittnNm||'-')}</td></tr>
+    <tr><th>도로접면</th><td>${esc(A.ld.roadSideCodeNm||'-')}</td><th>지형</th><td>${esc([A.ld.tpgrphHgCodeNm,A.ld.tpgrphFrmCodeNm].filter(Boolean).join('·')||'-')}</td></tr>
+    <tr><th>개별공시지가</th><td colspan="3">${A.nowP?A.nowP.year+'년 ㎡당 '+A.nowP.price.toLocaleString()+'원 (합계 '+won(A.nowP.price*A.area)+')'+(A.cagr!=null?' · 최근 5년 연평균 '+(A.cagr*100).toFixed(1)+'%':''):'-'}</td></tr></table>
+    <h2>시세 범위</h2>
+    <div class="box"><div class="range">${wonShort(f.lo)} ~ ${wonShort(f.hi)}원</div>
+      <div>중심값 약 ${won(f.mid)} · 평당 ${wonShort(perPy(f.lo/A.area))} ~ ${wonShort(perPy(f.hi/A.area))}원 · 비교사례 신뢰도 ${CONF_TXT[A.conf]}(${A.n}건)</div></div>
+    <h2>산정 근거</h2>
+    <table><tr><th>방식</th><th>범위</th><th>근거</th><th>반영</th></tr>
+      <tr><td>① 실거래 비교</td><td>${A.m1?wonShort(A.m1.lo)+' ~ '+wonShort(A.m1.hi):'-'}</td><td style="text-align:left">${A.m1?`${S.opt.scope==='dong'?esc(A.dongNm):'시·군·구'} ${S.opt.jimok?esc(A.ld.lndcgrCodeNm||'')+' ':''}${A.n}건, ㎡당 ${Math.round(A.m1.uLo).toLocaleString()}~${Math.round(A.m1.uHi).toLocaleString()}원`:'비교사례 없음'}</td><td>${Math.round(f.w1*100)}%</td></tr>
+      <tr><td>② 공시지가 배율</td><td>${A.m2?wonShort(A.m2.lo)+' ~ '+wonShort(A.m2.hi):'-'}</td><td style="text-align:left">${A.m2?'공시지가 합계 '+wonShort(A.m2.base)+' × '+S.opt.lo+'~'+S.opt.hi+'배':'-'}</td><td>${Math.round((1-f.w1)*100)}%</td></tr></table>
+    ${A.prices.length?`<h2>개별공시지가 추이(원/㎡)</h2><table><tr>${A.prices.slice(-8).map(p=>'<th>'+p.year+'</th>').join('')}</tr><tr>${A.prices.slice(-8).map(p=>'<td>'+p.price.toLocaleString()+'</td>').join('')}</tr></table>`:''}
+    <div class="office">${off}</div>
+  </div>
+  <div class="rp">
+    <h2>비교 실거래 사례${A.n>20?' (최근 20건)':''}</h2>
+    ${A.n?`<table><tr><th>계약일</th><th>위치</th><th>지목</th><th>면적(㎡)</th><th>거래금액</th><th>㎡당</th><th>평당</th></tr>${A.comps.slice(0,20).map(t=>`<tr><td>${esc(t.ymd)}</td><td>${esc(t.dong.split(' ').slice(-1)[0])} ${esc(t.jibun)}</td><td>${esc(t.jimok)}</td><td>${t.area.toLocaleString()}</td><td>${wonShort(t.amount*1e4)}</td><td>${Math.round(t.unit).toLocaleString()}</td><td>${wonShort(perPy(t.unit))}</td></tr>`).join('')}</table>
+    <div class="meta">자료: ${esc(S.tradeSrc)} · 해제거래${S.opt.share?'':'·지분거래'} 제외 · 번지 일부는 공개 자료에서 가려져 있습니다.</div>`:'<p>조건에 맞는 비교 실거래 사례가 없습니다.</p>'}
+    <h2>매도자 상담</h2><div class="ment">${esc(ms)}</div>
+    <h2>매수자 상담</h2><div class="ment">${esc(mb)}</div>
+    <div class="disc">이 리포트는 국토교통부 실거래가·개별공시지가·토지특성 공공데이터를 바탕으로 한 <b>참고용 시세 범위이며 감정평가가 아닙니다</b>. 개별 필지의 도로·형상·경사·인허가 가능성·권리관계·지분 여부에 따라 실제 거래가격은 달라질 수 있습니다. 거래 결정 전 토지이용계획확인원·등기사항증명서 등 공적 서류와 현장을 반드시 확인하시기 바랍니다.</div>
+    <div class="office">${off}</div>
+  </div>`;
+}
+
+/* ---------- 시작 ---------- */
+(async()=>{render();const tk=token();if(tk){try{S.me=await rpc('lh_me',{p_token:tk});render()}catch(e){}}})();
+addEventListener('storage',e=>{if(e.key===TK){S.me=null;render();const tk=token();if(tk)rpc('lh_me',{p_token:tk}).then(m=>{S.me=m;render()}).catch(()=>{})}});
+})();
+</script>
+</body>
+</html>

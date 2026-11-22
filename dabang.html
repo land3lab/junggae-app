@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>다방광고 원클릭 — 중개사무소 앱 ②</title>
+<script>if(/[?&]embed=1/.test(location.search))document.documentElement.classList.add("embed")</script>
+<style>
+:root{
+  --bg:#F4F6F9; --card:#fff; --ink:#18202E; --sub:#566072; --faint:#6B7486; --line:#DFE3EA;
+  --brand:#2450D8; --brand-soft:#E9EFFD; --red:#C62828; --red-soft:#FDECEC;
+  --yel:#8A5A00; --yel-soft:#FFF4D9; --grn:#1B7A43; --grn-soft:#E6F5EC;
+  --r:14px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;
+  font-size:16px;line-height:1.5;-webkit-text-size-adjust:100%}
+.wrap{max-width:760px;margin:0 auto;padding:0 14px 120px}
+header{background:var(--ink);color:#fff;padding:16px 14px 0}
+header .in{max-width:760px;margin:0 auto}
+header h1{margin:0;font-size:21px;letter-spacing:-.3px}
+header p{margin:2px 0 12px;font-size:13.5px;color:#C9D2E3}
+.tabs{display:flex;gap:4px}
+.tabs button{flex:1;min-height:46px;border:0;border-radius:12px 12px 0 0;background:#2C3648;color:#D6DDEA;font-size:15px;font-weight:600;cursor:pointer}
+.tabs button.on{background:var(--bg);color:var(--ink)}
+.tabs .cnt{display:inline-block;min-width:20px;padding:0 6px;margin-left:4px;border-radius:10px;background:var(--brand);color:#fff;font-size:12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px;margin:14px 0}
+.card h2{margin:0 0 4px;font-size:17px;display:flex;align-items:center;gap:8px}
+.card h2 .n{display:inline-flex;width:24px;height:24px;border-radius:50%;background:var(--ink);color:#fff;font-size:13px;align-items:center;justify-content:center}
+.card .desc{margin:0 0 12px;color:var(--sub);font-size:14px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px 12px}
+.grid .full{grid-column:1/-1}
+.grid.g3{grid-template-columns:1fr 1fr 1fr}
+@media(max-width:480px){.grid.g3{grid-template-columns:1fr 1fr}}
+.f{display:block;font-size:13.5px;color:var(--sub);font-weight:600}
+.f input:not([type=checkbox]),.f select,.f textarea{margin-top:5px}
+.f .seg,.f .chk{margin-top:6px}
+.f [data-show]{display:block;margin-top:2px}
+.f .req{color:var(--red)}
+input[type=text],input[type=number],input[type=date],input[type=tel],select,textarea{
+  width:100%;min-height:46px;padding:10px 12px;border:1px solid #C9CFD9;border-radius:10px;font:inherit;color:var(--ink);background:#fff}
+textarea{min-height:110px;resize:vertical;line-height:1.6}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--brand);outline-offset:0;border-color:var(--brand)}
+.hint{font-size:12.5px;color:var(--faint);font-weight:500}
+.ai-filled{background:#FFFBEA!important;border-color:#E2B33C!important}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.seg button{min-height:44px;padding:0 14px;border:1px solid #C9CFD9;background:#fff;border-radius:22px;font:inherit;font-size:15px;cursor:pointer;color:var(--ink)}
+.seg button.on{background:var(--ink);border-color:var(--ink);color:#fff;font-weight:600}
+.chk{display:flex;flex-wrap:wrap;gap:6px}
+.chk label{display:flex;align-items:center;gap:6px;min-height:44px;padding:0 12px;border:1px solid #C9CFD9;border-radius:10px;background:#fff;font-size:14.5px;cursor:pointer}
+.chk input{width:20px;height:20px;accent-color:var(--brand)}
+.chk label:has(input:checked){border-color:var(--brand);background:var(--brand-soft)}
+.inline{display:flex;align-items:center;gap:8px;min-height:44px;font-size:14.5px;cursor:pointer}
+.inline input{width:22px;height:22px;accent-color:var(--brand)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:46px;padding:0 16px;border-radius:12px;border:1px solid #C9CFD9;background:#fff;font:inherit;font-weight:600;color:var(--ink);cursor:pointer;text-decoration:none}
+.btn.pri{background:var(--brand);border-color:var(--brand);color:#fff}
+.btn.dark{background:var(--ink);border-color:var(--ink);color:#fff}
+.btn.sm{min-height:40px;padding:0 12px;font-size:14px;border-radius:10px}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.ok{background:var(--grn);border-color:var(--grn);color:#fff}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.photos{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:10px}
+@media(max-width:480px){.photos{grid-template-columns:repeat(3,1fr)}}
+.ph{position:relative;aspect-ratio:1;border-radius:10px;overflow:hidden;background:#E8EBF0}
+.ph img{width:100%;height:100%;object-fit:cover;display:block}
+.ph .cv{position:absolute;left:4px;top:4px;background:var(--brand);color:#fff;font-size:11.5px;font-weight:700;padding:2px 6px;border-radius:6px}
+.ph .ctl{position:absolute;inset:auto 0 0 0;display:flex;justify-content:space-between;background:linear-gradient(transparent,rgba(0,0,0,.6));padding:14px 4px 4px}
+.ph .ctl button{width:38px;height:38px;border:0;border-radius:8px;background:rgba(255,255,255,.92);font-size:14px;cursor:pointer}
+.drop{display:block;border:2px dashed #B7C0CF;border-radius:12px;padding:16px;text-align:center;color:var(--sub);cursor:pointer;background:#FAFBFD}
+.drop.hov{border-color:var(--brand);background:var(--brand-soft)}
+.checks{list-style:none;margin:0;padding:0}
+.checks li{display:flex;gap:10px;align-items:flex-start;padding:10px 4px;border-bottom:1px solid var(--line);cursor:pointer}
+.checks li:last-child{border-bottom:0}
+.dot{flex:0 0 14px;height:14px;border-radius:50%;margin-top:5px}
+.dot.red{background:var(--red)} .dot.yellow{background:#E0A100} .dot.ok{background:var(--grn)}
+.checks .lb{font-weight:600}
+.checks .ms{font-size:13.5px;color:var(--sub)}
+.grp{margin:12px 0 4px;font-size:13px;font-weight:700;color:var(--faint)}
+.bar{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line);box-shadow:0 -4px 16px rgba(20,30,50,.08);z-index:20}
+.bar .in{max-width:760px;margin:0 auto;padding:10px 14px calc(10px + env(safe-area-inset-bottom));display:flex;gap:10px;align-items:center}
+.lights{display:flex;gap:10px;font-weight:700;font-size:15px;flex:1;cursor:pointer;min-height:44px;align-items:center}
+.lights span{display:inline-flex;align-items:center;gap:5px}
+.note{padding:12px 14px;border-radius:12px;font-size:14px;margin:10px 0}
+.note.y{background:var(--yel-soft);color:var(--yel)}
+.note.r{background:var(--red-soft);color:var(--red)}
+.note.g{background:var(--grn-soft);color:var(--grn)}
+.note.b{background:var(--brand-soft);color:#1A3A9C}
+.ctabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin:6px 0 10px}
+.ctabs button{flex:0 0 auto;min-height:42px;padding:0 14px;border-radius:21px;border:1px solid #C9CFD9;background:#fff;font:inherit;font-size:14.5px;font-weight:600;cursor:pointer}
+.ctabs button.on{background:var(--brand);border-color:var(--brand);color:#fff}
+.cnt-l{font-size:12.5px;color:var(--faint);text-align:right}
+.cnt-l.over{color:var(--red);font-weight:700}
+pre.block{white-space:pre-wrap;background:#F3F5F8;border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-family:inherit;font-size:13.5px;color:#3A4352;margin:8px 0 0}
+.lint{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.lint span{background:var(--yel-soft);color:var(--yel);font-size:13px;padding:4px 10px;border-radius:14px}
+.fields{width:100%;border-collapse:collapse}
+.fields td{padding:8px 4px;border-bottom:1px solid var(--line);font-size:14.5px;vertical-align:middle}
+.fields td:first-child{color:var(--sub);width:30%;font-size:13.5px;font-weight:600}
+.fields td:last-child{width:72px;text-align:right}
+.lst{display:flex;gap:12px;padding:12px;border:1px solid var(--line);border-radius:12px;margin:10px 0;background:#fff}
+.lst .th{flex:0 0 76px;height:76px;border-radius:10px;background:#E8EBF0 center/cover no-repeat}
+.lst .bd{flex:1;min-width:0}
+.lst .t1{font-weight:700}
+.lst .t2{font-size:13.5px;color:var(--sub);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.chip{display:inline-block;font-size:12px;font-weight:700;padding:2px 8px;border-radius:10px;margin-right:4px}
+.chip.on{background:var(--grn-soft);color:var(--grn)} .chip.done{background:#ECEEF2;color:#4A5262}
+.chip.warn{background:var(--red-soft);color:var(--red)} .chip.soon{background:var(--yel-soft);color:var(--yel)}
+.toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 18px;border-radius:22px;font-size:14.5px;opacity:0;transition:opacity .2s;pointer-events:none;z-index:50}
+.toast.show{opacity:1}
+.spin{display:inline-block;width:18px;height:18px;border:3px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:sp 1s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.hide{display:none!important}
+.mic{min-width:46px}
+.mic.live{background:var(--red);border-color:var(--red);color:#fff}
+.sumline{font-size:13.5px;color:var(--sub);margin-top:4px}
+.modal{position:fixed;inset:0;background:rgba(10,15,25,.5);display:flex;align-items:center;justify-content:center;z-index:60;padding:16px}
+.modal .box{background:#fff;border-radius:16px;padding:18px;max-width:440px;width:100%}
+.modal h3{margin:0 0 8px;font-size:17px}
+.embed header h1,.embed header .in>p{display:none}.embed header{padding-top:8px}
+</style>
+</head>
+<body>
+<header><div class="in">
+  <h1>다방광고 원클릭</h1>
+  <p>한 번 입력 → 표시광고 검사 → 다방·네이버·블로그·당근·밴드 원고 동시 완성</p>
+  <nav class="tabs">
+    <button data-tab="new" class="on">새 매물</button>
+    <button data-tab="list">매물장<span class="cnt" id="listCnt">0</span></button>
+    <button data-tab="office">사무소 정보</button>
+  </nav>
+</div></header>
+
+<div class="wrap">
+
+<!-- ================= 새 매물 ================= -->
+<section id="tab-new">
+  <div class="row" style="margin-top:12px">
+    <button class="btn sm" id="btnExample">예시로 채워보기</button>
+    <button class="btn sm" id="btnReset">새로 시작</button>
+    <span class="hint" id="draftInfo">입력 내용은 이 기기에 자동 저장됩니다</span>
+  </div>
+  <div id="officeWarn" class="note r hide">사무소 정보가 비어 있어요. 광고에 반드시 들어가야 하는 항목이라 <b>사무소 정보</b> 탭에서 한 번만 입력해 주세요.</div>
+
+  <!-- 1 사진 -->
+  <div class="card" id="sec-photo">
+    <h2><span class="n">1</span>사진 <span class="hint">(최대 10장)</span></h2>
+    <p class="desc">첫 번째 사진이 대표사진입니다. ★ 버튼으로 대표를 바꾸세요. 사진은 자동으로 가볍게 줄여 이 기기에만 보관됩니다.</p>
+    <label class="drop" id="drop">
+      <input type="file" id="photoIn" accept="image/*" multiple hidden>
+      📷 눌러서 사진 고르기 · 또는 여기로 끌어놓기
+    </label>
+    <div class="photos" id="photos"></div>
+  </div>
+
+  <!-- 2 기본 -->
+  <div class="card" id="sec-basic">
+    <h2><span class="n">2</span>거래 · 가격</h2>
+    <div class="grid">
+      <div class="f full">매물 종류 <span class="req">*</span>
+        <div class="seg" data-seg="type">
+          <button data-v="원룸">원룸</button><button data-v="투룸">투룸</button><button data-v="쓰리룸+">쓰리룸+</button>
+          <button data-v="오피스텔">오피스텔</button><button data-v="아파트">아파트</button><button data-v="빌라">빌라</button>
+          <button data-v="단독·다가구">단독·다가구</button><button data-v="상가">상가</button><button data-v="사무실">사무실</button><button data-v="토지">토지</button>
+        </div>
+      </div>
+      <div class="f full" id="f-deal">거래 형태 <span class="req">*</span>
+        <div class="seg" data-seg="deal">
+          <button data-v="월세">월세</button><button data-v="전세">전세</button><button data-v="매매">매매</button><button data-v="단기임대">단기임대</button>
+        </div>
+      </div>
+      <label class="f" id="w-price">매매가 (만원) <span class="req">*</span><input type="number" inputmode="numeric" data-f="price" placeholder="예: 32000"><span class="hint" data-show="price"></span></label>
+      <label class="f" id="w-deposit">보증금 (만원) <span class="req">*</span><input type="number" inputmode="numeric" data-f="deposit" placeholder="예: 1000"><span class="hint" data-show="deposit"></span></label>
+      <label class="f" id="w-rent">월세 (만원) <span class="req">*</span><input type="number" inputmode="decimal" data-f="rent" placeholder="예: 55"><span class="hint" data-show="rent"></span></label>
+    </div>
+  </div>
+
+  <!-- 3 위치 -->
+  <div class="card" id="sec-loc">
+    <h2><span class="n">3</span>위치</h2>
+    <p class="desc">광고 소재지는 <b>건축물대장상 지번</b>까지 표시합니다. 호수는 광고에 나가지 않습니다.</p>
+    <div class="grid">
+      <label class="f full" id="f-addr">지번 주소 <span class="req">*</span><input type="text" data-f="addr" placeholder="예: 서울 관악구 봉천동 100-1"></label>
+      <label class="f">건물명 <span class="hint">(선택)</span><input type="text" data-f="bldgName" placeholder="예: OO빌"></label>
+      <div class="f bonly" id="f-dong"><label for="dongIn">동</label><input type="text" id="dongIn" data-f="dong" placeholder="예: 101동 / A동"><label class="inline" style="min-height:40px"><input type="checkbox" data-f="dongNone"> 동 구분 없음(1개 동)</label></div>
+      <label class="f bonly" id="f-floor">해당층 <input type="text" data-f="floor" placeholder="예: 3 / B1 / 반지하 / 옥탑"></label>
+      <label class="f bonly">층 표시 방법
+        <select data-f="floorMode">
+          <option value="exact">정확한 층으로 표시</option>
+          <option value="lmh">저·중·고층 (의뢰인 요청 시)</option>
+        </select>
+      </label>
+      <label class="f bonly" id="f-lmh">저·중·고층
+        <select data-f="lmh"><option value="">선택</option><option>저층</option><option>중층</option><option>고층</option></select>
+      </label>
+      <label class="f bonly">호수 <span class="hint">(광고 비노출·매물장용)</span><input type="text" data-f="ho" placeholder="예: 302호"></label>
+    </div>
+  </div>
+
+  <!-- 4 건축물 -->
+  <div class="card bonly" id="sec-bldg">
+    <h2><span class="n">4</span>건축물 정보</h2>
+    <p class="desc"><b>지번 주소를 넣고 [주소로 대장 자동조회]</b>를 누르면 건축물대장에서 용도·층수·사용승인일을 가져옵니다(중개사무소 앱 로그인 필요). 주차대수·면적은 대장 화면 캡처를 올리면 AI가 총층수·사용승인일·주차대수·용도·면적을 읽어 채웁니다. 채워진 칸은 노란색 — 꼭 확인하세요.</p>
+    <div class="row" style="margin-bottom:12px">
+      <button type="button" class="btn pri" id="btnBldApi">🏛 주소로 대장 자동조회</button>
+      <label class="btn dark" id="btnLedger"><input type="file" id="ledgerIn" accept="image/*" hidden>🤖 건축물대장 사진으로 채우기</label>
+      <span class="hint" id="ledgerMsg"></span>
+    </div>
+    <div class="grid">
+      <label class="f" id="f-use">건축물 용도(대장상) <span class="req">*</span>
+        <select data-f="use">
+          <option value="">선택</option>
+          <option>단독주택</option><option>다가구주택</option><option>다세대주택</option><option>연립주택</option><option>아파트</option>
+          <option>오피스텔</option><option>제1종근린생활시설</option><option>제2종근린생활시설</option><option>업무시설</option><option>기타</option>
+        </select>
+      </label>
+      <label class="f">용도 직접입력 <span class="hint">(기타일 때)</span><input type="text" data-f="useEtc" placeholder="예: 숙박시설"></label>
+      <div class="full chk">
+        <label><input type="checkbox" data-f="illegal"> 위반건축물</label>
+        <label><input type="checkbox" data-f="unreg"> 미등기건물</label>
+      </div>
+      <label class="f" id="f-totalFloor">총 층수(지상) <span class="req">*</span><input type="number" inputmode="numeric" data-f="totalFloor" placeholder="예: 5"></label>
+      <label class="f">지하 층수<input type="number" inputmode="numeric" data-f="baseFloor" placeholder="없으면 비움"></label>
+      <label class="f" id="f-approve">사용승인일 <span class="req">*</span><input type="date" data-f="approve"></label>
+      <label class="f">엘리베이터
+        <select data-f="elevator"><option value="">선택</option><option>있음</option><option>없음</option></select>
+      </label>
+      <label class="f" id="f-area">전용면적 (㎡) <span class="req">*</span><input type="number" inputmode="decimal" step="0.01" data-f="area" placeholder="예: 33.05"><span class="hint" data-show="area"></span></label>
+      <label class="f">공급면적 (㎡)<input type="number" inputmode="decimal" step="0.01" data-f="supply" placeholder="선택"><span class="hint" data-show="supply"></span></label>
+      <label class="f" id="f-rooms">방 수 <span class="req hsonly">*</span><input type="number" inputmode="numeric" data-f="rooms" placeholder="예: 1"></label>
+      <label class="f" id="f-baths">욕실 수 <span class="req hsonly">*</span><input type="number" inputmode="numeric" data-f="baths" placeholder="예: 1"></label>
+      <label class="f" id="f-dir">방향 <span class="req">*</span>
+        <select data-f="dir"><option value="">선택</option><option>남향</option><option>남동향</option><option>남서향</option><option>동향</option><option>서향</option><option>북향</option><option>북동향</option><option>북서향</option></select>
+      </label>
+      <label class="f">방향 기준
+        <select data-f="dirBase"><option>거실 기준</option><option>안방 기준</option><option>주된 출입구 기준</option></select>
+      </label>
+      <label class="f" id="f-park">총 주차대수(대장상) <span class="req">*</span><input type="number" inputmode="numeric" data-f="parkTotal" placeholder="없으면 0"></label>
+      <label class="f">세대당 주차 / 실제 메모<input type="text" data-f="parkMemo" placeholder="예: 세대당 0.5대, 실제 6대"></label>
+    </div>
+  </div>
+
+  <!-- 5 입주 관리비 -->
+  <div class="card" id="sec-move">
+    <h2><span class="n">5</span>입주 · 관리비</h2>
+    <div class="grid">
+      <div class="f full bonly" id="f-move">입주 가능일 <span class="req">*</span>
+        <div class="seg" data-seg="moveMode">
+          <button data-v="now">즉시입주</button><button data-v="date">날짜 지정</button><button data-v="nego">협의(초·중·하순)</button>
+        </div>
+      </div>
+      <label class="f bonly" id="w-moveDate">입주 날짜<input type="date" data-f="moveDate"></label>
+      <label class="f bonly" id="w-moveMonth">입주 월<input type="text" data-f="moveMonth" placeholder="예: 2026년 12월"></label>
+      <label class="f bonly" id="w-movePart">시기
+        <select data-f="movePart"><option value="">선택</option><option>초순</option><option>중순</option><option>하순</option></select>
+      </label>
+    </div>
+    <div class="hsonly2" id="mgmtBox" style="margin-top:14px">
+      <div class="f" id="f-mgmt">관리비 방식 <span class="req">*</span>
+        <div class="seg" data-seg="mgmtType">
+          <button data-v="fixed">정액(매월 같음)</button><button data-v="actual">실비(사용량)</button><button data-v="none">없음</button><button data-v="unknown">확인 불가</button>
+        </div>
+      </div>
+      <div class="grid" style="margin-top:10px">
+        <label class="f" id="w-mgmtTotal">월 관리비 (만원) <span class="req">*</span><input type="number" inputmode="decimal" step="0.1" data-f="mgmtTotal" placeholder="예: 12"></label>
+        <label class="f" id="w-mgmtAvg">월 평균 (만원)<input type="number" inputmode="decimal" step="0.1" data-f="mgmtAvg" placeholder="최근 평균"></label>
+      </div>
+      <div id="w-mgmtIncl" style="margin-top:10px">
+        <div class="hint" style="margin-bottom:6px">관리비에 포함된 항목</div>
+        <div class="chk" data-fg="mgmtIncl">
+          <label><input type="checkbox" value="공용관리비"> 공용관리비</label>
+          <label><input type="checkbox" value="전기료"> 전기료</label>
+          <label><input type="checkbox" value="수도료"> 수도료</label>
+          <label><input type="checkbox" value="가스사용료"> 가스사용료</label>
+          <label><input type="checkbox" value="난방비"> 난방비</label>
+          <label><input type="checkbox" value="인터넷"> 인터넷</label>
+          <label><input type="checkbox" value="TV"> TV</label>
+          <label><input type="checkbox" value="청소비"> 청소비</label>
+        </div>
+      </div>
+      <div id="w-mgmtDetail" class="hide" style="margin-top:12px">
+        <div class="note y" style="margin:0 0 10px">월 10만원 이상 정액관리비는 <b>항목별 금액</b>을 나눠 표시해야 합니다. (합계가 월 관리비와 같아야 초록불)</div>
+        <div class="grid g3">
+          <label class="f">공용관리비<input type="number" step="0.1" inputmode="decimal" data-md="공용관리비"></label>
+          <label class="f">전기료<input type="number" step="0.1" inputmode="decimal" data-md="전기료"></label>
+          <label class="f">수도료<input type="number" step="0.1" inputmode="decimal" data-md="수도료"></label>
+          <label class="f">가스사용료<input type="number" step="0.1" inputmode="decimal" data-md="가스사용료"></label>
+          <label class="f">난방비<input type="number" step="0.1" inputmode="decimal" data-md="난방비"></label>
+          <label class="f">인터넷<input type="number" step="0.1" inputmode="decimal" data-md="인터넷"></label>
+          <label class="f">TV<input type="number" step="0.1" inputmode="decimal" data-md="TV"></label>
+          <label class="f">청소비<input type="number" step="0.1" inputmode="decimal" data-md="청소비"></label>
+          <label class="f">기타<input type="number" step="0.1" inputmode="decimal" data-md="기타"></label>
+        </div>
+        <div class="sumline" id="mdSum"></div>
+        <label class="inline"><input type="checkbox" data-f="mgmtNoDetail"> 의뢰인이 항목별 내역을 주지 않음 (미제시로 표시)</label>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6 옵션 메모 -->
+  <div class="card" id="sec-memo">
+    <h2><span class="n">6</span>옵션 · 장점 메모</h2>
+    <div class="chk bonly" data-fg="options" style="margin-bottom:12px">
+      <label><input type="checkbox" value="에어컨"> 에어컨</label><label><input type="checkbox" value="냉장고"> 냉장고</label>
+      <label><input type="checkbox" value="세탁기"> 세탁기</label><label><input type="checkbox" value="건조기"> 건조기</label>
+      <label><input type="checkbox" value="인덕션"> 인덕션</label><label><input type="checkbox" value="가스레인지"> 가스레인지</label>
+      <label><input type="checkbox" value="전자레인지"> 전자레인지</label><label><input type="checkbox" value="침대"> 침대</label>
+      <label><input type="checkbox" value="책상"> 책상</label><label><input type="checkbox" value="옷장"> 옷장</label>
+      <label><input type="checkbox" value="신발장"> 신발장</label><label><input type="checkbox" value="비데"> 비데</label>
+      <label><input type="checkbox" value="도어락"> 도어락</label><label><input type="checkbox" value="베란다"> 베란다</label>
+      <label><input type="checkbox" value="반려동물 가능"> 반려동물 가능</label><label><input type="checkbox" value="전세대출 가능"> 전세대출 가능</label>
+      <label><input type="checkbox" value="LH 가능"> LH 가능</label><label><input type="checkbox" value="주차 가능"> 주차 가능</label>
+    </div>
+    <label class="f">장점 메모 <span class="hint">— 현장에서 느낀 점을 편하게. AI가 이 내용만 근거로 씁니다.</span>
+      <div style="display:flex;gap:8px;align-items:flex-start">
+        <textarea data-f="memo" placeholder="예: 봉천역 도보 7분(실측), 남향이라 오후까지 밝음, 2024년 도배·장판 새로 함, 집주인 1층 거주로 관리 잘 됨"></textarea>
+        <button class="btn mic hide" id="btnMic" title="말로 입력">🎤</button>
+      </div>
+    </label>
+    <div class="lint" id="memoLint"></div>
+  </div>
+
+  <!-- 7 검사 -->
+  <div class="card" id="sec-check">
+    <h2><span class="n">7</span>표시광고 검사</h2>
+    <p class="desc">공인중개사법 제18조의2·「중개대상물의 표시·광고 명시사항 세부기준」 항목입니다. 빨간불을 누르면 해당 칸으로 이동합니다.</p>
+    <div id="checkList"></div>
+  </div>
+
+  <!-- 8 원고 -->
+  <div class="card" id="sec-gen">
+    <h2><span class="n">8</span>광고 원고 만들기</h2>
+    <div class="grid">
+      <label class="f">말투
+        <select id="tone"><option value="신뢰형">신뢰형 (차분·정확)</option><option value="친근형">친근형 (이웃처럼)</option><option value="간결형">간결형 (핵심만)</option></select>
+      </label>
+      <div class="f">사진 참고
+        <label class="inline" style="min-height:46px"><input type="checkbox" id="usePhotos" checked> 대표사진 4장을 AI가 보고 씀</label>
+      </div>
+    </div>
+    <div id="genGate" class="note r hide"></div>
+    <div class="row" style="margin-top:12px">
+      <button class="btn pri" id="btnGen" style="flex:1">✨ 원고 5종 한 번에 만들기</button>
+    </div>
+    <div id="genMsg"></div>
+
+    <div id="outWrap" class="hide">
+      <div class="ctabs" id="ctabs">
+        <button data-c="dabang" class="on">다방</button><button data-c="naver">네이버</button><button data-c="blog">블로그</button>
+        <button data-c="daangn">당근</button><button data-c="band">밴드·카톡</button><button data-c="fields">입력칸 복사</button>
+      </div>
+      <div id="outPane"></div>
+      <div class="row" style="margin-top:14px">
+        <a class="btn dark" href="https://pro.dabangapp.com" target="_blank" rel="noopener">다방프로 열기 ↗</a>
+        <button class="btn ok" id="btnSave">💾 매물장에 저장</button>
+      </div>
+      <p class="hint" style="margin-top:8px">다방은 외부 등록 API가 없어 자동 등록은 하지 않습니다. 복사 → 다방프로 등록 화면에 붙여넣기 하세요.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 매물장 ================= -->
+<section id="tab-list" class="hide">
+  <div id="listAlerts"></div>
+  <div class="row" style="margin-top:12px">
+    <select id="listFilter" style="max-width:180px"><option value="all">전체</option><option value="광고중">광고중</option><option value="거래완료">거래완료</option><option value="보류">보류</option></select>
+    <button class="btn sm" id="btnBackup">백업 복사</button>
+    <button class="btn sm" id="btnRestore">백업 붙여넣기</button>
+  </div>
+  <div id="listBox"></div>
+</section>
+
+<!-- ================= 사무소 ================= -->
+<section id="tab-office" class="hide">
+  <div class="card">
+    <h2>사무소 정보 <span class="hint">(최초 1회)</span></h2>
+    <p class="desc">모든 광고에 반드시 들어가야 하는 5개 항목입니다. 중개사무소 등록증에 적힌 그대로 입력하세요. 중개보조원의 이름·연락처는 광고에 넣을 수 없습니다.</p>
+    <div class="grid">
+      <label class="f full">사무소 명칭 <span class="req">*</span><input type="text" data-o="name" placeholder="등록증 기재 명칭 (예: OO공인중개사사무소)"></label>
+      <label class="f full">사무소 소재지 <span class="req">*</span><input type="text" data-o="addr" placeholder="등록증 기재 소재지"></label>
+      <label class="f">개업공인중개사 성명 <span class="req">*</span><input type="text" data-o="ceo" placeholder="법인은 대표자, 분사무소는 책임자"></label>
+      <label class="f">등록번호 <span class="req">*</span><input type="text" data-o="regno" placeholder="예: 11620-2020-00000"></label>
+      <label class="f">연락처 <span class="req">*</span><input type="tel" data-o="tel" placeholder="등록관청 신고 번호"></label>
+      <label class="f">소속공인중개사 <span class="hint">(선택)</span><input type="text" data-o="agent" placeholder="이름 010-0000-0000"></label>
+      <label class="f full">사무소 한 줄 소개 <span class="hint">(선택 · AI 원고에 활용)</span><input type="text" data-o="slogan" placeholder="예: 관악구 원룸·투룸 전문, 직접 확인한 매물만 올립니다"></label>
+    </div>
+    <div class="row" style="margin-top:14px"><button class="btn pri" id="btnOffice">저장</button><span class="hint" id="officeMsg"></span></div>
+  </div>
+</section>
+</div>
+
+<div class="bar" id="bar"><div class="in">
+  <div class="lights" id="lights" title="검사 결과로 이동"></div>
+  <button class="btn pri" id="btnGen2">원고 만들기</button>
+</div></div>
+<div class="toast" id="toast"></div>
+<div class="modal hide" id="modal"><div class="box"><h3 id="mTitle"></h3><div id="mBody"></div><div class="row" style="margin-top:14px;justify-content:flex-end" id="mBtns"></div></div></div>
+
+<script>
+(function(){
+"use strict";
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const LS={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){return false}}};
+const K={office:'d1c.office',draft:'d1c.draft',list:'d1c.listings',out:'d1c.draftOut'};
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(toast._t);toast._t=setTimeout(()=>t.classList.remove('show'),1800)}
+function modal(title,html,btns){$('#mTitle').textContent=title;$('#mBody').innerHTML=html;const b=$('#mBtns');b.innerHTML='';
+  btns.forEach(x=>{const e=document.createElement('button');e.className='btn sm '+(x.cls||'');e.textContent=x.t;e.onclick=()=>{if(x.fn&&x.fn()===false)return;$('#modal').classList.add('hide')};b.appendChild(e)});
+  $('#modal').classList.remove('hide')}
+async function copy(text){try{await navigator.clipboard.writeText(text);toast('복사했어요')}catch(e){
+  const ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);ta.select();let ok=false;try{ok=document.execCommand('copy')}catch(_){}ta.remove();toast(ok?'복사했어요':'복사가 막혔어요 — 길게 눌러 복사하세요')}}
+
+/* ---------- claude capabilities ---------- */
+function use(name){try{if(window.claude&&typeof window.claude.use==='function')return window.claude.use(name)}catch(e){}return Promise.resolve(null)}
+let samplerP=null; const getSampler=()=>samplerP||(samplerP=use('sample').catch(()=>null));
+let dict=null;
+use('dictation').then(d=>{if(!d)return;dict=d;setupMic()}).catch(()=>{});
+/* ---------- 브라우저 음성인식 대체(claude 밖) ---------- */
+setTimeout(()=>{if(dict)return;const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR)return;
+  let rec=null,fin=null,st=null;
+  dict={onFinal(f){fin=f},onState(f){st=f},
+    start(){return new Promise((ok,no)=>{try{rec=new SR();rec.lang='ko-KR';rec.interimResults=false;rec.continuous=true;
+      rec.onresult=e=>{for(let i=e.resultIndex;i<e.results.length;i++)if(e.results[i].isFinal&&fin)fin({text:e.results[i][0].transcript})};
+      rec.onerror=e=>{if(e.error==='not-allowed'){const er=new Error('mic');er.code='not_granted';no(er)}};
+      rec.onend=()=>{st&&st({state:'idle'})};rec.start();st&&st({state:'listening'});ok()}catch(e){no(e)}})},
+    stop(){try{rec&&rec.stop()}catch(e){}return Promise.resolve()}};
+  setupMic()},1500);
+
+
+/* ---------- IndexedDB (photos) ---------- */
+let idbP=null;
+function idb(){if(idbP)return idbP;idbP=new Promise(res=>{try{const r=indexedDB.open('d1c',1);r.onupgradeneeded=()=>r.result.createObjectStore('photos');r.onsuccess=()=>res(r.result);r.onerror=()=>res(null)}catch(e){res(null)}});return idbP}
+async function idbOp(mode,fn){const db=await idb();if(!db)return null;return new Promise(r=>{try{const t=db.transaction('photos',mode);const req=fn(t.objectStore('photos'));t.oncomplete=()=>r(req&&req.result);t.onerror=()=>r(null)}catch(e){r(null)}})}
+const idbPut=(k,v)=>idbOp('readwrite',s=>s.put(v,k));
+const idbGet=k=>idbOp('readonly',s=>s.get(k));
+const idbDel=k=>idbOp('readwrite',s=>s.delete(k));
+
+/* ---------- helpers ---------- */
+const num=v=>{const n=parseFloat(String(v??'').replace(/,/g,''));return isFinite(n)?n:null};
+function man(v){const n=num(v);if(n==null)return'';if(n>=10000){const e=Math.floor(n/10000),r=Math.round(n%10000);return e+'억'+(r?' '+r.toLocaleString()+'만':'')+'원'}return (Math.round(n*10)/10).toLocaleString()+'만원'}
+const py=m=>{const n=num(m);return n==null?'':(Math.round(n*0.3025*10)/10)+'평'};
+const fmtDate=d=>d?d.replace(/-/g,'.'):'';
+const today=()=>new Date().toISOString().slice(0,10);
+const addDays=(d,n)=>{const x=new Date(d+'T00:00:00');x.setDate(x.getDate()+n);return x.toISOString().slice(0,10)};
+const dday=d=>Math.round((new Date(d+'T00:00:00')-new Date(today()+'T00:00:00'))/864e5);
+const HOUSE=['단독주택','다가구주택','다세대주택','연립주택','아파트','오피스텔'];
+const DETACHED=['단독주택','다가구주택'];
+const TYPE2USE={'원룸':'','투룸':'','쓰리룸+':'','오피스텔':'오피스텔','아파트':'아파트','빌라':'다세대주택','단독·다가구':'다가구주택','상가':'제2종근린생활시설','사무실':'업무시설','토지':''};
+
+/* ---------- state ---------- */
+let office=LS.get(K.office,{});
+let D=LS.get(K.draft,null)||blank();
+let photos=[]; // {blob,url}
+let outputs=LS.get(K.out,null);
+let curChannel='dabang';
+function blank(){return{id:'L'+Date.now().toString(36),type:'',deal:'',floorMode:'exact',dirBase:'거실 기준',moveMode:'',mgmtType:'',mgmtIncl:[],mgmtDetail:{},options:[],blockMode:{}}}
+
+/* ---------- form binding ---------- */
+function readForm(){
+  $$('[data-f]').forEach(el=>{const k=el.dataset.f;D[k]=el.type==='checkbox'?el.checked:el.value});
+  $$('[data-fg]').forEach(g=>{D[g.dataset.fg]=[...g.querySelectorAll('input:checked')].map(i=>i.value)});
+  D.mgmtDetail={};$$('[data-md]').forEach(el=>{if(el.value!=='')D.mgmtDetail[el.dataset.md]=el.value});
+  $$('[data-seg]').forEach(s=>{const on=s.querySelector('button.on');D[s.dataset.seg]=on?on.dataset.v:''});
+}
+function writeForm(){
+  $$('[data-f]').forEach(el=>{const v=D[el.dataset.f];if(el.type==='checkbox')el.checked=!!v;else el.value=v??''});
+  $$('[data-fg]').forEach(g=>g.querySelectorAll('input').forEach(i=>i.checked=(D[g.dataset.fg]||[]).includes(i.value)));
+  $$('[data-md]').forEach(el=>el.value=(D.mgmtDetail||{})[el.dataset.md]??'');
+  $$('[data-seg]').forEach(s=>s.querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.v===D[s.dataset.seg])));
+  $$('.ai-filled').forEach(e=>e.classList.remove('ai-filled'));
+}
+let saveT=null;
+function onChange(){readForm();refresh();clearTimeout(saveT);saveT=setTimeout(()=>{LS.set(K.draft,D);$('#draftInfo').textContent='자동 저장됨 '+new Date().toTimeString().slice(0,5)},400)}
+document.addEventListener('input',e=>{if(e.target.closest('#tab-new'))onChange()});
+document.addEventListener('change',e=>{if(e.target.closest('#tab-new'))onChange()});
+$$('[data-seg]').forEach(s=>s.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;e.preventDefault();
+  const was=b.classList.contains('on');s.querySelectorAll('button').forEach(x=>x.classList.remove('on'));if(!was)b.classList.add('on');
+  if(s.dataset.seg==='type'&&!was){const u=TYPE2USE[b.dataset.v];const sel=$('[data-f=use]');if(u&&!sel.value){sel.value=u}}
+  onChange()}));
+
+/* ---------- visibility ---------- */
+function vis(){
+  const land=D.type==='토지';
+  $$('.bonly').forEach(e=>e.classList.toggle('hide',land));
+  const deal=D.deal;
+  $('#w-price').classList.toggle('hide',deal!=='매매');
+  $('#w-deposit').classList.toggle('hide',!(deal==='전세'||deal==='월세'||deal==='단기임대'));
+  $('#w-rent').classList.toggle('hide',!(deal==='월세'||deal==='단기임대'));
+  const det=DETACHED.includes(D.use);
+  $('#f-dong').classList.toggle('hide',land||det);
+  $('#f-lmh').classList.toggle('hide',land||D.floorMode!=='lmh');
+  const mm=D.moveMode;
+  $('#w-moveDate').classList.toggle('hide',land||mm!=='date');
+  $('#w-moveMonth').classList.toggle('hide',land||mm!=='nego');
+  $('#w-movePart').classList.toggle('hide',land||mm!=='nego');
+  const house=HOUSE.includes(D.use);
+  $$('.hsonly').forEach(e=>e.classList.toggle('hide',!house));
+  $('#mgmtBox').classList.toggle('hide',land);
+  const mt=D.mgmtType;
+  $('#w-mgmtTotal').classList.toggle('hide',mt!=='fixed');
+  $('#w-mgmtAvg').classList.toggle('hide',mt!=='actual');
+  $('#w-mgmtIncl').classList.toggle('hide',!(mt==='fixed'||mt==='actual'));
+  const big=mt==='fixed'&&num(D.mgmtTotal)>=10;
+  $('#w-mgmtDetail').classList.toggle('hide',!big);
+  if(big){const s=sumDetail();const t=num(D.mgmtTotal);$('#mdSum').innerHTML='항목 합계 <b>'+s+'만원</b> / 월 관리비 '+t+'만원 '+(Math.abs(s-t)<0.05?'<span style="color:var(--grn)">✔ 일치</span>':'<span style="color:var(--red)">✖ 차이 '+(Math.round((t-s)*10)/10)+'만원</span>')}
+  $$('[data-show]').forEach(h=>{const k=h.dataset.show;h.textContent=(k==='area'||k==='supply')?py(D[k]):man(D[k])});
+}
+const sumDetail=()=>Math.round(Object.values(D.mgmtDetail||{}).reduce((a,v)=>a+(num(v)||0),0)*10)/10;
+
+/* ---------- display text builders ---------- */
+function useText(){let u=D.use==='기타'?(D.useEtc||'기타'):D.use;if(D.illegal)u+=' (위반건축물)';if(D.unreg)u+=' (미등기건물)';return u}
+function floorText(){if(D.floorMode==='lmh')return D.lmh||'';const f=String(D.floor||'').trim();if(!f)return'';return /^\d+$/.test(f)?f+'층':f}
+function locText(){const a=(D.addr||'').trim();if(D.type==='토지'||DETACHED.includes(D.use))return a;const parts=[a];if(!DETACHED.includes(D.use)&&!D.dongNone&&D.dong)parts.push(D.dong);const f=floorText();if(f)parts.push(f);return parts.join(', ')}
+function priceText(){if(D.deal==='매매')return'매매 '+man(D.price);if(D.deal==='전세')return'전세 보증금 '+man(D.deposit);if(D.deal==='월세'||D.deal==='단기임대')return(D.deal==='단기임대'?'단기임대 ':'월세 ')+'보증금 '+man(D.deposit)+' / 월 '+man(D.rent);return''}
+function areaText(){let s='전용 '+D.area+'㎡('+py(D.area)+')';if(D.supply)s+=' / 공급 '+D.supply+'㎡('+py(D.supply)+')';return s}
+function moveText(){if(D.moveMode==='now')return'즉시입주';if(D.moveMode==='date')return fmtDate(D.moveDate);if(D.moveMode==='nego')return(D.moveMonth||'')+' '+(D.movePart||'')+' (협의 가능)';return''}
+function parkText(){const t=num(D.parkTotal);let s=t==null?'':(t===0?'주차 불가(대장상 0대)':'총 '+t+'대');if(D.parkMemo)s+=(s?', ':'')+D.parkMemo;return s}
+function mgmtText(){const mt=D.mgmtType,inc=(D.mgmtIncl||[]);
+  if(mt==='none')return'관리비 없음';if(mt==='unknown')return'관리비 확인 불가(임대인 미제시)';
+  if(mt==='actual')return'사용량에 따른 실비 부과'+(D.mgmtAvg?' (월 평균 약 '+man(D.mgmtAvg)+')':'')+(inc.length?' / 포함: '+inc.join('·'):'');
+  if(mt==='fixed'){const t=num(D.mgmtTotal);let s='월 '+man(t)+' (정액)';
+    if(t>=10&&!D.mgmtNoDetail){const d=Object.entries(D.mgmtDetail||{}).filter(([k,v])=>num(v)>0).map(([k,v])=>k+' '+man(v));if(d.length)s+=' — '+d.join(', ')}
+    else if(t>=10&&D.mgmtNoDetail)s+=' — 항목별 금액은 임대인 미제시';
+    else if(inc.length)s+=' / 포함: '+inc.join('·');
+    const ex=['전기료','수도료','가스사용료','난방비','인터넷','TV'].filter(x=>!inc.includes(x)&&!(num((D.mgmtDetail||{})[x])>0));if(ex.length&&D.use&&HOUSE.includes(D.use))s+=' / 별도: '+ex.join('·');return s}
+  return''}
+function officeLines(){const o=office;return'[중개사무소] '+[o.name,'대표 '+(o.ceo||''),'등록번호 '+(o.regno||''),o.addr,'☎ '+(o.tel||'')].filter(Boolean).join(' · ')+(o.agent?'\n소속공인중개사 '+o.agent:'')}
+function propLines(){const land=D.type==='토지';const L=[];
+  L.push('· 소재지: '+locText());
+  L.push('· 종류: '+(land?'토지':useText())+' / 거래형태: '+(D.deal||''));
+  L.push('· 가격: '+priceText());
+  L.push('· 면적: '+(land?D.area+'㎡('+py(D.area)+')':areaText()));
+  if(!land){
+    L.push('· 총 층수: 지상 '+(D.totalFloor||'-')+'층'+(num(D.baseFloor)?' / 지하 '+D.baseFloor+'층':'')+(floorText()?' / 해당층: '+floorText():''));
+    if(D.rooms||D.baths)L.push('· 방/욕실: '+(D.rooms||'-')+'개/'+(D.baths||'-')+'개');
+    L.push('· 방향: '+(D.dir||'-')+' ('+D.dirBase+')');
+    L.push('· 사용승인일: '+fmtDate(D.approve));
+    L.push('· 주차: '+parkText());
+    L.push('· 입주가능일: '+moveText());
+    const m=mgmtText();if(m)L.push('· 관리비: '+m);
+  }
+  return L.join('\n')}
+function block(mode){if(mode==='none')return'';
+  if(mode==='office')return officeLines();
+  if(mode==='mgmt'){const m=mgmtText();return(m?'· 관리비: '+m+'\n':'')+officeLines()}
+  return'[중개대상물 표시사항]\n'+propLines()+'\n'+officeLines()}
+
+/* ---------- lint ---------- */
+const BANNED=[['최저가','비교 근거 없으면 과장 광고 소지'],['최저','비교 근거 필요'],['최고급','과장 표현 소지'],['최고','과장 표현 소지'],['유일','근거 필요'],['100%','단정 표현'],['무조건','단정 표현'],['보장','수익·안전 보장 표현 금지'],['확정','미확정 사실 단정 소지'],['특가','가격 과장 소지'],['대박','과장 표현'],['초급매','근거 없으면 과장'],['급매','시세 대비 근거 있을 때만'],['마지막','허위 희소성 소지'],['역대급','과장 표현'],['완벽','과장 표현'],['신축','사용승인일 근거 필요'],['역세권','도보 거리(분)를 함께 쓰세요'],['안전한 집','권리관계 단정 금지'],['깡통','불안 조장 표현']];
+function lint(text){const t=String(text||'');const found=[];
+  BANNED.forEach(([w,why])=>{if(t.includes(w)&&!found.some(f=>f.w.includes(w)))found.push({w,why})});
+  const tel=(office.tel||'').replace(/\D/g,''),ag=(office.agent||'').replace(/\D/g,'');
+  (t.match(/0\d{1,2}[-.\s]?\d{3,4}[-.\s]?\d{4}/g)||[]).forEach(p=>{const d=p.replace(/\D/g,'');if(d!==tel&&!(ag&&ag.includes(d)))found.push({w:p,why:'사무소 등록 연락처가 아닌 번호 — 중개보조원 연락처 표기 금지'})});
+  return found}
+function lintHtml(arr){return arr.map(f=>'<span>⚠ '+esc(f.w)+' — '+esc(f.why)+'</span>').join('')}
+
+/* ---------- checks ---------- */
+function runChecks(){
+  const R=[];const add=(g,label,st,msg,go)=>R.push({g,label,st,msg,go});
+  const land=D.type==='토지',house=HOUSE.includes(D.use),det=DETACHED.includes(D.use);
+  [['name','사무소 명칭'],['addr','사무소 소재지'],['tel','연락처'],['regno','등록번호'],['ceo','개업공인중개사 성명']].forEach(([k,l])=>{const ok=!!(office[k]||'').trim();add('중개사무소',l,ok?'ok':'red',ok?office[k]:'사무소 정보 탭에서 입력','office')});
+  add('매물','매물 종류',D.type?'ok':'red',D.type||'선택하세요','sec-basic');
+  add('매물','거래 형태',D.deal?'ok':'red',D.deal||'매매·전세·월세 구분','f-deal');
+  let pOk=false;if(D.deal==='매매')pOk=num(D.price)>0;else if(D.deal==='전세')pOk=num(D.deposit)>0;else if(D.deal)pOk=num(D.deposit)!=null&&num(D.rent)>0;
+  add('매물','가격',pOk?'ok':'red',pOk?priceText():'임대차는 보증금과 월세를 나눠 입력','sec-basic');
+  const a=(D.addr||'').trim();
+  add('매물','소재지(지번)',!a?'red':(/\d/.test(a)?'ok':'yellow'),!a?'지번 주소 입력':(/\d/.test(a)?locText():'번지(지번)까지 써야 합니다'),'f-addr');
+  if(!land&&D.use&&!det){
+    if(!D.dongNone&&!(D.dong||'').trim())add('매물','동 표시','red','공동주택 등은 동까지 표시 (동이 하나면 "동 구분 없음" 체크)','f-dong');
+    if(D.floorMode==='lmh')add('매물','층 표시',D.lmh?'yellow':'red',D.lmh?'저·중·고층 표시는 의뢰인이 요청한 경우만 허용':'저·중·고층 선택','f-floor');
+    else add('매물','해당층',(D.floor||'').trim()?'ok':'red',(D.floor||'').trim()?floorText():'해당층 입력','f-floor');
+  }
+  add('매물','면적(㎡)',num(D.area)>0?'ok':'red',num(D.area)>0?D.area+'㎡ ('+py(D.area)+')':'전용면적(대장상 전유/현황면적) 입력','f-area');
+  if(!land){
+    add('건축물','중개대상물 종류(건축법 용도)',D.use&&(D.use!=='기타'||D.useEtc)?'ok':'red',D.use?useText():'건축물대장상 용도 선택','f-use');
+    if(D.illegal||D.unreg)add('건축물','위반·미등기 표기','yellow','광고 종류란에 "'+(D.illegal?'위반건축물':'미등기건물')+'"이 함께 표시됩니다','f-use');
+    add('건축물','총 층수',num(D.totalFloor)>0?'ok':'red',num(D.totalFloor)>0?'지상 '+D.totalFloor+'층':'건축물대장상 총 층수','f-totalFloor');
+    add('건축물','사용승인일',D.approve?'ok':'red',D.approve?fmtDate(D.approve):'건축물대장상 사용승인일','f-approve');
+    if(house){const ok=num(D.rooms)!=null&&num(D.baths)!=null;add('건축물','방 수·욕실 수',ok?'ok':'red',ok?D.rooms+'개/'+D.baths+'개':'주택은 방·욕실 수 표시','f-rooms')}
+    add('건축물','방향(기준 포함)',D.dir?'ok':'red',D.dir?D.dir+' ('+D.dirBase+')':'주거용은 거실·안방, 그 외는 주출입구 기준','f-dir');
+    if(D.dir&&!house&&D.dirBase!=='주된 출입구 기준')add('건축물','방향 기준','yellow','주택이 아닌 건물은 "주된 출입구 기준"이 원칙','f-dir');
+    add('건축물','주차대수',num(D.parkTotal)!=null?'ok':'red',num(D.parkTotal)!=null?parkText():'대장상 총 주차대수(없으면 0)','f-park');
+    const mv=moveText().trim();const mvOk=D.moveMode==='now'||(D.moveMode==='date'&&D.moveDate)||(D.moveMode==='nego'&&D.moveMonth&&D.movePart);
+    add('건축물','입주가능일',mvOk?'ok':'red',mvOk?mv:'즉시입주 / 날짜 / 협의(초·중·하순)','f-move');
+    if(house){
+      const mt=D.mgmtType,t=num(D.mgmtTotal);
+      if(!mt)add('관리비','관리비','red','주택·준주택은 관리비 표시 의무','f-mgmt');
+      else if(mt==='fixed'){
+        if(!(t>=0)||D.mgmtTotal==='')add('관리비','월 관리비','red','금액 입력','f-mgmt');
+        else if(t>=10){const s=sumDetail();
+          if(D.mgmtNoDetail)add('관리비','항목별 금액','yellow','임대인 미제시로 표시됨 — 가능하면 받아서 채우세요','f-mgmt');
+          else add('관리비','항목별 금액(10만원 이상)',Math.abs(s-t)<0.05?'ok':'red',Math.abs(s-t)<0.05?mgmtText():'항목 합계('+s+'만원)가 월 관리비('+t+'만원)와 같아야 합니다','f-mgmt')}
+        else add('관리비','관리비',(D.mgmtIncl||[]).length?'ok':'yellow',(D.mgmtIncl||[]).length?mgmtText():'포함 항목을 체크하면 더 정확합니다','f-mgmt');
+      }else if(mt==='actual')add('관리비','관리비(실비)',D.mgmtAvg?'ok':'yellow',D.mgmtAvg?mgmtText():'월 평균 금액을 함께 적는 것을 권장','f-mgmt');
+      else if(mt==='unknown')add('관리비','관리비','yellow','임대인이 내역을 주지 않은 경우에만 사용','f-mgmt');
+      else add('관리비','관리비','ok','관리비 없음','f-mgmt');
+    }
+  }
+  add('사진','사진',photos.length?'ok':'yellow',photos.length?photos.length+'장 (대표 1장)':'사진이 없으면 문의가 크게 줄어요','sec-photo');
+  const lm=lint(D.memo);if(lm.length)add('표현','메모 속 주의 표현','yellow',lm.map(x=>x.w).join(', ')+' — 원고에서 자동으로 피합니다','sec-memo');
+  return R}
+function renderChecks(R){
+  const by={};R.forEach(r=>(by[r.g]=by[r.g]||[]).push(r));
+  let h='';Object.entries(by).forEach(([g,arr])=>{h+='<div class="grp">'+esc(g)+'</div><ul class="checks">'+arr.map(r=>'<li data-go="'+r.go+'"><span class="dot '+r.st+'"></span><div><div class="lb">'+esc(r.label)+'</div><div class="ms">'+esc(r.msg)+'</div></div></li>').join('')+'</ul>'});
+  $('#checkList').innerHTML=h;
+  const c={red:0,yellow:0,ok:0};R.forEach(r=>c[r.st]++);
+  $('#lights').innerHTML='<span><span class="dot red"></span>'+c.red+'</span><span><span class="dot yellow"></span>'+c.yellow+'</span><span><span class="dot ok"></span>'+c.ok+'</span><span class="hint" style="font-weight:500">'+(c.red?'빨간불 해결 필요':'광고 가능')+'</span>';
+  const gate=$('#genGate');
+  if(c.red){gate.classList.remove('hide');gate.innerHTML='빨간불 <b>'+c.red+'개</b>를 해결하면 원고를 만들 수 있어요. (누락된 표시광고는 과태료 대상)'}else gate.classList.add('hide');
+  $('#btnGen').disabled=!!c.red;
+  return c}
+$('#checkList').addEventListener('click',e=>{const li=e.target.closest('li');if(li)go(li.dataset.go)});
+$('#lights').addEventListener('click',()=>go('sec-check'));
+function go(id){if(id==='office'){showTab('office');return}showTab('new');const el=document.getElementById(id);if(el){el.scrollIntoView({behavior:'smooth',block:'center'});const f=el.querySelector('input,select,textarea,button');if(f)setTimeout(()=>f.focus({preventScroll:true}),400)}}
+
+let lastC={red:1};
+function refresh(){vis();lastC=renderChecks(runChecks());$('#memoLint').innerHTML=lintHtml(lint(D.memo));$('#officeWarn').classList.toggle('hide',!!(office.name&&office.tel&&office.regno&&office.ceo&&office.addr))}
+
+/* ---------- photos ---------- */
+async function shrink(blob,max,q){
+  let bmp;try{bmp=await createImageBitmap(blob,{imageOrientation:'from-image'})}catch(e){bmp=await new Promise((res,rej)=>{const i=new Image();i.onload=()=>res(i);i.onerror=rej;i.src=URL.createObjectURL(blob)})}
+  const w=bmp.width,h=bmp.height,s=Math.min(1,max/Math.max(w,h));const c=document.createElement('canvas');c.width=Math.round(w*s);c.height=Math.round(h*s);
+  c.getContext('2d').drawImage(bmp,0,0,c.width,c.height);return new Promise(r=>c.toBlob(b=>r(b||blob),'image/jpeg',q||0.82))}
+async function addFiles(files){
+  const room=10-photos.length;const arr=[...files].filter(f=>f.type.startsWith('image/')).slice(0,room);
+  if(files.length>room)toast('사진은 최대 10장까지예요');
+  for(const f of arr){try{const b=await shrink(f,1600);photos.push({blob:b,url:URL.createObjectURL(b)})}catch(e){}}
+  renderPhotos();savePhotos();refresh()}
+function renderPhotos(){
+  $('#photos').innerHTML=photos.map((p,i)=>'<div class="ph"><img src="'+p.url+'" alt="">'+(i===0?'<span class="cv">대표</span>':'')+'<div class="ctl"><button data-a="cover" data-i="'+i+'" title="대표로">★</button><button data-a="left" data-i="'+i+'" title="앞으로">◀</button><button data-a="del" data-i="'+i+'" title="삭제">✕</button></div></div>').join('')}
+$('#photos').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const i=+b.dataset.i;
+  if(b.dataset.a==='cover'){photos.unshift(photos.splice(i,1)[0])}
+  else if(b.dataset.a==='left'&&i>0){[photos[i-1],photos[i]]=[photos[i],photos[i-1]]}
+  else if(b.dataset.a==='del'){URL.revokeObjectURL(photos[i].url);photos.splice(i,1)}
+  renderPhotos();savePhotos();refresh()});
+const savePhotos=()=>idbPut('draft',photos.map(p=>p.blob));
+$('#photoIn').addEventListener('change',e=>{addFiles(e.target.files);e.target.value=''});
+const drop=$('#drop');
+['dragenter','dragover'].forEach(t=>drop.addEventListener(t,e=>{e.preventDefault();drop.classList.add('hov')}));
+['dragleave','drop'].forEach(t=>drop.addEventListener(t,e=>{e.preventDefault();drop.classList.remove('hov')}));
+drop.addEventListener('drop',e=>addFiles(e.dataTransfer.files));
+
+/* ---------- 건축물대장 AI 판독 ---------- */
+$('#ledgerIn').addEventListener('change',async e=>{
+  const f=e.target.files[0];e.target.value='';if(!f)return;
+  const msg=$('#ledgerMsg');const s=await getSampler();
+  if(!s){msg.textContent='이 화면에서는 AI 판독을 쓸 수 없어요 — 직접 입력해 주세요.';return}
+  try{const lim=s.limits?await s.limits():{images:true};if(lim&&lim.images===false){msg.textContent='AI가 이미지를 받을 수 없는 상태예요.';return}}catch(_){}
+  msg.innerHTML='<span style="color:var(--brand)">AI가 대장을 읽는 중… (10~20초)</span>';
+  try{
+    const img=await shrink(f,1800,0.88);
+    const prompt='이미지는 한국 건축물대장(일반건축물대장 또는 집합건축물대장 표제부/전유부) 화면 캡처입니다. 이미지에 실제로 보이는 값만 읽어 아래 JSON 하나로만 답하세요. 보이지 않거나 확실하지 않으면 null. 추측 금지.\n{"address":"대지위치+지번 (예: 서울특별시 관악구 봉천동 100-1)","mainUse":"주용도 원문","totalFloor":지상층수 숫자,"baseFloor":지하층수 숫자,"approve":"사용승인일 YYYY-MM-DD","parkTotal":총 주차대수 숫자(옥내+옥외+인근 합),"exclusiveArea":전유부분 면적 합 숫자(집합건축물 전유부일 때만, ㎡),"elevator":승강기 대수 숫자,"floorOfUnit":"전유부의 층(있으면)"}';
+    const v=await askJson(s,prompt,{images:[img],modelTier:'default'});
+    const filled=[];const set=(k,val)=>{if(val==null||val==='')return;const el=$('[data-f='+k+']');if(!el)return;el.value=val;el.classList.add('ai-filled');filled.push(k)};
+    if(v.address&&!D.addr)set('addr',String(v.address).replace(/^서울특별시/,'서울'));
+    if(v.mainUse){const m=String(v.mainUse);const map=[['다가구','다가구주택'],['다세대','다세대주택'],['연립','연립주택'],['아파트','아파트'],['오피스텔','오피스텔'],['단독','단독주택'],['제1종근린','제1종근린생활시설'],['제2종근린','제2종근린생활시설'],['업무','업무시설']];const hit=map.find(([k])=>m.includes(k));set('use',hit?hit[1]:'기타');if(!hit)set('useEtc',m)}
+    set('totalFloor',num(v.totalFloor));set('baseFloor',num(v.baseFloor)||'');set('approve',/^\d{4}-\d{2}-\d{2}$/.test(v.approve||'')?v.approve:'');
+    set('parkTotal',num(v.parkTotal));set('area',num(v.exclusiveArea));
+    if(num(v.elevator)!=null)set('elevator',num(v.elevator)>0?'있음':'없음');
+    if(v.floorOfUnit&&!D.floor)set('floor',String(v.floorOfUnit).replace(/층$/,''));
+    readForm();refresh();LS.set(K.draft,D);
+    msg.innerHTML=filled.length?'<span style="color:var(--grn)">✔ '+filled.length+'개 칸을 채웠어요 — 노란 칸을 대장과 대조해 확인하세요.</span>':'읽을 수 있는 값이 없었어요. 표제부 화면 전체가 보이게 캡처해 주세요.';
+  }catch(err){msg.textContent=errMsg(err)}
+});
+function errMsg(err){const c=err&&err.code;if(c==='not_granted')return'AI 사용이 허용되지 않았어요. 직접 입력하거나, 다시 눌러 허용해 주세요.';if(c==='rate_limited')return'AI 요청이 잠시 몰렸어요. 1분 뒤 다시 눌러 주세요.';return'AI 처리 중 문제가 생겼어요: '+((err&&err.message)||'알 수 없음')}
+async function askJson(s,prompt,opts){
+  if(typeof s.json==='function')return await s.json(prompt,opts);
+  const r=await s(prompt,opts);const t=(r&&r.text)||'';const m=t.match(/\{[\s\S]*\}/);if(!m)throw new Error('응답을 읽지 못했어요');return JSON.parse(m[0])}
+
+
+/* ---------- 주소 → 건축물대장(중개사무소 앱 서버) ---------- */
+$('#btnBldApi').addEventListener('click',async()=>{
+  readForm();const msg=$('#ledgerMsg');
+  if(!D.addr){msg.textContent='먼저 2번 칸에 지번 주소를 넣어 주세요.';return}
+  let tk='';try{tk=localStorage.getItem('junggae-token')||''}catch(e){}
+  if(!tk){msg.innerHTML='중개사무소 앱에 <b>로그인</b>해야 쓸 수 있어요 — 허브 첫 화면(홈)에서 로그인하세요.';return}
+  msg.innerHTML='<span style="color:var(--brand)">건축물대장 조회 중…</span>';
+  try{
+    const r=await fetch('https://dwtylilyvmvbpsryvlcg.supabase.co/rest/v1/rpc/junggae_building',{method:'POST',headers:{apikey:'sb_publishable_Vht7Hh-4GF-mpbnprPp3FQ_AgGPTKTH','Content-Type':'application/json'},body:JSON.stringify({p_token:tk,p_addr:D.addr})});
+    const j=await r.json().catch(()=>null);
+    if(!r.ok){msg.textContent=(j&&j.message)==='AUTH_REQUIRED'?'로그인이 만료됐어요 — 홈에서 다시 로그인하세요.':'서버 오류 '+r.status;return}
+    if(!j||!j.ok){msg.textContent=(j&&j.message)||'조회 실패';return}
+    const it=(j.items||[]).filter(x=>x['주용도']).sort((a,b)=>(+b['연면적']||0)-(+a['연면적']||0));
+    if(!it.length){msg.textContent='이 지번('+(j.address||D.addr)+')의 건축물대장 표제부가 없어요. 지번을 확인하세요.';return}
+    const v=it[0];const filled=[];const set=(k,val)=>{if(val==null||val==='')return;const el=$('[data-f='+k+']');if(!el)return;el.value=val;el.classList.add('ai-filled');filled.push(k)};
+    const m=String(v['주용도']||'');const map=[['다가구','다가구주택'],['다세대','다세대주택'],['연립','연립주택'],['아파트','아파트'],['오피스텔','오피스텔'],['단독','단독주택'],['제1종근린','제1종근린생활시설'],['제2종근린','제2종근린생활시설'],['업무','업무시설']];
+    const hit=map.find(([k])=>m.includes(k));if(hit)set('use',hit[1]);else if(!/공동주택/.test(m)){set('use','기타');set('useEtc',m)}
+    if(+v['지상층수']>0)set('totalFloor',+v['지상층수']);set('baseFloor',+v['지하층수']||'');
+    const ap=String(v['사용승인일']||'');if(/^\d{8}$/.test(ap))set('approve',ap.slice(0,4)+'-'+ap.slice(4,6)+'-'+ap.slice(6,8));
+    if(v['건물명']&&!D.bldgName)set('bldgName',v['건물명']);
+    readForm();refresh();LS.set(K.draft,D);
+    msg.innerHTML='<span style="color:var(--grn)">✔ '+esc(j.address||'')+' 대장에서 '+filled.length+'개 칸을 채웠어요'+(it.length>1?' (동이 '+it.length+'개 — 가장 큰 동 기준, 해당 동과 맞는지 확인)':'')+'. 주차대수는 직접 입력하세요.</span>'+(/공동주택/.test(m)?' 용도가 「공동주택」으로만 나와 직접 골라 주세요.':'');
+  }catch(e){msg.textContent='인터넷 연결을 확인하세요'}
+});
+
+/* ---------- dictation ---------- */
+function setupMic(){const b=$('#btnMic');b.classList.remove('hide');let live=false;
+  dict.onFinal(({text})=>{const ta=$('[data-f=memo]');ta.value=(ta.value?ta.value.replace(/\s*$/,' '):'')+text;onChange()});
+  dict.onState(({state})=>{live=state==='listening';b.classList.toggle('live',live);b.textContent=live?'■':'🎤'});
+  b.addEventListener('click',e=>{e.preventDefault();if(live){dict.stop().catch(()=>{});return}dict.start().catch(err=>{if(err&&err.code==='not_granted'){b.classList.add('hide');toast('마이크가 허용되지 않아 입력으로 진행해요')}})})}
+
+/* ---------- 원고 생성 ---------- */
+const CH={dabang:{nm:'다방',title:'제목',tmax:40,bmax:1000,blk:'mgmt'},naver:{nm:'네이버',title:'매물 특징',tmax:40,bmax:1000,blk:'mgmt'},blog:{nm:'블로그',title:'제목',tmax:60,bmax:3000,blk:'full'},daangn:{nm:'당근',title:'제목',tmax:30,bmax:800,blk:'full'},band:{nm:'밴드·카톡',title:null,tmax:0,bmax:800,blk:'full'}};
+function facts(){const land=D.type==='토지';const f={
+  '매물종류':D.type,'거래형태':D.deal,'가격':priceText(),'소재지(동·층까지만, 호수 비공개)':locText(),'건물명':D.bldgName||null,
+  '면적':land?D.area+'㎡('+py(D.area)+')':areaText()};
+  if(!land)Object.assign(f,{'건축물용도':useText(),'총층수':'지상 '+D.totalFloor+'층','해당층':floorText()||null,'방/욕실':(D.rooms||'-')+'/'+(D.baths||'-'),
+    '방향':D.dir+'('+D.dirBase+')','사용승인일':fmtDate(D.approve),'주차':parkText(),'엘리베이터':D.elevator||null,'입주가능일':moveText(),'관리비':mgmtText()||null,'옵션':(D.options||[]).join(', ')||null});
+  f['중개사 메모(사실 근거)']=D.memo||null;if(office.slogan)f['사무소 소개']=office.slogan;
+  Object.keys(f).forEach(k=>{if(f[k]==null||f[k]==='')delete f[k]});return f}
+function buildPrompt(tone,nPhotos){
+  return'당신은 한국 공인중개사의 매물 광고 원고 작가입니다. 아래 [사실]만 근거로 플랫폼별 광고 원고 5종을 씁니다.\n\n'+
+  '[반드시 지킬 규칙]\n'+
+  '1. [사실]에 없는 내용은 절대 만들지 마세요(역까지 거리, 학군, 리모델링, 신축, 채광, 소음 등). 메모에 있는 것만 씁니다.\n'+
+  (nPhotos?'2. 함께 보낸 사진 '+nPhotos+'장에서 눈으로 분명히 확인되는 것(예: 화이트톤 벽지, 큰 창, 붙박이장)만 짧게 묘사할 수 있습니다. 추정·과장 금지.\n':'2. 사진은 없습니다. 내부 묘사는 메모에 있는 것만.\n')+
+  '3. 가격·면적·층·날짜 숫자는 [사실]과 글자 하나 다르지 않게.\n'+
+  '4. 쓰지 말 것: 최저가, 최고, 유일, 100%, 무조건, 보장, 확정, 특가, 대박, 초급매, 마지막, 역대급, 완벽, 안전한 집. "급매"·"신축"·"역세권"은 메모에 근거가 있을 때만.\n'+
+  '5. 호수, 임대인 정보, 전화번호, 중개보조원 언급 금지. 사무소 정보·필수 표시사항은 앱이 본문 끝에 자동으로 붙이므로 본문에 넣지 마세요.\n'+
+  '6. 말투: '+tone+'. 이모지는 블로그·당근·밴드에서만 문단당 최대 1개.\n\n'+
+  '[플랫폼별 형식]\n'+
+  '- dabang: title 25~40자(지역·유형·핵심 장점). 다방 규칙: 한글·영문·숫자와 + - / , . ㎡ 외 특수문자 금지, "평"·"평형" 단어 금지, 이모지 금지, body 300~500자, 짧은 문단과 줄바꿈, 끝에 "방문 상담 환영" 류 한 줄.\n'+
+  '- naver: title은 "매물 특징" 칸용 40자 이내 한 줄, body 300~600자.\n'+
+  '- blog: title 검색형(동네명+유형+거래형태+핵심), body 1,200~1,800자, "■ 소제목" 4~6개(위치·내부·조건·관리비·입주·상담 안내), tags 10개(# 없이 단어만).\n'+
+  '- daangn: title 30자 이내, body 200~400자, 동네 이웃에게 말하듯.\n'+
+  '- band: title 없음, body 200~400자, 공지체, 핵심 조건 불릿(•) 4~6줄.\n\n'+
+  '[사실]\n'+JSON.stringify(facts(),null,1)+'\n\n'+
+  '아래 JSON 하나로만 답하세요:\n{"dabang":{"title":"","body":""},"naver":{"title":"","body":""},"blog":{"title":"","body":"","tags":[]},"daangn":{"title":"","body":""},"band":{"body":""}}'}
+function fallback(tone){
+  const area=D.type==='토지'?D.area+'㎡':'전용 '+D.area+'㎡('+py(D.area)+')';
+  const dong=(D.addr||'').split(/\s+/).find(w=>/[동읍면리가]$/.test(w))||'';
+  const head=[dong,D.type,D.deal].filter(Boolean).join(' ');
+  const memo=(D.memo||'').split(/[,\n]|\.(?!\d)/).map(s=>s.trim()).filter(s=>s&&!lint(s).length);
+  const opt=(D.options||[]).join(', ');
+  const core=[priceText(),area,floorText()?floorText()+(D.totalFloor?'/'+D.totalFloor+'층':''):'',D.dir||'',moveText()].filter(Boolean);
+  const bul=core.map(x=>'• '+x).join('\n');
+  const pts=memo.map(m=>'- '+m).join('\n');
+  return{
+    dabang:{title:(head+' | '+(memo[0]||priceText())).slice(0,40),body:head+' 매물 소개드립니다.\n\n'+bul+(opt?'\n• 옵션: '+opt:'')+(pts?'\n\n[이 집의 장점]\n'+pts:'')+'\n\n직접 확인한 매물입니다. 방문 상담 환영합니다.'},
+    naver:{title:(memo[0]||head).slice(0,40),body:head+'\n'+core.join(' / ')+(opt?'\n옵션: '+opt:'')+(pts?'\n\n'+pts:'')},
+    blog:{title:[dong,D.type,D.deal,memo[0]].filter(Boolean).join(' ').slice(0,60),body:'■ 매물 한눈에 보기\n'+bul+'\n\n■ 이 집의 장점\n'+(pts||'- 현장 확인 후 안내드립니다')+(opt?'\n\n■ 옵션\n'+opt:'')+'\n\n■ 관리비\n'+(mgmtText()||'-')+'\n\n■ 입주\n'+(moveText()||'-')+'\n\n■ 상담 안내\n궁금하신 점은 아래 사무소로 편하게 문의 주세요.',tags:[dong,D.type,D.deal,dong+D.type,dong+' '+D.deal,'부동산','중개사무소'].filter(Boolean)},
+    daangn:{title:(dong+' '+D.type+' '+priceText()).slice(0,30),body:'안녕하세요, 동네 중개사무소입니다.\n'+head+' 소개드려요.\n\n'+bul+(pts?'\n\n'+pts:'')+'\n\n편하게 문의 주세요!'},
+    band:{title:'',body:'[매물 안내] '+head+'\n\n'+bul+(opt?'\n• 옵션: '+opt:'')+(pts?'\n\n'+pts:'')}}}
+async function generate(){
+  if(lastC.red){go('sec-check');return}
+  const btn=$('#btnGen');btn.disabled=true;btn.innerHTML='<span class="spin"></span> AI가 원고 5종을 쓰는 중… (20~40초)';
+  $('#genMsg').innerHTML='';const tone=$('#tone').value;
+  let out=null,note='',noAI=false;
+  try{
+    const s=await getSampler();
+    if(!s){note='이 화면에는 아직 AI가 연결되지 않아 기본 서식으로 만들었어요.';noAI=true}
+    else{
+      let images=[];
+      if($('#usePhotos').checked&&photos.length){try{const lim=s.limits?await s.limits():{images:true};if(!lim||lim.images!==false)images=await Promise.all(photos.slice(0,4).map(p=>shrink(p.blob,1024,0.8)))}catch(_){}}
+      const opts={modelTier:'default'};if(images.length)opts.images=images;
+      out=await askJson(s,buildPrompt(tone,images.length),opts);
+      if(!out||!out.dabang)throw new Error('형식이 맞지 않는 응답');
+    }
+  }catch(err){note=errMsg(err)+' — 우선 기본 서식으로 만들었어요.';out=null}
+  if(!out)out=fallback(tone);
+  Object.keys(CH).forEach(k=>{out[k]=out[k]||{title:'',body:''};out[k].blk=out[k].blk||CH[k].blk});
+  if(Array.isArray(out.blog.tags))out.blog.tags=out.blog.tags.map(t=>String(t).replace(/^#/,'')).filter(Boolean);
+  outputs=out;LS.set(K.out,outputs);
+  btn.disabled=false;btn.textContent='🔁 다시 만들기';
+  $('#genMsg').innerHTML=note?'<div class="note y">'+esc(note)+(noAI?' AI 원고가 필요하면 <a href="https://claude.ai/artifact/DbFKC1Cqk6ustHsn9QKcpc" target="_blank" rel="noopener">claude.ai 버전</a>에서 만들 수 있어요(매물장 [백업 복사]→[복원]으로 옮기기).':'')+'</div>':'<div class="note g">원고 5종이 완성됐어요. 고칠 곳은 바로 고치고 복사하세요.</div>';
+  $('#outWrap').classList.remove('hide');renderOut();$('#outWrap').scrollIntoView({behavior:'smooth',block:'start'})}
+$('#btnGen').addEventListener('click',generate);
+$('#btnGen2').addEventListener('click',()=>{if(lastC.red)go('sec-check');else{showTab('new');generate()}});
+
+function finalText(k){const o=outputs[k];let t=(o.body||'').trim();if(k==='blog'&&o.tags&&o.tags.length)t+='\n\n'+o.tags.map(x=>'#'+x.replace(/\s+/g,'')).join(' ');const b=block(o.blk);return b?t+'\n\n'+b:t}
+function renderOut(){
+  $$('#ctabs button').forEach(b=>b.classList.toggle('on',b.dataset.c===curChannel));
+  const P=$('#outPane');
+  if(curChannel==='fields'){renderFields(P);return}
+  const k=curChannel,c=CH[k],o=outputs[k];
+  const lt=lint((o.title||'')+'\n'+(o.body||''));
+  P.innerHTML=(c.title?'<label class="f">'+c.title+'<input type="text" id="oTitle" value="'+esc(o.title)+'"><div class="cnt-l" id="tCnt"></div></label>':'')+
+   '<label class="f" style="margin-top:10px">본문<textarea id="oBody" style="min-height:240px">'+esc(o.body)+'</textarea><div class="cnt-l" id="bCnt"></div></label>'+
+   (k==='blog'?'<label class="f" style="margin-top:6px">태그<input type="text" id="oTags" value="'+esc((o.tags||[]).join(', '))+'"></label>':'')+
+   '<div class="lint" id="oLint">'+lintHtml(lt)+'</div>'+
+   '<label class="f" style="margin-top:10px">본문 끝에 붙일 표시사항<select id="oBlk"><option value="full">전체 표시사항 + 사무소</option><option value="mgmt">관리비 세부 + 사무소 (다방·네이버는 항목칸이 따로 있음)</option><option value="office">사무소 정보만</option><option value="none">붙이지 않음</option></select></label>'+
+   '<pre class="block" id="oBlock"></pre>'+
+   '<div class="row" style="margin-top:10px">'+(c.title?'<button class="btn sm" id="cpT">제목 복사</button>':'')+'<button class="btn pri" id="cpB" style="flex:1">본문 전체 복사 (표시사항 포함)</button></div>';
+  $('#oBlk').value=o.blk;
+  const upd=()=>{if(c.title){o.title=$('#oTitle').value;const n=o.title.length;const el=$('#tCnt');el.textContent=n+' / '+c.tmax+'자';el.classList.toggle('over',n>c.tmax)}
+    o.body=$('#oBody').value;$('#bCnt').textContent=o.body.length.toLocaleString()+'자';
+    if(k==='blog')o.tags=$('#oTags').value.split(',').map(s=>s.trim()).filter(Boolean);
+    o.blk=$('#oBlk').value;$('#oBlock').textContent=block(o.blk)||'(표시사항을 붙이지 않습니다 — 플랫폼 입력칸에 꼭 채우세요)';
+    let lh=lintHtml(lint((o.title||'')+'\n'+o.body));if(k==='dabang'&&o.title&&dabangTitle(o.title)!==o.title.trim())lh+='<span>⚠ 다방 제목 규칙: "평"·특수문자는 등록 시 지워집니다 → '+esc(dabangTitle(o.title))+'</span>';if(k==='dabang'&&finalText('dabang').length>1000)lh+='<span>⚠ 다방 상세설명 1,000자 초과 — 표시사항 포함 '+finalText('dabang').length+'자</span>';$('#oLint').innerHTML=lh;LS.set(K.out,outputs)};
+  P.querySelectorAll('input,textarea,select').forEach(e=>e.addEventListener('input',upd));upd();
+  if(c.title)$('#cpT').onclick=()=>copy(o.title);
+  $('#cpB').onclick=()=>copy(finalText(k))}
+const dabangTitle=t=>String(t||'').replace(/\d+(\.\d+)?\s*평형?/g,'').replace(/평형?/g,'').replace(/[^0-9A-Za-z가-힣ㄱ-ㅎㅏ-ㅣ\s+\-\/,.㎡]/g,' ').replace(/\s+/g,' ').trim().slice(0,40);
+function dabangPayload(){
+  const t=D.type,u=D.use;
+  const cat=t==='오피스텔'?'오피스텔':t==='아파트'?'아파트(도시형)':'주택 / 빌라';
+  const sub={'다세대주택':'빌라/연립/다세대','연립주택':'빌라/연립/다세대','단독주택':'단독주택','다가구주택':'다가구주택'}[u]||(cat==='주택 / 빌라'?'기타':'');
+  const use={'단독주택':'단독주택','다가구주택':'단독주택','다세대주택':'공동주택','연립주택':'공동주택','아파트':'공동주택','오피스텔':'업무시설','업무시설':'업무시설','제1종근린생활시설':'제1종근린생활시설','제2종근린생활시설':'제2종근린생활시설'}[u]||(u==='기타'?D.useEtc:'');
+  const won=v=>Math.round((num(v)||0)*10000);
+  const det={};Object.entries(D.mgmtDetail||{}).forEach(([k,v])=>{if(num(v)>0)det[k]=won(v)});
+  const fl=String(D.floor||'').trim();
+  const floor=/^\d+$/.test(fl)?fl+'층':/반지|B1|b1/.test(fl)?'반지층':/옥탑/.test(fl)?'옥탑':fl;
+  const opts=(D.options||[]).filter(o=>!['반려동물 가능','LH 가능','전세대출 가능','주차 가능','도어락'].includes(o));
+  const mv=D.moveMode==='now'?{mode:'now'}:D.moveMode==='date'?{mode:'date',date:(D.moveDate||'').replace(/-/g,'')}:D.moveMode==='nego'?{mode:'nego',text:(D.moveMonth||'')+' '+(D.movePart||'')}:{};
+  let desc=outputs&&outputs.dabang?finalText('dabang'):'';if(desc.length>1000)desc=desc.slice(0,997)+'…';
+  return{v:1,cat,sub,unreg:!!D.unreg,addr:(D.addr||'').replace(/^서울(특별시)?\s*/,''),dong:D.dong||'',dongNone:!!D.dongNone,ho:D.ho||'',
+    area:num(D.area)||'',supply:num(D.supply)||'',rooms:D.rooms||'',pet:(D.options||[]).includes('반려동물 가능'),use,
+    approve:(D.approve||'').replace(/-/g,''),deal:D.deal==='단기임대'?'월세':D.deal,price:num(D.price)||'',deposit:num(D.deposit)??'',rent:num(D.rent)??'',
+    lh:(D.options||[]).includes('LH 가능'),
+    mgmt:{type:D.mgmtType,total:won(D.mgmtTotal),base:'직전 월 관리비',incl:D.mgmtIncl||[],detail:det,noDetail:!!D.mgmtNoDetail},
+    move:mv,totalFloor:D.totalFloor||'',floor,lmh:D.floorMode==='lmh'?(D.lmh||'').replace('층',''):'',
+    dirBase:D.dirBase==='거실 기준'?'거실':D.dirBase==='안방 기준'?'안방':'',dir:D.dir||'',baths:D.baths??'',
+    elevator:D.elevator?D.elevator==='있음':null,parkTotal:D.parkTotal??'',options:opts,
+    title:dabangTitle(outputs&&outputs.dabang?outputs.dabang.title:''),desc}}
+function renderFields(P){
+  const land=D.type==='토지';
+  const rows=[['소재지',locText()],['건물명',D.bldgName],['매물 종류',D.type],['건축물 용도',land?'':useText()],['거래 형태',D.deal],
+    ['매매가',D.deal==='매매'?String(num(D.price)):''],['보증금(만원)',D.deal&&D.deal!=='매매'?String(num(D.deposit)??''):''],['월세(만원)',(D.deal==='월세'||D.deal==='단기임대')?String(num(D.rent)??''):''],
+    ['전용면적(㎡)',D.area],['공급면적(㎡)',D.supply],['해당층',floorText()],['총 층수',D.totalFloor],['방 수',D.rooms],['욕실 수',D.baths],['방향',D.dir?D.dir+' ('+D.dirBase+')':''],
+    ['사용승인일',fmtDate(D.approve)],['주차',parkText()],['엘리베이터',D.elevator],['입주가능일',moveText()],['관리비',mgmtText()],['옵션',(D.options||[]).join(', ')],
+    ['다방 제목',dabangTitle(outputs.dabang.title)],['다방 상세설명',finalText('dabang')]].filter(r=>r[1]!=null&&String(r[1]).trim()!=='');
+  P.innerHTML='<div class="note b"><b>다방 자동입력</b> — 크롬에 「다방 자동입력」 확장을 설치했다면: ① 아래 [다방 꾸러미 복사] → ② 다방프로 매물등록 화면 오른쪽 아래 [⚡ 자동입력] → ③ 붙여넣기. 칸이 자동으로 채워집니다. 사진·등록은 직접.</div><div class="row" style="margin-bottom:12px"><button class="btn pri" id="cpPack" style="flex:1">📦 다방 꾸러미 복사</button></div><p class="desc">확장 없이 쓸 때는 다방프로 칸 순서대로 하나씩 복사하세요.</p><table class="fields">'+rows.map((r,i)=>'<tr><td>'+esc(r[0])+'</td><td>'+esc(String(r[1]).length>60?String(r[1]).slice(0,60)+'…':r[1])+'</td><td><button class="btn sm" data-i="'+i+'">복사</button></td></tr>').join('')+'</table>';
+  P.querySelectorAll('button[data-i]').forEach(b=>b.onclick=()=>copy(String(rows[+b.dataset.i][1])));
+  $('#cpPack').onclick=()=>copy('D1C-DABANG:'+JSON.stringify(dabangPayload()))}
+$('#ctabs').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;curChannel=b.dataset.c;renderOut()});
+
+/* ---------- 매물장 ---------- */
+let list=LS.get(K.list,[]);
+function saveList(){LS.set(K.list,list);$('#listCnt').textContent=list.length}
+$('#btnSave').addEventListener('click',()=>{
+  readForm();const ex=list.find(x=>x.id===D.id);
+  const start=ex?ex.adStart:today(),end=ex?ex.adEnd:addDays(today(),30);
+  modal(ex?'매물장 업데이트':'매물장에 저장','<div class="grid"><label class="f">광고 시작일<input type="date" id="mS" value="'+start+'"></label><label class="f">광고 만료일<input type="date" id="mE" value="'+end+'"></label></div><p class="hint" style="margin-top:8px">만료 3일 전과 거래완료 후 "광고 내리기"를 매물장에서 알려드려요.</p>',
+   [{t:'취소'},{t:'저장',cls:'pri',fn:()=>{
+     const rec={id:D.id,data:JSON.parse(JSON.stringify(D)),outputs:JSON.parse(JSON.stringify(outputs)),adStart:$('#mS').value||today(),adEnd:$('#mE').value||addDays(today(),30),status:ex?ex.status:'광고중',takenDown:ex?ex.takenDown:false,saved:new Date().toISOString(),thumb:null};
+     const finish=t=>{rec.thumb=t;if(ex)Object.assign(ex,rec);else list.unshift(rec);saveList();renderList();toast('매물장에 저장했어요')};
+     idbPut(D.id,photos.map(p=>p.blob));
+     if(photos[0])shrink(photos[0].blob,160,0.7).then(b=>{const r=new FileReader();r.onload=()=>finish(r.result);r.readAsDataURL(b)}).catch(()=>finish(null));else finish(null)}}])});
+function renderList(){
+  const f=$('#listFilter').value;const arr=list.filter(x=>f==='all'||x.status===f);
+  const noDown=list.filter(x=>x.status==='거래완료'&&!x.takenDown),soon=list.filter(x=>x.status==='광고중'&&dday(x.adEnd)<=3);
+  $('#listAlerts').innerHTML=(noDown.length?'<div class="note r" style="margin-top:14px">⚠ 거래완료됐는데 <b>광고를 내렸는지 확인 안 된 매물 '+noDown.length+'건</b> — 계속 노출되면 허위매물(부존재 광고)로 과태료 대상입니다.</div>':'')+(soon.length?'<div class="note y">광고 만료가 3일 이내(또는 지남)인 매물 '+soon.length+'건</div>':'');
+  if(!arr.length){$('#listBox').innerHTML='<div class="card" style="text-align:center;color:var(--sub)">저장된 매물이 없어요. 새 매물에서 원고를 만든 뒤 "매물장에 저장"을 누르세요.</div>';return}
+  $('#listBox').innerHTML=arr.map(x=>{const d=x.data;const dd=dday(x.adEnd);
+    const st=x.status==='거래완료'?(x.takenDown?'<span class="chip done">거래완료·광고내림</span>':'<span class="chip warn">거래완료·광고 내리세요</span>'):x.status==='보류'?'<span class="chip done">보류</span>':'<span class="chip on">광고중</span>'+(dd<=3?'<span class="chip soon">'+(dd<0?'만료 '+(-dd)+'일 지남':'D-'+dd)+'</span>':'');
+    const price=d.deal==='매매'?man(d.price):(d.deal?man(d.deposit)+(d.rent?'/'+man(d.rent):''):'');
+    return'<div class="lst"><div class="th" style="'+(x.thumb?'background-image:url('+x.thumb+')':'')+'"></div><div class="bd"><div>'+st+'</div><div class="t1">'+esc([d.type,d.deal,price].filter(Boolean).join(' · '))+'</div><div class="t2">'+esc((d.addr||'')+(d.ho?' '+d.ho:''))+'</div><div class="t2">광고 '+fmtDate(x.adStart)+' ~ '+fmtDate(x.adEnd)+'</div>'+
+      '<div class="row" style="margin-top:8px"><button class="btn sm" data-a="load" data-id="'+x.id+'">불러오기</button>'+
+      (x.status!=='거래완료'?'<button class="btn sm" data-a="done" data-id="'+x.id+'">거래완료</button>':(!x.takenDown?'<button class="btn sm ok" data-a="down" data-id="'+x.id+'">광고 내림 확인</button>':''))+
+      (x.status==='광고중'?'<button class="btn sm" data-a="ext" data-id="'+x.id+'">+30일</button><button class="btn sm" data-a="hold" data-id="'+x.id+'">보류</button>':'')+
+      (x.status==='보류'?'<button class="btn sm" data-a="on" data-id="'+x.id+'">다시 광고</button>':'')+
+      '<button class="btn sm" data-a="del" data-id="'+x.id+'">삭제</button></div></div></div>'}).join('')}
+$('#listFilter').addEventListener('change',renderList);
+$('#listBox').addEventListener('click',async e=>{const b=e.target.closest('button[data-a]');if(!b)return;const x=list.find(r=>r.id===b.dataset.id);if(!x)return;const a=b.dataset.a;
+  if(a==='load'){D=JSON.parse(JSON.stringify(x.data));outputs=x.outputs?JSON.parse(JSON.stringify(x.outputs)):null;writeForm();
+    photos.forEach(p=>URL.revokeObjectURL(p.url));const bl=(await idbGet(x.id))||[];photos=bl.map(b=>({blob:b,url:URL.createObjectURL(b)}));renderPhotos();savePhotos();
+    LS.set(K.draft,D);LS.set(K.out,outputs);$('#outWrap').classList.toggle('hide',!outputs);if(outputs)renderOut();showTab('new');refresh();window.scrollTo(0,0);toast('불러왔어요');return}
+  if(a==='done'){x.status='거래완료';x.takenDown=false;x.doneAt=today()}
+  if(a==='down'){x.takenDown=true}
+  if(a==='ext'){x.adEnd=addDays(dday(x.adEnd)<0?today():x.adEnd,30)}
+  if(a==='hold'){x.status='보류'}
+  if(a==='on'){x.status='광고중'}
+  if(a==='del'){modal('삭제할까요?','<p>'+esc(x.data.addr||'')+' 매물을 매물장에서 지웁니다.</p>',[{t:'취소'},{t:'삭제',cls:'dark',fn:()=>{list=list.filter(r=>r!==x);idbDel(x.id);saveList();renderList()}}]);return}
+  saveList();renderList()});
+$('#btnBackup').addEventListener('click',()=>{copy(JSON.stringify({v:1,office,list},null,0));toast('백업을 복사했어요 — 메모장·카톡 나에게 보내기에 붙여 보관하세요')});
+$('#btnRestore').addEventListener('click',()=>modal('백업 붙여넣기','<textarea id="mR" placeholder="복사해 둔 백업 내용을 붙여넣으세요"></textarea><p class="hint">사진은 백업에 포함되지 않습니다(썸네일만).</p>',[{t:'취소'},{t:'복원',cls:'pri',fn:()=>{try{const j=JSON.parse($('#mR').value);if(!Array.isArray(j.list))throw 0;const ids=new Set(list.map(x=>x.id));j.list.forEach(x=>{if(!ids.has(x.id))list.push(x)});if(j.office&&!office.name){office=j.office;LS.set(K.office,office);fillOffice()}saveList();renderList();toast(j.list.length+'건 복원')}catch(e){toast('백업 형식이 아니에요');return false}}}]));
+
+/* ---------- office ---------- */
+function fillOffice(){$$('[data-o]').forEach(el=>el.value=office[el.dataset.o]||'')}
+$('#btnOffice').addEventListener('click',()=>{$$('[data-o]').forEach(el=>office[el.dataset.o]=el.value.trim());LS.set(K.office,office);$('#officeMsg').textContent='저장했어요';toast('사무소 정보 저장');refresh()});
+
+/* ---------- tabs ---------- */
+function showTab(t){$$('.tabs button').forEach(b=>b.classList.toggle('on',b.dataset.tab===t));['new','list','office'].forEach(x=>$('#tab-'+x).classList.toggle('hide',x!==t));$('#bar').classList.toggle('hide',t!=='new');if(t==='list')renderList()}
+$$('.tabs button').forEach(b=>b.addEventListener('click',()=>showTab(b.dataset.tab)));
+
+/* ---------- example / reset ---------- */
+$('#btnExample').addEventListener('click',()=>{
+  const id=D.id;D=Object.assign(blank(),{id,type:'원룸',deal:'월세',deposit:'1000',rent:'55',addr:'서울 관악구 봉천동 100-1',bldgName:'예시하우스',dong:'',dongNone:true,floor:'3',floorMode:'exact',ho:'302호',
+    use:'다세대주택',totalFloor:'5',baseFloor:'',approve:'2015-03-20',elevator:'있음',area:'23.14',supply:'',rooms:'1',baths:'1',dir:'남향',dirBase:'거실 기준',parkTotal:'5',parkMemo:'세대당 0.5대',
+    moveMode:'now',mgmtType:'fixed',mgmtTotal:'12',mgmtIncl:['공용관리비','수도료','인터넷','TV'],mgmtDetail:{'공용관리비':'7','수도료':'2','인터넷':'1.5','TV':'1.5'},
+    options:['에어컨','냉장고','세탁기','인덕션','옷장','도어락'],memo:'봉천역 도보 8분(실측), 남향이라 오후까지 밝음, 2025년 도배·장판 새로 함, 집주인 1층 거주로 관리 잘 됨, 큰길에서 한 블록 들어가 조용함'});
+  writeForm();onChange();toast('예시 매물을 채웠어요'+(office.name?'':' — 사무소 정보도 입력해 주세요'))});
+$('#btnReset').addEventListener('click',()=>modal('새로 시작할까요?','<p>지금 입력 중인 내용과 사진이 지워집니다. (매물장에 저장된 매물은 그대로)</p>',[{t:'취소'},{t:'새로 시작',cls:'dark',fn:()=>{D=blank();outputs=null;photos.forEach(p=>URL.revokeObjectURL(p.url));photos=[];renderPhotos();savePhotos();writeForm();LS.set(K.out,null);$('#outWrap').classList.add('hide');$('#genMsg').innerHTML='';$('#btnGen').textContent='✨ 원고 5종 한 번에 만들기';onChange();window.scrollTo(0,0)}}]));
+
+/* ---------- init ---------- */
+fillOffice();writeForm();refresh();saveList();
+if(outputs&&outputs.dabang){$('#outWrap').classList.remove('hide');renderOut();$('#btnGen').textContent='🔁 다시 만들기'}
+idbGet('draft').then(bl=>{if(Array.isArray(bl)&&bl.length){photos=bl.map(b=>({blob:b,url:URL.createObjectURL(b)}));renderPhotos();refresh()}});
+})();
+</script>
+</body>
+</html>
