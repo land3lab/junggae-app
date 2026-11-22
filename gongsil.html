@@ -62,6 +62,11 @@ nav.sub .bd{display:inline-block;min-width:19px;height:19px;border-radius:99px;b
 .it .sp{font-size:13.5px;color:var(--sub)}
 .it .ow{display:flex;justify-content:space-between;gap:6px;border-top:1px dashed var(--line);margin-top:8px;padding-top:7px;font-size:13px;color:var(--sub)}
 #map{height:62vh;min-height:360px;border-radius:14px;border:1px solid var(--line);background:#e8e6df}
+.both{display:grid;grid-template-columns:1.15fr 1fr;gap:10px;align-items:start}
+.both #map{position:sticky;top:64px;height:calc(100vh - 90px);min-height:420px}
+.both .list{grid-template-columns:1fr;max-height:none}
+.it.hl{border-color:var(--brand);box-shadow:0 0 0 2px var(--brand)}
+@media (max-width:760px){.both{grid-template-columns:1fr}.both #map{position:relative!important;top:auto;height:46vh;min-height:300px}}
 .empty{text-align:center;color:var(--sub);padding:34px 10px;font-size:14.5px}
 /* 모달 */
 .modal{position:fixed;inset:0;background:rgba(20,24,22,.55);z-index:70;display:flex;align-items:flex-end;justify-content:center}
@@ -118,7 +123,7 @@ const KINDS=['원룸','투룸','쓰리룸+','오피스텔','아파트','빌라',
 const FEES=['각자 받기(일반 공동중개)','수수료 반반','협의','기타(메모 참고)'];
 const PY=0.3025;
 
-const S={me:null,tab:'find',f:LS.get('gs.filter',{region:'',deal:'',kind:'',maxDeposit:'',maxRent:'',maxPrice:'',q:''}),view:LS.get('gs.view','list'),list:[],mine:[],busy:false,edit:null,photos:null,photosDirty:false};
+const S={me:null,tab:'find',f:LS.get('gs.filter',{region:'',deal:'',kind:'',maxDeposit:'',maxRent:'',maxPrice:'',q:''}),view:(v=>v==='list'?'list':'both')(LS.get('gs.view','both')),list:[],mine:[],busy:false,edit:null,photos:null,photosDirty:false};
 
 /* ---------- 표시 ---------- */
 function man(won){if(won==null||won==='')return'';const m=Math.round(won/1e4);if(m>=1e4){const e=Math.floor(m/1e4),r=m%1e4;return e+'억'+(r?' '+r.toLocaleString():'')}return m.toLocaleString()}
@@ -170,7 +175,7 @@ function paneFind(){const f=S.f;
       <label class="f">매매가 이하(만원)<input type="text" id="fPrice" inputmode="numeric" value="${f.maxPrice?f.maxPrice/1e4:''}" placeholder="제한 없음"></label>
       <label class="f q">검색<input type="search" id="fQ" value="${esc(f.q)}" placeholder="동네·건물명·메모 (예: 봉천동, 역세권)"></label>
     </div></div>
-  <div class="res-head"><b id="cnt">찾는 중…</b><div class="seg" style="margin:0;width:170px"><button data-v="list" class="${S.view==='list'?'on':''}">목록</button><button data-v="map" class="${S.view==='map'?'on':''}">지도</button></div></div>
+  <div class="res-head"><b id="cnt">찾는 중…</b><div class="seg" style="margin:0;width:200px"><button data-v="both" class="${S.view!=='list'?'on':''}">지도+목록</button><button data-v="list" class="${S.view==='list'?'on':''}">목록만</button></div></div>
   <div id="res"></div>`;
   const num=v=>{const n=String(v).replace(/\D/g,'');return n?String(+n*1e4):''};
   let t=null;const go=()=>{clearTimeout(t);t=setTimeout(()=>{Object.assign(S.f,{region:$('#fRegion').value,deal:$('#fDeal').value,kind:$('#fKind').value,maxDeposit:num($('#fDep').value),maxRent:num($('#fRent').value),maxPrice:num($('#fPrice').value),q:$('#fQ').value.trim()});LS.set('gs.filter',S.f);load()},300)};
@@ -180,22 +185,29 @@ function paneFind(){const f=S.f;
 async function load(){try{S.list=await rpc('gs_list',{p_f:S.f})||[];showRes()}catch(e){const r=$('#res');if(r)r.innerHTML=`<div class="note r">${esc(e.message)}</div>`}}
 function showRes(){const r=$('#res');if(!r)return;const L=S.list;
   $('#cnt').textContent=`공실 ${L.length}건${S.f.region?' · '+S.f.region:''}`;
-  if(!L.length){r.innerHTML=`<div class="empty">조건에 맞는 공실이 아직 없어요.<br>내 공실을 먼저 올려 보세요 — 동문 누군가는 손님이 있습니다.<br><button class="btn pri" style="margin-top:12px" id="goNew">➕ 공실 등록</button></div>`;$('#goNew').onclick=()=>{S.tab='new';S.edit=null;S.photos=[];render()};return}
-  if(S.view==='map'){r.innerHTML='<div id="map"></div><p class="hint" id="nomap"></p>';drawMap(L)}
-  else{r.innerHTML=`<div class="list">${L.map(l=>card(l,false)).join('')}</div>`;r.querySelectorAll('.it').forEach(b=>b.onclick=()=>openDetail(b.dataset.id))}}
+  if(S.map){try{S.map.remove()}catch(e){}S.map=null}
+  const listHtml=L.length?`<div class="list">${L.map(l=>card(l,false)).join('')}</div>`
+    :`<div class="empty">조건에 맞는 공실이 아직 없어요.<br>내 공실을 먼저 올려 보세요 — 동문 누군가는 손님이 있습니다.<br><button class="btn pri" style="margin-top:12px" id="goNew">➕ 공실 등록</button></div>`;
+  if(S.view==='list')r.innerHTML=listHtml;
+  else{r.innerHTML=`<div class="both"><div><div id="map"></div><p class="hint" id="nomap"></p></div><div>${listHtml}</div></div>`;drawMap(L)}
+  const g=$('#goNew');if(g)g.onclick=()=>{S.tab='new';S.edit=null;S.photos=[];render()};
+  r.querySelectorAll('.it').forEach(b=>{b.onclick=()=>openDetail(b.dataset.id);
+    b.onmouseenter=()=>{const mk=S.marks&&S.marks[b.dataset.id];if(mk&&S.map){S.map.panTo(mk.getLatLng(),{animate:true});mk.openPopup()}}})}
+const RC={'서울남부':[37.49,126.93,12],'서울동부':[37.55,127.08,12],'서울북부':[37.62,127.03,12],'서울서부':[37.56,126.9,12],'경기남부':[37.25,127.05,10],'경기북부':[37.75,127.05,10],'경기서부':[37.4,126.8,10],
+  '인천':[37.46,126.7,11],'강원':[37.8,128.2,8],'충청':[36.6,127.3,8],'대구경북':[36.2,128.6,8],'부산경남':[35.3,128.6,8],'전라':[35.4,127.0,8]};
 let leafletP=null;
 function leaflet(){if(window.L)return Promise.resolve();if(leafletP)return leafletP;
   leafletP=new Promise((ok,no)=>{const c=document.createElement('link');c.rel='stylesheet';c.href='vendor/leaflet/leaflet.css';document.head.appendChild(c);
     const s=document.createElement('script');s.src='vendor/leaflet/leaflet.js';s.onload=ok;s.onerror=()=>{leafletP=null;no(new Error('지도를 불러오지 못했어요'))};document.head.appendChild(s)});return leafletP}
 async function drawMap(L){try{await leaflet()}catch(e){$('#map').outerHTML=`<div class="note r">${esc(e.message)} — 목록으로 보세요.</div>`;return}
-  const el=$('#map');if(!el)return;const m=window.L.map(el,{scrollWheelZoom:true});
+  const el=$('#map');if(!el)return;if(S.map){try{S.map.remove()}catch(e){}}const m=window.L.map(el,{scrollWheelZoom:true});S.map=m;S.marks={};
   window.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'}).addTo(m);
   const pts=L.filter(l=>l.lat&&l.lng);const groups={};pts.forEach(l=>{const k=l.lat.toFixed(5)+','+l.lng.toFixed(5);(groups[k]=groups[k]||[]).push(l)});
   const bounds=[];Object.values(groups).forEach(g=>{const ll=[g[0].lat,g[0].lng];bounds.push(ll);
-    const mk=window.L.marker(ll).addTo(m);
+    const mk=window.L.marker(ll).addTo(m);g.forEach(l=>S.marks[l.id]=mk);
     mk.bindPopup(g.map(l=>{const[p,u]=priceText(l);return `<div style="margin-bottom:6px"><b>${esc(l.deal)} ${esc(p)}${u?' '+u:''}</b><br>${esc(l.kind)} · ${esc(l.addr_detail||'')}<br><span style="color:#56605b">${esc(l.owner?.office||'')}</span><br><button class="btn" data-pid="${l.id}">자세히</button></div>`}).join(''))});
   m.on('popupopen',e=>e.popup.getElement().querySelectorAll('[data-pid]').forEach(b=>b.onclick=()=>openDetail(b.dataset.pid)));
-  if(bounds.length)m.fitBounds(bounds,{padding:[30,30],maxZoom:16});else m.setView([37.5665,126.978],11);
+  if(bounds.length)m.fitBounds(bounds,{padding:[30,30],maxZoom:16});else{const c=RC[S.f.region]||[37.5665,126.978,10];m.setView([c[0],c[1]],c[2])}
   const miss=L.length-pts.length;if(miss)$('#nomap').textContent=`주소 위치를 못 찾은 ${miss}건은 목록에서 보세요.`;
   setTimeout(()=>m.invalidateSize(),100)}
 
