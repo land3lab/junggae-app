@@ -62,6 +62,17 @@ textarea{min-height:64px;resize:vertical}
 .photos div b{position:absolute;left:4px;top:4px;background:rgba(0,0,0,.65);color:#fff;font-size:11px;border-radius:6px;padding:0 5px}
 .photos div button{position:absolute;right:2px;top:2px;border:0;background:rgba(0,0,0,.6);color:#fff;border-radius:50%;width:24px;height:24px;cursor:pointer}
 .photos div .mv{right:auto;left:2px;top:auto;bottom:2px;border-radius:6px;width:auto;padding:0 6px;font-size:12px}
+.cardbox{border-top:1px solid var(--line);margin-top:10px;padding-top:12px}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.cards div{aspect-ratio:1;border-radius:8px;background:#eee center/cover;position:relative;border:1px solid var(--line)}
+.cards div b{position:absolute;left:4px;top:4px;background:rgba(0,0,0,.65);color:#fff;font-size:11px;border-radius:6px;padding:0 5px}
+.cards div button{position:absolute;right:2px;top:2px;border:0;background:rgba(0,0,0,.6);color:#fff;border-radius:50%;width:24px;height:24px;cursor:pointer}
+.pv .cd img{display:block;max-width:100%;margin:0 auto 6px;border-radius:4px}
+.guide{margin-top:12px;border:1px solid var(--line);border-radius:12px;padding:10px 14px;background:#FAFAFA}
+.guide summary{font-weight:700;cursor:pointer;min-height:32px}
+.guide ol{padding-left:20px;margin:8px 0;font-size:14px}
+.guide li{margin-bottom:6px}
+.guide code{background:var(--brand-soft);color:var(--l3-deep,#C9531B);border-radius:4px;padding:0 4px}
 .titles label{display:flex;gap:8px;align-items:center;border:1px solid var(--line);border-radius:10px;padding:8px 10px;margin-bottom:6px;cursor:pointer}
 .titles label.on{border-color:var(--brand);background:var(--brand-soft)}
 .titles input[type=radio]{width:20px;height:20px;accent-color:var(--brand);flex:none;margin:0}
@@ -155,11 +166,18 @@ textarea{min-height:64px;resize:vertical}
         <label class="f">주차<input type="text" data-m="park" placeholder="예: 총 4대"></label>
         <label class="f">입주가능일<input type="text" data-m="move" placeholder="예: 즉시입주"></label>
         <label class="f">관리비<input type="text" data-m="mgmt" placeholder="예: 월 7만원(정액) / 포함: 수도·인터넷"></label>
+        <label class="f">관리비 별도 항목<input type="text" data-m="mgmtEx" placeholder="예: 전기·가스"></label>
+        <label class="f">주차 방식<input type="text" data-m="parkHow" placeholder="예: 기계식 / 필로티 자주식"></label>
+        <label class="f">엘리베이터<select data-m="elev"><option value="">모름</option><option>있음</option><option>없음</option></select></label>
         <label class="f full">옵션<input type="text" data-m="options" placeholder="예: 에어컨, 세탁기, 냉장고"></label>
       </div>
     </div>
     <label class="f" style="margin-top:10px">직접 확인한 장점 (한 줄에 하나 — 사실만)<textarea id="lPoints" placeholder="예: 봉천역 도보 7분(직접 걸어봄)&#10;남향이라 오후까지 밝음&#10;2024년 도배·장판 새로 함"></textarea></label>
-    <label class="f">동네 생활 메모 (선택 — 길게 쓰기에서 사용)<textarea id="lArea" placeholder="예: 길 건너 대형마트, 관악산 둘레길 입구 5분"></textarea></label>
+    <div class="grid">
+      <label class="f">반려동물<select id="lPet"><option value="">확인 필요</option><option>가능</option><option>불가</option><option>협의</option></select></label>
+      <label class="f">전세보증보험 가입<select id="lIns"><option value="">확인 필요</option><option>가입 가능 확인</option><option>해당 없음</option></select></label>
+    </div>
+    <label class="f">동네 생활 메모 (선택)<textarea id="lArea" placeholder="예: 길 건너 대형마트, 관악산 둘레길 입구 5분"></textarea></label>
   </div>
 
   <div data-kind="area" class="hide">
@@ -203,6 +221,13 @@ textarea{min-height:64px;resize:vertical}
   <div class="row"><label class="btn sm">📷 사진 추가<input type="file" id="phIn" accept="image/*" multiple hidden></label><span class="hint">네이버는 사진 5장 이상 글이 체류시간에 유리합니다. 순서 번호가 본문의 [사진 n] 자리와 맞습니다.</span></div>
   <div class="photos" id="photos"></div>
   <label class="chk"><input type="checkbox" id="wm" checked> <span>내려받을 때 사진 오른쪽 아래에 <b>사무소 이름·전화</b> 워터마크 넣기</span></label>
+  <div class="cardbox">
+    <b style="font-size:15px">🎨 카드 이미지 자동 만들기</b> <span class="chip" id="cdCnt">0장</span>
+    <p class="hint" style="margin:2px 0 8px">완성된 글에서 <b>표지(대표 이미지)·요약표·체크리스트·자주 묻는 질문·상담 안내</b> 카드를 1080×1080으로 그려 본문 알맞은 자리에 [카드 n]으로 넣습니다. 매물 내부 사진은 실제 사진만 쓰세요(만든 사진은 허위·과장 광고 소지).</p>
+    <div class="seg" id="thSeg" style="margin-bottom:8px"><button data-v="orange" class="on">🟧 주황</button><button data-v="navy">🟦 네이비</button><button data-v="beige">🟫 베이지</button></div>
+    <div class="row"><button class="btn sm pri" id="btnCards">🎨 카드 만들기</button><label class="chk" style="min-height:0;padding:0"><input type="checkbox" id="autoCards" checked> <span>글 만들 때 자동으로</span></label></div>
+    <div class="cards" id="cards"></div>
+  </div>
 </section>
 
 <!-- 4. 검색 설정 -->
@@ -215,8 +240,17 @@ textarea{min-height:64px;resize:vertical}
   <div class="kwchips" id="kwSug"></div>
   <div class="grid" style="margin-top:10px">
     <div><label class="f">말투</label><div class="seg" id="toneSeg" style="margin-top:4px"><button data-v="friendly" class="on">친근하게 (~해요)</button><button data-v="pro">전문가답게 (~합니다)</button></div></div>
-    <div><label class="f">길이</label><div class="seg" id="lenSeg" style="margin-top:4px"><button data-v="normal" class="on">보통 (1,200자+)</button><button data-v="long">길게 (2,000자+)</button></div></div>
+    <div><label class="f">길이</label><div class="note b" style="margin:4px 0 0;padding:12px 14px">공백 제외 <b>2,000자 내외</b> (1,700~2,400자)</div></div>
   </div>
+  <details class="guide"><summary>📋 블로그 작성 지침 (매물 글)</summary>
+    <ol>
+      <li><b>제목만 봐도 매물을 알아보게</b> — 동네·매물 유형·거래 형태 + 가격이나 입주일 같은 핵심 조건. 예: <code>봉천동 투룸 전세 2억1천만 원 | 즉시 입주</code> <a href="https://www.w3.org/WAI/tips/writing/" target="_blank" rel="noopener">W3C 제목 작성 가이드</a></li>
+      <li><b>첫 문단에 가격·관리비·전용면적·입주 가능일</b>을 모으고, 관리비는 포함 항목과 별도 비용을 함께. 본문은 <code>비용</code>·<code>집 구조와 사진</code>·<code>주차와 방문</code>처럼 나눠 손님이 필요한 내용을 바로 찾게. <a href="https://www.nngroup.com/articles/layer-cake-pattern-scanning/" target="_blank" rel="noopener">Nielsen Norman Group 웹 읽기 연구</a></li>
+      <li><b>장점은 실제 사진과 확인한 사실로</b>, 방문을 좌우하는 조건(주차 방식·엘리베이터·반려동물)도 본문에. 보증보험처럼 확인이 남은 항목은 <code>확인 필요</code>로 표시. 게시 전 법정 표시 항목 확인. <a href="https://www.law.go.kr/admRulInfoP.do?admRulSeq=2100000250356" target="_blank" rel="noopener">국토교통부 표시·광고 명시사항</a></li>
+      <li><b>길이는 공백 제외 2,000자 내외.</b></li>
+    </ol>
+    <p class="hint">[글 만들기]·[AI로 다듬기]가 이 지침대로 쓰고, 7번 검사에서 지켰는지 확인합니다.</p>
+  </details>
 </section>
 
 <!-- 5. 사무소 -->
@@ -247,7 +281,7 @@ textarea{min-height:64px;resize:vertical}
   <div class="seg" id="viewSeg" style="margin-top:10px"><button data-v="edit" class="on">✏ 본문 고치기</button><button data-v="pv">👀 블로그 모양 미리보기</button></div>
   <div id="editBox">
     <textarea id="body"></textarea>
-    <p class="hint">규칙: <b>■ </b>로 시작하면 소제목 · <b>[사진 3: 설명]</b>은 사진 자리 · <b>· 항목: 내용</b>이 3줄 이상 이어지면 표 · <b>Q. / A.</b>는 질문·답 · <b>✏</b> 표시는 직접 채울 곳</p>
+    <p class="hint">규칙: <b>■ </b>로 시작하면 소제목 · <b>[사진 3: 설명]</b>은 사진 자리 · <b>[카드 2: 설명]</b>은 카드 이미지 자리 · <b>· 항목: 내용</b>이 3줄 이상 이어지면 표 · <b>Q. / A.</b>는 질문·답 · <b>✏</b> 표시는 직접 채울 곳</p>
   </div>
   <div id="pvBox" class="hide"><div id="preview" class="pv"></div></div>
   <label class="f" style="margin-top:10px">태그 (쉼표로 구분, 최대 30개)<input type="text" id="tags"></label>
@@ -270,13 +304,13 @@ textarea{min-height:64px;resize:vertical}
     <button class="btn sm pri" id="cpRich">② 본문 복사 (서식 포함)</button>
     <button class="btn sm" id="cpPlain">본문 복사 (글자만)</button>
     <button class="btn sm" id="cpTags">③ 태그 복사</button>
-    <button class="btn sm" id="dlPhotos">④ 사진 내려받기</button>
+    <button class="btn sm" id="dlPhotos">④ 사진·카드 내려받기</button>
     <button class="btn sm hide" id="shPhotos">📤 사진 휴대폰에 저장</button>
     <a class="btn sm" id="openWrite" href="https://blog.naver.com/GoBlogWrite.naver" target="_blank" rel="noopener">✍ 네이버 글쓰기 열기</a>
   </div>
   <ol class="steps">
     <li>글쓰기 화면 제목 칸에 <b>제목</b>을 붙여넣기</li>
-    <li>본문에 <b>서식 포함 본문</b>을 붙여넣기 → 회색 "사진 n" 상자 자리에 같은 번호 사진을 넣고 상자는 지우기</li>
+    <li>본문에 <b>서식 포함 본문</b>을 붙여넣기 → 회색 "사진 n"·주황 "카드 n" 상자 자리에 같은 번호 사진·카드를 넣고 상자는 지우기</li>
     <li>오른쪽 아래 <b>태그</b> 칸에 태그 붙여넣기</li>
     <li>[발행] 옆 화살표에서 <b>예약 발행</b>을 쓰면 정해 둔 요일·시간에 올라갑니다</li>
   </ol>
@@ -359,6 +393,8 @@ function fromDabang(D){
   else if(mt==='actual')mgmt='사용량에 따른 실비 부과'+(D.mgmtAvg?' (월 평균 약 '+man(D.mgmtAvg)+')':'')+(inc.length?' / 포함: '+inc.join('·'):'');
   else if(mt==='fixed'){const tt=num(D.mgmtTotal);mgmt='월 '+man(tt)+' (정액)';const d=Object.entries(D.mgmtDetail||{}).filter(([k,v])=>num(v)>0).map(([k,v])=>k+' '+man(v));
     if(tt>=10&&d.length&&!D.mgmtNoDetail)mgmt+=' — '+d.join(', ');else if(tt>=10&&D.mgmtNoDetail)mgmt+=' — 항목별 금액은 임대인 미제시';else if(inc.length)mgmt+=' / 포함: '+inc.join('·')}
+  let mgmtEx='';if((mt==='fixed'||mt==='actual')&&HOUSE.includes(D.use)){const ex=['전기료','수도료','가스사용료','난방비','인터넷','TV'].filter(x=>!inc.includes(x)&&!(num((D.mgmtDetail||{})[x])>0));if(ex.length)mgmtEx=ex.join('·')}
+  /*MGEX*/
   const L=[];L.push('· 소재지: '+locText());L.push('· 종류: '+(land?'토지':useText())+' / 거래형태: '+(D.deal||''));L.push('· 가격: '+price);L.push('· 면적: '+area);
   if(!land){L.push('· 총 층수: 지상 '+(D.totalFloor||'-')+'층'+(num(D.baseFloor)?' / 지하 '+D.baseFloor+'층':'')+(floorText()?' / 해당층: '+floorText():''));
     if(D.rooms||D.baths)L.push('· 방/욕실: '+(D.rooms||'-')+'개/'+(D.baths||'-')+'개');L.push('· 방향: '+(D.dir||'-')+' ('+(D.dirBase||'거실 기준')+')');
@@ -367,14 +403,18 @@ function fromDabang(D){
   return{dong,gu,type:D.type||'',deal:D.deal||'',price,priceShort,area,areaPy:D.area?py(D.area):'',land,
     floor:floorText()?(floorText()+(D.totalFloor?' / 지상 '+D.totalFloor+'층':'')):'',rooms:(D.rooms||D.baths)?'방 '+(D.rooms||'-')+' · 욕실 '+(D.baths||'-'):'',
     dir:D.dir?D.dir+' ('+(D.dirBase||'거실 기준')+')':'',approve:(D.approve||'').replace(/-/g,'.'),park,move,mgmt,options:(D.options||[]),bldg:D.bldgName||'',
-    points:pts,block:L.join('\n'),use:useText()}}
+    points:pts,block:L.join('\n'),use:useText(),mgmtInc:inc.join('·'),mgmtEx,elev:D.elevator||'',pet:(D.options||[]).includes('반려동물 가능')?'가능':'',parkHow:D.parkMemo||'',
+    priceTitle:priceTitle(D.deal,D.price,D.deposit,D.rent)}}
+function wonT(v){const n=num(v);if(n==null)return'';if(n>=10000){const e=Math.floor(n/10000),r=Math.round(n%10000);let rs='';if(r){rs=r%1000===0?(r/1000)+'천':r.toLocaleString()}return e+'억'+rs+'만 원'}return n.toLocaleString()+'만 원'}
+function priceTitle(deal,price,dep,rent){if(deal==='매매')return wonT(price);if(deal==='전세')return wonT(dep);if(deal)return num(dep)!=null?(wonT(dep).replace(' 원','')+'/'+wonT(rent)):'';return''}
 function fromManual(m){m=m||{};const g=k=>String(m[k]||'').trim();
   const L=[];const add=(k,v)=>{if(v)L.push('· '+k+': '+v)};
   add('소재지',g('loc'));L.push('· 종류: '+(g('use')||g('type'))+' / 거래형태: '+g('deal'));add('가격',g('price')?(g('price').startsWith(g('deal'))?g('price'):g('deal')+' '+g('price')):'');add('면적',g('area'));
   add('층',g('floor'));add('방/욕실',g('rooms'));add('방향',g('dir'));add('사용승인일',g('approve'));add('주차',g('park'));add('입주가능일',g('move'));add('관리비',g('mgmt'));
   const price=g('price')?(g('price').startsWith(g('deal'))?g('price'):g('deal')+' '+g('price')):'';
   return{dong:g('dong'),gu:g('gu'),type:g('type'),deal:g('deal'),price,priceShort:g('price').replace(/보증금\s*|월\s*|원/g,'').replace(/\s*\/\s*/,'/'),area:g('area'),areaPy:(g('area').match(/\(([\d.]+평)\)/)||[])[1]||'',land:/토지/.test(g('type')),
-    floor:g('floor'),rooms:g('rooms'),dir:g('dir'),approve:g('approve'),park:g('park'),move:g('move'),mgmt:g('mgmt'),options:g('options').split(/[,·]/).map(s=>s.trim()).filter(Boolean),bldg:'',points:[],block:L.join('\n'),use:g('use')}}
+    floor:g('floor'),rooms:g('rooms'),dir:g('dir'),approve:g('approve'),park:g('park'),move:g('move'),mgmt:g('mgmt'),options:g('options').split(/[,·]/).map(s=>s.trim()).filter(Boolean),bldg:'',points:[],block:L.join('\n'),use:g('use'),
+    mgmtInc:'',mgmtEx:g('mgmtEx'),elev:g('elev'),pet:'',parkHow:g('parkHow'),priceTitle:g('price').replace(/보증금\s*/,'').replace(/\s*\/\s*월\s*/,'/').replace(/원$/,' 원')}}
 
 /* ---------- 상식 주제 (변하지 않는 원칙 위주, 바뀌는 숫자는 확인 문구) ---------- */
 const TIPS={
@@ -466,6 +506,7 @@ $$('[data-m]').forEach(el=>{const v=(st.manual||{})[el.dataset.m];if(v!=null)el.
 $$('[data-a]').forEach(el=>{el.value=(st.area||{})[el.dataset.a]||'';el.oninput=()=>{st.area[el.dataset.a]=el.value;saveDraft();renderKwSug()}});
 $$('[data-c]').forEach(el=>{el.value=(st.cs||{})[el.dataset.c]||'';el.oninput=()=>{st.cs[el.dataset.c]=el.value;saveDraft();renderKwSug()}});
 $('#lPoints').value=st.points||'';$('#lPoints').oninput=e=>{st.points=e.target.value;saveDraft()};
+$('#lPet').value=st.lPet||'';$('#lPet').onchange=e=>{st.lPet=e.target.value;saveDraft()};$('#lIns').value=st.lIns||'';$('#lIns').onchange=e=>{st.lIns=e.target.value;saveDraft()};
 $('#lArea').value=st.lArea||'';$('#lArea').oninput=e=>{st.lArea=e.target.value;saveDraft()};
 $('#aWithList').checked=!!st.aWithList;$('#aWithList').onchange=e=>{st.aWithList=e.target.checked;saveDraft()};
 $('#cConsent').checked=!!st.cConsent;$('#cConsent').onchange=e=>{st.cConsent=e.target.checked;saveDraft();if(st.out)runChecks()};
@@ -493,7 +534,7 @@ function renderKwSug(){const s=kwSuggest();if(!st.kw&&s[0]){st.kw=s[0];$('#kw').
 $('#kw').value=st.kw||'';$('#kw').oninput=e=>{st.kw=e.target.value.trim();saveDraft()};
 $('#kw2').value=st.kw2||'';$('#kw2').oninput=e=>{st.kw2=e.target.value;saveDraft()};
 function segBind(id,key){const s=$(id);s.querySelectorAll('button').forEach(b=>{b.classList.toggle('on',b.dataset.v===st[key]);b.onclick=()=>{st[key]=b.dataset.v;s.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));saveDraft()}})}
-segBind('#toneSeg','tone');segBind('#lenSeg','len');
+segBind('#toneSeg','tone');st.len='std';
 
 /* ---------- 5. 사무소 ---------- */
 function fillOffice(){$$('[data-o]').forEach(el=>el.value=office[el.dataset.o]||'');offWarn()}
@@ -519,6 +560,98 @@ async function shrink(file,M=1600,q=.86){const im=await loadImg(file);if(!im)ret
 $('#phIn').onchange=async e=>{const fs=[...e.target.files].slice(0,Math.max(0,20-photos.length));e.target.value='';
   const add=(await Promise.all(fs.map(f=>shrink(f)))).filter(Boolean);await setPhotos(photos.map(p=>p.blob).concat(add));await blPut('photos',photos.map(p=>p.blob));toast(add.length+'장 추가');if(st.out)renderOut()};
 $('#wm').checked=cfg.wm!==false;$('#wm').onchange=e=>{cfg.wm=e.target.checked;saveCfg()};
+
+/* ---------- 🎨 카드 이미지 ---------- */
+let cards=[]; // {kind,data,desc,blob,url}
+const TH={orange:{bg:'#FFFFFF',cover:'#F77235',coverInk:'#FFFFFF',acc:'#F77235',soft:'#FDEEE5',ink:'#23292B',sub:'#5C6366',line:'#E6E6E6'},
+  navy:{bg:'#16243A',cover:'#0F1A2B',coverInk:'#FFFFFF',acc:'#F7A23B',soft:'rgba(255,255,255,.09)',ink:'#FFFFFF',sub:'#B9C3D3',line:'rgba(255,255,255,.18)'},
+  beige:{bg:'#F4EFE6',cover:'#2F5D50',coverInk:'#FFFFFF',acc:'#2F5D50',soft:'#E6DED0',ink:'#23292B',sub:'#5C6366',line:'#D9D0C1'}};
+const FONT='"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR","Noto Sans CJK KR",sans-serif';
+let logoImg=null;(()=>{const l=LS.get('sh.logo',null);if(l){const im=new Image();im.onload=()=>{logoImg=im};im.src=l}})();
+function wrapT(g,text,maxW){const out=[];let line='';String(text||'').split(/(\s+)/).forEach(w=>{if(!w)return;
+  if(g.measureText(line+w).width<=maxW){line+=w;return}
+  if(line.trim()){out.push(line.trim());line=''}w=w.trimStart();
+  if(g.measureText(w).width<=maxW){line=w;return}
+  for(const ch of w){if(g.measureText(line+ch).width>maxW&&line){out.push(line);line=ch}else line+=ch}});
+  if(line.trim())out.push(line.trim());return out}
+function fitLines(g,text,maxW,size,maxL,weight,minSize){let sz=size;for(;;){g.font=weight+' '+sz+'px '+FONT;const L=wrapT(g,text,maxW);if(L.length<=maxL||sz<=(minSize||sz*.6))return{L:L.slice(0,maxL).map((x,i,a)=>i===maxL-1&&L.length>maxL?x.replace(/.$/,'…'):x),sz};sz-=4}}
+function rr(g,x,y,w,h,r){g.beginPath();g.moveTo(x+r,y);g.arcTo(x+w,y,x+w,y+h,r);g.arcTo(x+w,y+h,x,y+h,r);g.arcTo(x,y+h,x,y,r);g.arcTo(x,y,x+w,y,r);g.closePath()}
+function footer(g,t,W,H,ink){const y=H-96;g.fillStyle=t.line;g.fillRect(72,y,W-144,2);g.fillStyle=ink||t.sub;g.font='700 30px '+FONT;g.textBaseline='middle';
+  g.fillText([office.name,office.tel&&'☎ '+office.tel].filter(Boolean).join('   '),72,y+48);
+  if(logoImg){const h=56,w=logoImg.naturalWidth*h/logoImg.naturalHeight;g.drawImage(logoImg,W-72-w,y+20,w,h)}}
+function head(g,t,label,title){g.textBaseline='top';g.fillStyle=t.acc;g.font='800 30px '+FONT;g.fillText(label,72,72);
+  const f=fitLines(g,title,936,60,2,'800',44);g.fillStyle=t.ink;f.L.forEach((l,i)=>{g.font='800 '+f.sz+'px '+FONT;g.fillText(l,72,124+i*(f.sz*1.3))});
+  const y=124+f.L.length*f.sz*1.3+26;g.fillStyle=t.acc;g.fillRect(72,y,90,8);return y+50}
+function drawCard(c,thName){const W=1080,H=1080,cv=document.createElement('canvas');cv.width=W;cv.height=H;const g=cv.getContext('2d');const t=TH[thName]||TH.orange;const d=c.data;
+  g.fillStyle=c.kind==='cover'?t.cover:t.bg;g.fillRect(0,0,W,H);g.textBaseline='top';
+  const label=d.kw||'부동산 정보';
+  if(c.kind==='cover'){
+    g.fillStyle='rgba(255,255,255,.12)';g.beginPath();g.arc(W-60,140,300,0,7);g.fill();g.beginPath();g.arc(120,H-40,200,0,7);g.fill();
+    g.font='800 34px '+FONT;const cw=g.measureText(label).width;g.fillStyle=t.coverInk;rr(g,72,110,cw+56,68,34);g.fill();g.fillStyle=t.cover;g.textBaseline='middle';g.fillText(label,100,145);
+    const [main,sub]=String(d.title).split(/\s*\|\s*/);const f=fitLines(g,main,936,92,3,'800',56);const lh=f.sz*1.28;
+    const fs2=sub?fitLines(g,sub,936,54,2,'700',36):null;const blockH=f.L.length*lh+(fs2?40+fs2.L.length*fs2.sz*1.3:0);const y0=Math.max(250,(H-blockH)/2-30);g.fillStyle=t.coverInk;g.textBaseline='top';
+    f.L.forEach((l,i)=>{g.font='800 '+f.sz+'px '+FONT;g.fillText(l,72,y0+i*lh)});let yb=y0+f.L.length*lh+24;g.fillRect(72,yb,120,10);
+    if(fs2){yb+=40;fs2.L.forEach((l,i)=>{g.font='700 '+fs2.sz+'px '+FONT;g.fillText(l,72,yb+i*fs2.sz*1.3)})}
+    footer(g,{line:'rgba(255,255,255,.35)',sub:t.coverInk},W,H,t.coverInk)}
+  else if(c.kind==='table'){let y=head(g,t,label,d.title);const rows=d.rows.slice(0,10);const avail=H-130-y;
+    let fs=rows.length>8?28:rows.length>7?30:34;g.font='600 '+fs+'px '+FONT;
+    const kw=300,vw=W-144-kw-48;const R2=rows.map(([k,v])=>{g.font='600 '+fs+'px '+FONT;return{k,L:wrapT(g,v,vw).slice(0,2)}});
+    let rh=R2.map(r=>r.L.length*fs*1.35+30);const tot=rh.reduce((a,b)=>a+b,0);if(tot>avail){const k=avail/tot;rh=rh.map(h=>h*k)}
+    R2.forEach((r,i)=>{const h=rh[i];g.fillStyle=t.soft;g.fillRect(72,y,kw,h-6);g.fillStyle=i%2?t.bg:t.soft;if(i%2===0){g.globalAlpha=.45;g.fillRect(72+kw,y,W-144-kw,h-6);g.globalAlpha=1}
+      g.textBaseline='middle';g.fillStyle=t.ink;g.font='800 '+fs+'px '+FONT;g.fillText(fitLines(g,r.k,kw-40,fs,1,'800',22).L[0],96,y+(h-6)/2);
+      g.font='600 '+fs+'px '+FONT;const lh=fs*1.35,y1=y+(h-6)/2-(r.L.length-1)*lh/2;r.L.forEach((l,j)=>g.fillText(l,72+kw+28,y1+j*lh));y+=h});
+    footer(g,t,W,H)}
+  else if(c.kind==='list'){let y=head(g,t,label,d.title);const items=d.items.slice(0,7);const avail=H-130-y;let fs=items.length>5?32:36;
+    const L=items.map(x=>{g.font='600 '+fs+'px '+FONT;return wrapT(g,x,W-144-100).slice(0,2)});let hs=L.map(l=>l.length*fs*1.35+34);const tot=hs.reduce((a,b)=>a+b,0);if(tot>avail){const k=avail/tot;hs=hs.map(h=>h*k)}
+    L.forEach((l,i)=>{g.fillStyle=t.acc;g.beginPath();g.arc(72+30,y+30,30,0,7);g.fill();g.fillStyle='#fff';g.font='800 30px '+FONT;g.textAlign='center';g.textBaseline='middle';g.fillText(d.check?'✓':String(i+1),102,y+31);g.textAlign='left';
+      g.fillStyle=t.ink;g.font='600 '+fs+'px '+FONT;g.textBaseline='top';l.forEach((x,j)=>g.fillText(x,172,y+30-fs*.62+j*fs*1.35));y+=hs[i]});
+    footer(g,t,W,H)}
+  else if(c.kind==='faq'){let y=head(g,t,label,'자주 묻는 질문');const qa=d.qa.slice(0,3);const per=(H-130-y)/qa.length;
+    qa.forEach(([q,a])=>{const y0=y;g.fillStyle=t.acc;rr(g,72,y,64,64,16);g.fill();g.fillStyle='#fff';g.font='800 36px '+FONT;g.textAlign='center';g.textBaseline='middle';g.fillText('Q',104,y+33);g.textAlign='left';
+      g.textBaseline='top';const fq=fitLines(g,q,W-144-90,36,2,'800',28);g.fillStyle=t.ink;fq.L.forEach((l,j)=>{g.font='800 '+fq.sz+'px '+FONT;g.fillText(l,162,y+12+j*fq.sz*1.3)});
+      y+=Math.max(76,fq.L.length*fq.sz*1.3+24);const fa=fitLines(g,a,W-144-90,31,3,'500',24);g.fillStyle=t.sub;fa.L.forEach((l,j)=>{g.font='500 '+fa.sz+'px '+FONT;g.fillText(l,162,y+j*fa.sz*1.4)});
+      y=y0+per});footer(g,t,W,H)}
+  else if(c.kind==='contact'){g.fillStyle=t.acc;g.fillRect(0,0,W,16);let y=150;g.textBaseline='top';g.fillStyle=t.acc;g.font='800 40px '+FONT;g.fillText(d.title||'상담 안내',72,y);y+=90;
+    const fn=fitLines(g,office.name||'',936,76,2,'800',48);g.fillStyle=t.ink;fn.L.forEach(l=>{g.font='800 '+fn.sz+'px '+FONT;g.fillText(l,72,y);y+=fn.sz*1.3});y+=30;
+    if(office.tel){g.fillStyle=t.soft;rr(g,72,y,W-144,140,28);g.fill();g.fillStyle=t.acc;g.font='800 70px '+FONT;g.textBaseline='middle';g.fillText('☎ '+office.tel,112,y+72);g.textBaseline='top';y+=180}
+    g.fillStyle=t.ink;[office.addr,cfg.hours&&'상담 시간  '+cfg.hours].filter(Boolean).forEach(x=>{const f=fitLines(g,x,936,36,2,'600',28);f.L.forEach(l=>{g.font='600 '+f.sz+'px '+FONT;g.fillText(l,72,y);y+=f.sz*1.45});y+=12});
+    g.fillStyle=t.sub;g.font='500 28px '+FONT;g.fillText([office.ceo&&'대표 '+office.ceo,office.regno&&'등록번호 '+office.regno].filter(Boolean).join('  ·  '),72,y+16);
+    if(logoImg){const h=90,w=logoImg.naturalWidth*h/logoImg.naturalHeight;g.drawImage(logoImg,W-72-w,H-72-h,w,h)}}
+  return new Promise(r=>cv.toBlob(r,'image/jpeg',.92))}
+/* 본문을 읽어 카드 설계 + [카드 n] 자리 넣기 */
+function planCards(){const o=st.out;let lines=o.body.split('\n').filter(l=>!/^\[카드\s*\d+[^\]]*\]$/.test(l.trim()));
+  const kw=st.kw||'',specs=[];const hs=[];lines.forEach((l,i)=>{if(/^■/.test(l))hs.push(i)});
+  specs.push({pr:0,at:-1,kind:'cover',data:{kw,title:o.title},desc:'표지(대표 이미지)'});
+  let nT=0,nL=0;
+  hs.forEach((h,k)=>{const end=k+1<hs.length?hs[k+1]:lines.length;const title=lines[h].replace(/^■\s*/,'');const seg=lines.slice(h+1,end);
+    const last=k===hs.length-1;const lastIdx=(re)=>{let x=-1;seg.forEach((l,j)=>{if(re.test(l))x=j});return x<0?-1:h+1+x};
+    if(last&&office.name){specs.push({pr:2,at:lastIdx(/\S/),kind:'contact',data:{kw,title},desc:'상담 안내'});return}
+    if(/자주 묻는/.test(title)){const qa=[];seg.forEach((l,j)=>{if(/^Q\.\s/.test(l)){const a=(seg[j+1]||'').replace(/^A\.\s*/,'');qa.push([l.replace(/^Q\.\s*/,''),a])}});
+      if(qa.length)specs.push({pr:3,at:lastIdx(/\S/),kind:'faq',data:{kw,qa},desc:'자주 묻는 질문'});return}
+    const rows=seg.map(l=>l.match(/^·\s*([^:：]{1,14})[:：]\s*(.+)$/)).filter(Boolean).map(m=>[m[1].trim(),m[2].trim()]);
+    if(rows.length>=3&&nT<2){nT++;specs.push({pr:nT===1?1:4,at:lastIdx(/\S/),kind:'table',data:{kw,title,rows},desc:title+' 요약표'});return}
+    if(seg.some(l=>/^\[사진/.test(l)))return;
+    const items=seg.filter(l=>/^(-|\d+\.)\s+/.test(l)).map(l=>l.replace(/^(-|\d+\.)\s+/,'').split(' — ')[0].trim());
+    if(items.length>=3&&nL<2){nL++;specs.push({pr:5,at:lastIdx(/\S/),kind:'list',data:{kw,title,items,check:!/^\d/.test(seg.find(l=>/^(-|\d+\.)\s+/.test(l))||'')},desc:title})}});
+  const pick=new Set(specs.slice().sort((a,b)=>a.pr-b.pr).slice(0,6));const keep=specs.filter(x=>pick.has(x));
+  keep.slice().sort((a,b)=>b.at-a.at).forEach(sp=>{const idx=sp.at+1;const add=sp.at===-1?['@@C'+keep.indexOf(sp),'']:['@@C'+keep.indexOf(sp)];lines.splice(idx,0,...add)});
+  const order=[];lines=lines.map(l=>{const m=l.match(/^@@C(\d+)$/);if(!m)return l;const sp=keep[+m[1]];order.push(sp);return'[카드 '+order.length+': '+sp.desc+']'});
+  return{body:lines.join('\n'),specs:order}}
+async function makeCards(){if(!st.out){toast('먼저 [글 만들기]로 글을 만들어 주세요');return}
+  office=LS.get('d1c.office',{});const p=planCards();st.out.body=p.body;saveDraft();
+  cards=[];for(const sp of p.specs){const blob=await drawCard(sp,cfg.theme);cards.push(Object.assign({},sp,{blob,url:URL.createObjectURL(blob)}))}
+  await saveCards();renderCards();renderOut();toast('카드 이미지 '+cards.length+'장을 만들어 본문에 넣었어요')}
+async function redrawCards(){for(const c of cards){c.blob=await drawCard(c,cfg.theme);c.url=URL.createObjectURL(c.blob)}await saveCards();renderCards();if(st.out)renderPreview()}
+const saveCards=()=>blPut('cards',cards.map(c=>({kind:c.kind,data:c.data,desc:c.desc,blob:c.blob})));
+function renderCards(){$('#cdCnt').textContent=cards.length+'장';
+  $('#cards').innerHTML=cards.map((c,i)=>`<div style="background-image:url(${c.url})" title="${esc(c.desc)}"><b>카드 ${i+1}</b><button data-cdel="${i}" aria-label="카드 빼기">×</button></div>`).join('');
+  $$('[data-cdel]').forEach(b=>b.onclick=()=>{const n=+b.dataset.cdel+1;URL.revokeObjectURL(cards[n-1].url);cards.splice(n-1,1);
+    if(st.out){let k=0;st.out.body=st.out.body.split('\n').filter(l=>!new RegExp('^\\[카드\\s*'+n+'(?!\\d)').test(l.trim())).map(l=>l.replace(/^\[카드\s*\d+/,()=>'[카드 '+(++k))).join('\n');saveDraft();renderOut()}
+    saveCards();renderCards()})}
+cfg.theme=cfg.theme||'orange';
+$$('#thSeg button').forEach(b=>{b.classList.toggle('on',b.dataset.v===cfg.theme);b.onclick=()=>{cfg.theme=b.dataset.v;saveCfg();$$('#thSeg button').forEach(x=>x.classList.toggle('on',x===b));if(cards.length)redrawCards()}});
+$('#autoCards').checked=cfg.autoCards!==false;$('#autoCards').onchange=e=>{cfg.autoCards=e.target.checked;saveCfg()};
+$('#btnCards').onclick=()=>makeCards();
 
 /* ---------- 글 만들기 (템플릿) ---------- */
 function rng(seed){let a=seed>>>0||1;return()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
@@ -550,50 +683,75 @@ function priceTalk(i,f){const L=[];
   if(i.approve)L.push(f?`사용승인일은 ${i.approve}이에요(건축물대장 기준).`:`사용승인일은 ${i.approve}입니다(건축물대장 기준).`);
   return L}
 function genListing(T,R){const i=curListing();if(!i)throw new Error('매물을 고르거나 직접 입력해 주세요');
-  const kw=st.kw||[i.dong,i.type,i.deal].join(' '),pts=userPoints(),f=T.f;let ph=1;const P=d=>photoMark(ph++,d);
-  const head=[i.dong,i.type].filter(Boolean).join(' ');const o=[];
-  o.push(f?R([`안녕하세요, ${office.name||'✏ 사무소 이름'}입니다 😊\n오늘은 ${josa(kw,'을','를')} 찾는 분들께 직접 보고 온 매물 하나를 소개해 드릴게요.`,`안녕하세요! ${i.dong||'우리 동네'}에서 중개하는 ${office.name||'✏ 사무소 이름'}입니다.\n${kw}, 요즘 문의가 많아서 직접 확인한 집을 정리해 봤어요.`,`${josa(kw,'을','를')} 알아보고 계신가요?\n${office.name||'✏ 사무소 이름'}에서 발로 뛰어 확인한 매물을 보여드릴게요.`])
-    :R([`안녕하십니까. ${i.dong||''} 지역 중개를 맡고 있는 ${office.name||'✏ 사무소 이름'}입니다.\n${josa(kw,'을','를')} 찾는 분들께 현장 확인을 마친 매물을 정리해 드립니다.`,`${office.name||'✏ 사무소 이름'}입니다.\n이번 글에서는 ${kw} 매물 한 곳의 조건과 특징을 객관적으로 정리했습니다.`]));
+  const f=T.f,pts=userPoints(),ty=(i.type||'').replace(/\+$/,'');const kw=st.kw||[i.dong,ty,i.deal].join(' ');let ph=1;const P=d=>photoMark(ph++,d);const o=[];
+  const CN='확인 필요',sayE=x=>f?ieyo(x)+'.':x+'입니다.';
+  const pet=st.lPet||i.pet||'';const elev=i.elev||'';const parkHow=i.parkHow||'';const rent=i.deal==='전세'||i.deal==='월세';const ins=rent?(st.lIns||''):'해당 없음';
+  const mg=i.mgmt?(i.mgmt+(i.mgmtEx?' / 별도: '+i.mgmtEx:'')):'';
+  const anyCN=()=>!i.mgmt||(rent&&!ins)||!elev||!pet||!(i.park||parkHow);
+  const parkAll=(i.park&&parkHow&&i.park.includes(parkHow))?i.park:[i.park,parkHow].filter(Boolean).join(' · ');
+  /* 지침 2: 첫 문단 = 가격·관리비·전용면적·입주 가능일 */
+  o.push(f?`${kw} 매물이에요. 가격은 ${i.price||CN}, 관리비는 ${mg||CN}, 면적은 ${i.area||CN}이고 입주 가능일은 ${sayE(i.move||CN)}`
+          :`${kw} 매물입니다. 가격은 ${i.price||CN}, 관리비는 ${mg||CN}, 면적은 ${i.area||CN}이며 입주 가능일은 ${sayE(i.move||CN)}`);
+  o.push('');
+  o.push(f?R([`안녕하세요, ${office.name||'✏ 사무소 이름'}입니다 😊 직접 보고 확인한 내용만 정리했어요.`,`${office.name||'✏ 사무소 이름'}에서 현장을 직접 확인하고 쓴 글이에요.`])+(anyCN()?` 아직 확인이 남은 항목은 "${CN}"로 표시해 두었어요.`:'')
+    :`${office.name||'✏ 사무소 이름'}입니다. 현장 확인을 마친 사실만 정리했습니다.`+(anyCN()?` 확인이 남은 항목은 "${CN}"로 표시했습니다.`:''));
   o.push('');o.push(P('대표 사진 (외관 또는 거실)'));o.push('');
-  o.push('■ '+R([kw+' 한눈에 보기','매물 정보 요약',head+' 기본 정보']));
-  [['가격',i.price],['면적',i.area],['층',i.floor],['방·욕실',i.rooms],['방향',i.dir],['입주',i.move],['관리비',i.mgmt],['주차',i.park]].forEach(([k,v])=>{if(v)o.push('· '+k+': '+v)});
-  o.push('');
-  o.push('■ '+R(f?['직접 보고 느낀 장점','이 집, 이런 점이 좋았어요','현장에서 확인한 포인트']:['현장 확인 결과 장점','주요 특징','이 매물의 강점']));
-  if(pts.length){const fol=f?['현장에서 직접 확인한 부분이라 자신 있게 말씀드려요.','사진으로는 다 담기지 않으니 꼭 직접 보세요.','집 보러 오시면 이 부분부터 보여드릴게요.','상담하면서 손님들이 특히 반응이 좋았던 부분이에요.']:['현장 방문 시 직접 확인한 사항입니다.','방문 시 우선 확인하실 수 있도록 안내해 드립니다.','사진과 함께 현장에서 확인하시길 권합니다.'];
+  o.push('■ '+kw+' 한눈에 보기');
+  [['가격',i.price],['관리비',mg||CN],['전용면적',i.area],['입주 가능일',i.move||CN],['층',i.floor],['방·욕실',i.rooms],['방향',i.dir],['주차',parkAll||CN],['엘리베이터',elev||CN],['반려동물',pet||CN]].forEach(([k,v])=>{if(v)o.push('· '+k+': '+v)});o.push('');
+  /* 비용 */
+  o.push('■ 비용');priceTalk(i,f).filter(x=>!/^사용승인일/.test(x)).forEach(x=>o.push(x));
+  if(i.mgmt){o.push('관리비는 '+sayE(i.mgmt));
+    o.push(i.mgmtEx?(f?`별도 항목(${i.mgmtEx})은 사용한 만큼 따로 내셔야 해요. 겨울철 난방·가스비는 미리 생각해 두세요.`:`별도 항목(${i.mgmtEx})은 사용량에 따라 별도 부담입니다. 계절별 변동을 감안하시기 바랍니다.`)
+      :(f?'관리비에 포함되지 않는 사용료가 있는지는 계약 전에 다시 확인해 드릴게요.':'관리비 외 별도 사용료 여부는 계약 전 재확인해 드립니다.'))}
+  else o.push(`관리비: ${CN} — 임대인에게 금액과 포함 항목을 확인한 뒤 안내드리겠습니다.`);
+  if(rent)o.push(ins&&ins!=='해당 없음'?`전세보증보험: ${ins}.`:`전세보증보험 가입 가능 여부: ${CN} — 보증기관 조회 후 계약 전에 알려 드릴게요.`);
+  if(rent)o.push(f?'보증금은 잔금일에 전입신고와 확정일자를 함께 받아 두시면 지킬 수 있어요. 이 절차는 저희가 잔금일에 같이 챙겨 드려요.':'보증금 보호를 위해 잔금일 전입신고와 확정일자를 함께 진행하며, 사무소에서 절차를 안내합니다.');
+  o.push(f?'중개보수는 법정 상한 안에서 계약 전에 미리 말씀드려요.':'중개보수는 법정 상한 범위에서 계약 전 협의합니다.');o.push('');
+  /* 집 구조와 사진 */
+  o.push('■ 집 구조와 사진');
+  const inner=[i.rooms,i.floor,i.dir].filter(Boolean);
+  if(inner.length)o.push('구조는 '+sayE(inner.join(', ')));
+  const opts=i.options.filter(x=>!/가능$/.test(x));if(opts.length)o.push(f?`옵션으로 ${opts.join(', ')}까지 갖춰져 있어요.`:`옵션: ${opts.join(', ')}.`);
+  if(i.approve)o.push('사용승인일은 '+sayE(i.approve)+' (건축물대장 기준)');
+  ['거실·방','주방','욕실','창밖 전망'].forEach(d=>{const m=P(d);if(m)o.push(m)});
+  o.push(f?'사진은 모두 이 집에서 직접 찍은 실제 사진이에요.':'사진은 모두 해당 매물 실사진입니다.');o.push('');
+  /* 장점 — 사진과 확인한 사실 */
+  o.push('■ '+R(f?['직접 확인한 장점','현장에서 확인한 장점']:['현장 확인 장점','확인된 장점']));
+  if(pts.length){const fol=f?['현장에서 직접 확인한 사실이에요.','사진으로는 다 담기지 않으니 방문해서 꼭 보세요.','집 보러 오시면 이 부분부터 보여드릴게요.','직접 재 보고 확인한 내용이에요.']:['현장에서 직접 확인한 사항입니다.','방문 시 우선 확인하실 수 있도록 안내합니다.','실측·현장 확인 내용입니다.'];
     pts.forEach((p,n)=>{o.push((n+1)+'. '+p);o.push(fol[(n+st.seed)%fol.length]);const m=P(p);if(m)o.push(m);o.push('')})}
-  else{o.push('✏ 직접 확인한 장점을 2~3가지 적어 주세요. (2번 칸 "직접 확인한 장점")');o.push('')}
-  if(!i.land){const inner=[];if(i.rooms)inner.push(i.rooms+' 구조');if(i.dir)inner.push(i.dir+' 방향');
-    const opt=i.options.length?(f?`옵션으로 ${i.options.join(', ')}까지 갖춰져 있어요.`:`옵션: ${i.options.join(', ')}.`):'';
-    if(inner.length||opt){o.push('■ '+R(['내부 구조와 옵션','실내 살펴보기','구조·옵션']));
-      if(inner.length)o.push(f?ieyo(inner.join(', '))+'.':`${inner.join(', ')}입니다.`);if(opt)o.push(opt);o.push('');
-      const m1=P('방·주방'),m2=P('욕실');if(m1)o.push(m1);if(m2)o.push(m2);if(m1||m2)o.push('')}}
-  const pr=priceTalk(i,f);if(pr.length){o.push('■ '+kw+' '+R(['가격 살펴보기','가격·면적 정리','비용 계산해 보기']));pr.forEach(x=>o.push(x));o.push('')}
-  if(i.mgmt||i.move||i.park){o.push('■ '+R(['관리비·입주 조건','계약 전 알아 둘 조건','비용과 입주 일정']));
-    if(i.mgmt)o.push(f?`관리비는 ${ieyo(i.mgmt)}. 포함 항목은 계약서 특약에도 적어 드려요.`:`관리비는 ${i.mgmt}입니다. 포함 항목은 계약서 특약에 명시합니다.`);
-    if(i.move)o.push(f?`입주는 ${ieyo(i.move)}.`:`입주 가능일은 ${i.move}입니다.`);
-    if(i.park)o.push(f?`주차는 ${ieyo(i.park)}.`:`주차는 ${i.park}입니다.`);o.push('')}
-  const who=[];const ty=i.type||'';if(/원룸|오피스텔/.test(ty))who.push('출퇴근·통학이 편한 1인 가구');if(/투룸/.test(ty))who.push('공간을 나눠 쓰고 싶은 1~2인 가구');if(/쓰리룸|아파트/.test(ty))who.push('방이 여럿 필요한 가족');if(/상가|사무실/.test(ty))who.push('이 동네에서 영업·사무 공간을 찾는 분');
-  who.push(`${i.dong||'이 동네'}에서 ${i.deal||''} 조건을 찾는 분`.replace(/\s+/g,' '));
-  o.push('■ '+R(f?['이런 분께 잘 맞아요','추천드리는 분']:['적합한 수요','추천 대상']));who.forEach(w=>o.push('- '+w));o.push('');
-  if(st.len==='long'){
-    const am=(st.lArea||$('#lArea').value||'').trim();
-    if(am){o.push('■ '+(i.dong||'동네')+' 생활 메모');am.split('\n').filter(Boolean).forEach(l=>o.push('- '+l.trim()));const m=P('동네 모습');if(m)o.push(m);o.push('')}
-    o.push('■ '+R(['계약 전 함께 확인하는 것','계약 전 체크리스트']));
-    ['등기부등본으로 소유자와 근저당 확인','건축물대장으로 용도·위반건축물 여부 확인','관리비 포함 항목과 옵션 상태를 계약서 특약에 기록',i.deal==='매매'?'잔금일·대출 일정과 취득 관련 비용 미리 계산':'잔금일에 전입신고와 확정일자'].forEach(x=>o.push('- '+x));
-    o.push(f?'계약 전에 이 부분들은 저희가 함께 확인해 드려요.':'위 항목은 계약 전 사무소에서 함께 확인해 드립니다.');o.push('')}
-  o.push('■ '+R(f?['계약은 이렇게 진행돼요','계약까지 순서']:['계약 진행 절차','계약 진행 순서']));
-  [f?'1. 방문 예약 후 집 보기 — 사진과 실제를 비교해 보세요':'1. 방문 예약 후 현장 확인','2. 등기부등본·건축물대장 확인 — 계약 전 함께 열람합니다',i.deal==='매매'?'3. 가계약금·계약금 일정 협의':'3. 가계약금 입금 후 계약일 협의','4. 계약서 작성 — 관리비 포함 항목·옵션·특약 기록',i.deal==='매매'?'5. 잔금·소유권 이전 등기':'5. 잔금·입주 후 전입신고와 확정일자'].forEach(x=>o.push(x));o.push('');
+  else{o.push('✏ 직접 확인한 장점을 2~3가지 적어 주세요. (2번 칸 "직접 확인한 장점" — 사진·사실로 확인되는 것만)');o.push('')}
+  /* 주차와 방문 */
+  o.push('■ 주차와 방문');
+  o.push('· 주차: '+(parkAll||CN));o.push('· 엘리베이터: '+(elev||CN));o.push('· 반려동물: '+(pet||CN+' (임대인 협의)'));
+  o.push('· 방문: '+(f?'미리 연락 주시면 시간 맞춰 바로 보여드려요':'사전 예약 후 방문 가능')+(cfg.hours?' ('+cfg.hours+')':''));
+  o.push((f?'차를 가져오시거나 반려동물과 함께 사실 분은 위 조건부터 확인해 보세요.':'차량·반려동물 동반 여부는 방문 전 위 조건을 먼저 확인하시기 바랍니다.')+(anyCN()?(f?` "${CN}" 항목은 문의 주시면 확인해서 알려 드려요.`:` "${CN}" 항목은 문의 시 확인해 드립니다.`):''));o.push('');
+  {const who=[];if(/원룸|오피스텔/.test(ty))who.push('출퇴근·통학 동선이 이 동네인 1인 가구');if(/투룸/.test(ty))who.push('방을 침실·작업실로 나눠 쓰고 싶은 1~2인 가구');if(/쓰리룸|아파트/.test(ty))who.push('방이 여럿 필요한 가족');if(/상가|사무실/.test(ty))who.push('이 동네에서 영업·사무 공간을 찾는 분');
+    if(pet==='가능')who.push('반려동물과 함께 살 집을 찾는 분');if((i.move||'').includes('즉시'))who.push('입주 날짜가 급한 분');if(i.mgmtInc)who.push(`관리비에 ${i.mgmtInc}이 포함된 집을 찾는 분`);
+    if(who.length){o.push('■ 이런 분께 맞아요');who.forEach(w=>o.push('- '+w));o.push(f?'반대로 이 조건이 맞지 않는다면, 비슷한 다른 매물도 함께 찾아 드릴게요.':'조건이 맞지 않으면 유사 매물을 함께 찾아 드립니다.');o.push('')}}
+  const am=(st.lArea||$('#lArea').value||'').trim();
+  if(am){o.push('■ '+(i.dong||'동네')+' 생활 메모');am.split('\n').filter(Boolean).forEach(l=>o.push('- '+l.trim()));const m=P('동네 모습');if(m)o.push(m);o.push('')}
+  /* 확인 필요 + 계약 전 점검 */
+  const need=[];if(!i.mgmt)need.push('관리비 금액·포함 항목');if(rent&&!ins)need.push('전세보증보험 가입 가능 여부');if(!elev)need.push('엘리베이터 유무');if(!pet)need.push('반려동물 가능 여부');if(!parkAll)need.push('주차 가능 대수·방식');
+  o.push('■ '+R(['계약 전 확인할 것','확인이 남은 항목과 계약 전 점검']));
+  need.forEach(x=>o.push('- '+x+': '+CN));
+  ['등기부등본으로 소유자·근저당 확인(계약일·잔금일 재열람)','건축물대장으로 용도·위반건축물 여부 확인','관리비 포함 항목·옵션 상태를 계약서 특약에 기록',i.deal==='매매'?'잔금·대출 일정과 취득 비용 계산':'잔금일 전입신고와 확정일자'].forEach(x=>o.push('- '+x));
+  o.push(f?'이 항목들은 계약 전에 저희가 함께 확인해 드려요.':'위 항목은 계약 전 사무소에서 함께 확인합니다.');o.push('');
+  o.push('■ 계약 진행 순서');
+  ['1. 방문 예약 후 집 보기','2. 등기부등본·건축물대장 함께 열람',i.deal==='매매'?'3. 계약금·잔금 일정 협의':'3. 가계약금 입금 후 계약일 협의','4. 계약서 작성 — 관리비·옵션·특약 기록',i.deal==='매매'?'5. 잔금·소유권 이전 등기':'5. 잔금·입주, 전입신고와 확정일자'].forEach(x=>o.push(x));o.push('');
   o.push('■ 자주 묻는 질문');
-  o.push('Q. 바로 집을 볼 수 있나요?');o.push(f?'A. 네, 연락 주시면 가능한 시간을 맞춰 드려요.':'A. 연락 주시면 방문 가능한 시간을 조율해 드립니다.');
-  if(i.mgmt){o.push('Q. 관리비에는 무엇이 포함되나요?');o.push('A. '+(f?ieyo(i.mgmt)+'.':i.mgmt+'입니다.'))}
-  if(i.move){o.push('Q. 입주 날짜 조정이 되나요?');o.push(f?'A. 지금은 '+ieyo(i.move)+'. 날짜 조정은 임대인과 협의해 볼게요.':'A. 현재 입주 가능일은 '+i.move+'입니다. 조정은 임대인과 협의가 필요합니다.')}
+  o.push('Q. 바로 집을 볼 수 있나요?');o.push(f?'A. 네, 연락 주시면 가능한 시간을 맞춰 드려요.':'A. 연락 주시면 방문 시간을 조율해 드립니다.');
+  if(i.move){o.push('Q. 입주 날짜 조정이 되나요?');o.push(f?'A. 지금은 '+ieyo(i.move)+'. 날짜 조정은 임대인과 협의해 볼게요.':'A. 현재 입주 가능일은 '+i.move+'입니다. 조정은 임대인 협의가 필요합니다.')}
+  if(i.mgmt){o.push('Q. 관리비에는 무엇이 포함되나요?');o.push('A. '+(i.mgmtInc?(f?`${i.mgmtInc}이 포함돼 있어요.`:`${i.mgmtInc}이 포함됩니다.`):sayE(i.mgmt))+(i.mgmtEx?(f?` ${i.mgmtEx}는 별도예요.`:` ${i.mgmtEx}는 별도입니다.`):''))}
+  o.push('Q. 주차는 어떻게 하나요?');o.push('A. '+(parkAll?(f?ieyo(parkAll)+'. 차종이 크면 미리 말씀해 주세요.':parkAll+'입니다. 대형 차량은 사전 문의 바랍니다.'):(f?'주차 조건은 확인 필요예요. 문의 주시면 확인해 드릴게요.':'확인 필요 — 문의 시 확인해 드립니다.')));
+  o.push('Q. 반려동물과 함께 살 수 있나요?');o.push('A. '+(pet==='가능'?(f?'네, 가능한 집이에요. 마릿수·종류는 계약 때 특약으로 정해요.':'가능합니다. 세부 조건은 특약으로 정합니다.'):pet==='불가'?(f?'아쉽지만 이 집은 어려워요.':'불가합니다.'):(f?'임대인과 협의가 필요해요. 문의 주시면 바로 확인해 드릴게요.':'임대인 협의가 필요하며, 문의 시 확인해 드립니다.')));
   o.push('');
-  o.push('■ '+R([kw+' 상담 안내','방문·상담 안내','문의하기']));o.push(closing(T,R));
-  const titles=[`${kw} | ${pts[0]||i.priceShort}`,`${kw} ${i.priceShort}${i.areaPy?' · '+i.areaPy:''}`,`${head} ${i.deal} 직접 보고 왔어요 (${i.priceShort})`,`${kw} 찾는다면? ${pts[0]||i.area}`,`[${i.dong||head}] ${i.type} ${i.deal} ${i.priceShort}${pts[1]?' · '+pts[1]:''}`].map(t=>t.replace(/\s+/g,' ').trim()).map(t=>f?t:t.replace(' 직접 보고 왔어요',' 현장 확인'));
-  const ty2=(i.type||'').replace(/\+$/,'');
-  const tags=[kw,i.dong+ty2,i.dong+i.deal,i.dong+'부동산',i.gu&&i.gu+ty2,i.gu&&i.gu+'부동산',ty2+i.deal,i.dong+ty2+i.deal,i.dong+'매물',i.gu+i.deal,'부동산','공인중개사',office.name];
+  o.push('■ '+kw+' 상담 안내');o.push(closing(T,R));
+  /* 지침 1: 제목 = 동네·유형·거래 + 가격 | 핵심 조건 */
+  const pt=i.priceTitle||i.priceShort,base=[i.dong,ty,i.deal,pt].filter(Boolean).join(' ');
+  const mgS=i.mgmt?('관리비 '+((i.mgmt.match(/월\s*([\d,.]+만원)/)||[])[1]||i.mgmt.split(/[(/]/)[0].trim())):'';
+  const titles=[i.move&&`${base} | ${i.move.replace(/즉시입주/,'즉시 입주')}`,pts[0]&&`${base} | ${pts[0]}`,mgS&&`${base} | ${mgS}`,i.areaPy&&`${base} | ${i.areaPy}${i.rooms?' '+i.rooms:''}`,i.floor&&`${base} | ${[i.floor.split(' / ')[0],(i.dir||'').split(' ')[0]].filter(Boolean).join(' ')}`,`${base} | ${i.area||i.rooms}`].filter(Boolean).map(t=>t.replace(/\s+/g,' ').trim()).slice(0,5);
+  const tags=[kw,i.dong+ty,i.dong+i.deal,i.dong+'부동산',i.gu&&i.gu+ty,i.gu&&i.gu+'부동산',ty+i.deal,i.dong+ty+i.deal,i.dong+'매물',i.gu+i.deal,pet==='가능'&&i.dong+'반려동물',(i.move||'').includes('즉시')&&i.dong+'즉시입주','부동산','공인중개사',office.name];
   return{titles,body:o.join('\n'),tags}}
-
 function genArea(T,R){const a=st.area||{};if(!a.dong)throw new Error('동네 이름을 넣어 주세요');const f=T.f,kw=st.kw||a.dong+' 살기';let ph=1;const P=d=>photoMark(ph++,d);const o=[];
   o.push(f?R([`안녕하세요, ${a.dong}에서 매일 손님들과 집을 보러 다니는 ${office.name||'✏ 사무소 이름'}입니다 😊\n오늘은 ${kw}에 대해 현장에서 느낀 그대로 이야기해 볼게요.`,`"${a.dong} 살기 어때요?" 상담하면서 정말 자주 듣는 질문이에요.\n${office.name||'✏ 사무소 이름'}이 직접 다니며 확인한 ${a.dong} 이야기를 정리했어요.`])
     :R([`안녕하십니까. ${a.gu?a.gu+' ':''}${a.dong} 지역 중개를 맡고 있는 ${office.name||'✏ 사무소 이름'}입니다.\n이번 글에서는 ${kw}의 장단점을 교통·생활·학교 순으로 정리합니다.`]));
@@ -621,6 +779,7 @@ function genTip(T,R){const t=TIPS[st.topic],f=T.f,kw=st.kw||t.kw;const dong=(st.
   o.push('');o.push(P('주제 대표 이미지 (체크리스트·서류 사진 등)'));o.push('');
   const secs=t.secs;o.push('■ '+kw+' 한눈에 요약');secs.forEach(([h])=>o.push('- '+h.replace(/^\d+\.\s*/,'')));o.push('');
   secs.forEach(([h,L],n)=>{o.push('■ '+h);L.forEach(x=>o.push(x));if(n===1){const m=P('관련 서류·화면 캡처');if(m)o.push(m)}o.push('')});
+  o.push('■ 계약 전 최종 점검 (공통)');['계약일·잔금일에 등기부등본 다시 열람','합의한 내용은 말이 아니라 계약서 특약으로 남기기','잔금일 전입신고와 확정일자(임대차)','계약서·영수증·이체 내역은 계약이 끝날 때까지 보관'].forEach(x=>o.push('- '+x));o.push(f?`${kw}를 아무리 잘 알아도 최종 확인을 빼먹으면 소용이 없어요. 위 네 가지는 어떤 계약이든 공통이에요.`:`${kw}와 별개로, 위 네 가지는 모든 계약에 공통으로 적용되는 마지막 점검 사항입니다.`);o.push('');
   if(st.tMemo&&st.tMemo.trim()){o.push('■ '+R(f?['현장에서 본 이야기','중개사 한마디']:['현장 사례','실무자 의견']));o.push(st.tMemo.trim());o.push('')}
   o.push('■ 자주 묻는 질문');t.faq.forEach(([q,a])=>{o.push('Q. '+q);o.push('A. '+a)});o.push('');
   o.push('■ '+R(f?['혼자 확인하기 어렵다면','상담 안내']:['상담 안내','문의']));o.push(f?`${kw}, 글로 보면 쉬워 보여도 실제 서류 앞에서는 헷갈리기 마련이에요. 계약 전에 함께 확인해 드릴게요.`:`${kw}는 실제 서류에서 판단이 갈리는 경우가 많습니다. 계약 전 함께 검토해 드립니다.`);o.push(closing(T,R));
@@ -654,7 +813,7 @@ function generate(reseed){
   const r=rng(st.seed*7919+st.kind.length);const R=a=>a[Math.floor(r()*a.length)];const T={f:st.tone==='friendly'};
   try{const g={listing:genListing,area:genArea,tip:genTip,case:genCase}[st.kind](T,R);
     g.titles=[...new Set(g.titles.map(t=>t.trim()).filter(Boolean))];st.out={titles:g.titles,ti:0,title:g.titles[0],body:g.body,tags:cleanTags(g.tags),foot:makeFoot(),by:'template',kind:st.kind,listingId:st.kind==='listing'?(curListing()||{}).id||null:null};
-    saveDraft();showOut();$('#genMsg').innerHTML='';
+    saveDraft();showOut();$('#genMsg').innerHTML='';if(cfg.autoCards!==false)makeCards();
     if(!reseed)$('#outCard').scrollIntoView({behavior:'smooth',block:'start'});toast(reseed?'다른 문장으로 바꿨어요':'글을 만들었어요 — ✏ 표시가 있으면 채워 주세요')}
   catch(e){$('#genMsg').innerHTML='<div class="note r">'+esc(e.message)+'</div>'}}
 $('#btnGen').onclick=()=>generate(false);$('#btnRe').onclick=()=>generate(true);
@@ -662,7 +821,7 @@ $('#btnGen').onclick=()=>generate(false);$('#btnRe').onclick=()=>generate(true);
 /* ---------- AI 다듬기 ---------- */
 function use(name){try{if(window.claude&&typeof window.claude.use==='function')return window.claude.use(name)}catch(e){}return Promise.resolve(null)}
 function aiPrompt(){const k=st.kind;const nP=Math.max(photos.length,3);let facts='';
-  if(k==='listing'){const i=curListing();facts=i?('[매물 사실]\n'+i.block+'\n[중개사가 직접 확인한 장점]\n'+userPoints().map(p=>'- '+p).join('\n')+((st.lArea||'').trim()?'\n[동네 메모]\n'+st.lArea:'')):''}
+  if(k==='listing'){const i=curListing();facts=i?('[매물 사실]\n'+i.block+'\n[방문 조건] 관리비 별도: '+(i.mgmtEx||'확인 필요')+' / 주차 방식: '+(i.parkHow||'확인 필요')+' / 엘리베이터: '+(i.elev||'확인 필요')+' / 반려동물: '+(st.lPet||i.pet||'확인 필요')+((i.deal==='전세'||i.deal==='월세')?' / 전세보증보험: '+(st.lIns||'확인 필요'):'')+'\n[제목 가격 표기] '+(i.priceTitle||'')+'\n[중개사가 직접 확인한 장점]\n'+userPoints().map(p=>'- '+p).join('\n')+((st.lArea||'').trim()?'\n[동네 메모]\n'+st.lArea:'')):''}
   else if(k==='area'){const a=st.area||{};facts='[동네 사실 — 중개사 메모]\n'+Object.entries({동네:(a.gu||'')+' '+(a.dong||''),교통:a.trans,생활:a.life,학교공원:a.school,분위기:a.mood,시세:a.price}).filter(([x,v])=>(v||'').trim()).map(([x,v])=>x+': '+v).join('\n')}
   else if(k==='tip'){const t=TIPS[st.topic];facts='[주제] '+t.label+'\n[참고 초안 — 이 사실 범위 안에서만]\n'+t.secs.map(([h,L])=>h+'\n'+L.join('\n')).join('\n\n')+(st.tMemo?'\n[사무소 경험]\n'+st.tMemo:'')}
   else{const c=st.cs||{};facts='[상담 사례 — 익명]\n'+Object.entries({고객:c.who,동네매물:c.where,상황:c.sit,쟁점:c.prob,한일:c.act,결과:c.res,팁:c.tip}).filter(([x,v])=>(v||'').trim()).map(([x,v])=>x+': '+v).join('\n')}
@@ -672,11 +831,11 @@ function aiPrompt(){const k=st.kind;const nP=Math.max(photos.length,3);let facts
   '4. 호수, 고객·임대인 실명, 전화번호 금지(사무소 정보·표시사항은 앱이 자동으로 붙임).\n'+
   '5. 대표 키워드 "'+(st.kw||'')+'"를 제목 앞쪽에 1번, 본문에 자연스럽게 3~6번. 보조 키워드: '+(st.kw2||'없음')+'.\n'+
   '6. 형식: 소제목은 "■ "로 시작(5~7개), 사진 자리는 "[사진 n: 무엇]"으로 '+nP+'곳, 요약 정보는 "· 항목: 내용" 줄, 질문은 "Q. "/"A. ".\n'+
-  '7. 길이: 공백 제외 '+(st.len==='long'?'2,000~2,600':'1,200~1,600')+'자. 말투: '+(st.tone==='friendly'?'친근한 ~해요체, 이모지는 문단당 최대 1개':'정중한 ~합니다체, 이모지 없음')+'.\n'+
-  '8. 마지막 소제목은 상담 안내(사무소 이름 "'+(office.name||'')+'"만 언급).\n\n'+facts+'\n\n'+
+  '7. 길이: 공백 제외 2,000자 내외(1,800~2,200자). 말투: '+(st.tone==='friendly'?'친근한 ~해요체, 이모지는 문단당 최대 1개':'정중한 ~합니다체, 이모지 없음')+'.\n'+
+  '8. 마지막 소제목은 상담 안내(사무소 이름 "'+(office.name||'')+'"만 언급).\n'+(k==='listing'?'9. [매물 글 작성 지침] (1) 제목만 봐도 매물을 알아보게: 동네·매물 유형·거래 형태 + 가격이나 입주일 같은 핵심 조건. 예: "봉천동 투룸 전세 2억1천만 원 | 즉시 입주". (2) 첫 문단에 가격·관리비·전용면적·입주 가능일을 모으고, 관리비는 포함 항목과 별도 비용을 함께. 소제목은 "비용", "집 구조와 사진", "주차와 방문"을 꼭 포함. (3) 장점은 실제 사진과 확인한 사실로만. 주차 방식·엘리베이터·반려동물 조건을 본문에 넣고, 사실에 없는 조건이나 보증보험처럼 확인이 남은 항목은 "확인 필요"로 표시.\n':'')+'\n'+facts+'\n\n'+
   '아래 JSON 하나로만 답하세요:\n{"titles":["제목 후보 5개, 각 20~40자"],"body":"본문","tags":["태그 15개, # 없이"]}'}
 function applyAI(j){if(!j||!j.body)throw new Error('본문이 없어요');const titles=(Array.isArray(j.titles)?j.titles:[j.title]).filter(Boolean).map(String).slice(0,5);
-  st.out={titles:titles.length?titles:[st.kw],ti:0,title:titles[0]||st.kw,body:String(j.body).replace(/\r/g,''),tags:cleanTags(j.tags),foot:makeFoot(),by:'ai',kind:st.kind,listingId:st.kind==='listing'?(curListing()||{}).id||null:null};saveDraft();showOut()}
+  st.out={titles:titles.length?titles:[st.kw],ti:0,title:titles[0]||st.kw,body:String(j.body).replace(/\r/g,''),tags:cleanTags(j.tags),foot:makeFoot(),by:'ai',kind:st.kind,listingId:st.kind==='listing'?(curListing()||{}).id||null:null};saveDraft();showOut();if(cfg.autoCards!==false)makeCards()}
 function parseAny(t){t=String(t||'').trim();const m=t.match(/\{[\s\S]*\}/);if(m){try{return JSON.parse(m[0])}catch(e){}}
   const L=t.split('\n');const title=L.shift().replace(/^(제목\s*[:：]\s*|#+\s*)/,'').trim();return{titles:[title],body:L.join('\n').trim(),tags:(t.match(/#[^\s#]+/g)||[]).map(x=>x.slice(1))}}
 $('#btnAI').onclick=async()=>{
@@ -713,6 +872,9 @@ function toHtml(o,forCopy){const lines=(o.body+'\n\n━━━━━━━━━�
     const pm=l.match(/^\[사진\s*(\d+)\s*[:：]?\s*([^\]]*)\]$/);
     if(pm){flushP();const n=+pm[1],p=photos[n-1];
       out.push(forCopy?`<p style="background:#eeeeee;color:#777;text-align:center;padding:24px">📷 사진 ${n} 넣는 자리 — ${esc(pm[2])} (사진을 넣고 이 줄은 지우세요)</p>`:`<div class="ph">${p?`<img src="${p.url}" alt="">`:''}📷 사진 ${n} — ${esc(pm[2])}${p?'':' <b>(사진 없음)</b>'}</div>`);return}
+    const cm=l.match(/^\[카드\s*(\d+)\s*[:：]?\s*([^\]]*)\]$/);
+    if(cm){flushP();const n=+cm[1],c=cards[n-1];
+      out.push(forCopy?`<p style="background:#fdeee5;color:#c9531b;text-align:center;padding:24px">🎨 카드 ${n} 넣는 자리 — ${esc(cm[2])} (내려받은 카드 이미지를 넣고 이 줄은 지우세요)</p>`:`<div class="ph cd">${c?`<img src="${c.url}" alt="">`:''}🎨 카드 ${n} — ${esc(cm[2])}${c?'':' <b>(카드 없음 — 🎨 카드 만들기)</b>'}</div>`);return}
     if(/^━{3,}$/.test(l)){flushP();out.push('<hr>');return}
     if(/^Q\.\s/.test(l)){flushP();out.push('<p'+(forCopy?'':' class="q"')+'><b>'+esc(l)+'</b></p>');return}
     if(/^\[중개대상물 표시사항/.test(l)||/^\[중개사무소\]/.test(l)){flushP();out.push('<p><b>'+esc(l)+'</b></p>');return}
@@ -721,25 +883,34 @@ function toHtml(o,forCopy){const lines=(o.body+'\n\n━━━━━━━━━�
   if(o.tags.length)out.push('<p'+(forCopy?' style="color:#1e6fd9"':' class="tags"')+'>'+esc(o.tags.map(t=>'#'+t).join(' '))+'</p>');
   return out.join('\n')}
 function renderPreview(){const o=st.out;if(!o)return;$('#preview').innerHTML='<h1>'+esc(o.title)+'</h1>'+toHtml(o,false)}
-function plainText(o){return(o.body.replace(/^\[사진\s*(\d+)[^\]]*\]$/gm,'(사진 $1)')+'\n\n━━━━━━━━━━\n'+o.foot+(o.tags.length?'\n\n'+o.tags.map(t=>'#'+t).join(' '):'')).replace(/\n{3,}/g,'\n\n')}
+function plainText(o){return(o.body.replace(/^\[사진\s*(\d+)[^\]]*\]$/gm,'(사진 $1)').replace(/^\[카드\s*(\d+)[^\]]*\]$/gm,'(카드 $1)')+'\n\n━━━━━━━━━━\n'+o.foot+(o.tags.length?'\n\n'+o.tags.map(t=>'#'+t).join(' '):'')).replace(/\n{3,}/g,'\n\n')}
 
 /* ---------- 검사 ---------- */
 const cnt=(t,w)=>{if(!w)return 0;let n=0,i=0;while((i=t.indexOf(w,i))>=0){n++;i+=w.length}return n};
 function runChecks(){const o=st.out;if(!o)return;const C=[];const add=(st_,msg,w)=>C.push({st:st_,msg,w:w||1});
-  const title=o.title||'',body=o.body||'',kw=(st.kw||'').trim();const chars=body.replace(/\s/g,'').length,target=st.len==='long'?2000:1200;
+  const title=o.title||'',body=o.body||'',kw=(st.kw||'').trim();const chars=body.replace(/\s/g,'').length;
   if(!kw)add('red','대표 키워드가 비어 있어요 (4번 칸)',2);
   else{const ti=title.indexOf(kw);add(ti===0?'ok':ti>0&&ti<=12?'ok':ti>0?'warn':'red',ti<0?`제목에 대표 키워드 "${kw}"가 없어요`:ti<=12?`제목 앞쪽에 대표 키워드가 있어요`:`대표 키워드를 제목 앞쪽으로 옮기면 검색에 유리해요`,2);
     const n=cnt(body,kw);add(n>=3&&n<=8?'ok':n>10?'red':'warn',n>10?`본문에 "${kw}" ${n}번 — 너무 많으면 저품질로 보일 수 있어요(3~8번 권장)`:n<3?`본문에 "${kw}" ${n}번 — 3번 이상 자연스럽게 넣어 보세요`:`본문 키워드 ${n}번 — 적당해요`,2)}
   add(title.length>=15&&title.length<=40?'ok':'warn',`제목 ${title.length}자 (15~40자 권장)`);
-  add(chars>=target?'ok':chars>=target*.5?'warn':'red',`본문 ${chars.toLocaleString()}자(공백 제외) — 목표 ${target.toLocaleString()}자 이상`,2);
+  add(chars>=1700&&chars<=2400?'ok':chars>=1000&&chars<=3000?'warn':'red',`본문 ${chars.toLocaleString()}자(공백 제외) — 2,000자 내외(1,700~2,400자) 권장`+(chars<1700?' · 사실을 더 채워 주세요':chars>2400?' · 조금 줄여 주세요':''),2);
   const hs=(body.match(/^■/gm)||[]).length;add(hs>=4?'ok':'warn',`소제목 ${hs}개 (4개 이상 권장)`);
   const marks=(body.match(/^\[사진\s*\d+/gm)||[]).length;const nums=(body.match(/^\[사진\s*(\d+)/gm)||[]).map(x=>+x.replace(/\D/g,''));const maxN=nums.length?Math.max(...nums):0;
-  add(photos.length>=5?'ok':photos.length>=3?'warn':'red',`사진 ${photos.length}장 준비 · 본문 사진 자리 ${marks}곳 (5장 이상 권장)`+(maxN>photos.length?` — 사진 ${maxN}번 자리에 넣을 사진이 부족해요`:''));
+  const imgs=photos.length+cards.length;add(imgs>=5?'ok':imgs>=3?'warn':'red',`이미지 ${imgs}장 (사진 ${photos.length} + 카드 ${cards.length}) · 본문 사진 자리 ${marks}곳 (5장 이상 권장)`+(maxN>photos.length?` — 사진 ${maxN}번 자리에 넣을 사진이 부족해요`:''));
   const todo=(body.match(/✏/g)||[]).length+(title.includes('✏')?1:0);add(todo?'red':'ok',todo?`✏ 직접 채울 곳이 ${todo}군데 남았어요`:'채울 곳 없음',2);
   const L=lint(title+'\n'+body);add(L.length?'red':'ok',L.length?'쓰지 말아야 할 표현: '+L.map(x=>`"${x.w}"(${x.why})`).join(', '):'과장·금지 표현 없음',2);
   if(/\d{2,4}\s*호(?![가-힣])/.test(body)&&st.kind!=='tip')add('warn','본문에 "○○호" 표기가 있어요 — 호수는 광고에 쓰지 마세요');
   if(st.kind==='listing'||(st.kind==='area'&&st.aWithList)){add(offOk()?'ok':'red',offOk()?'사무소 정보(명칭·소재지·등록번호·대표·전화) 완비':'사무소 정보가 비어 있어요 — 5번 칸 (표시·광고 필수)',2);
-    if(st.kind==='listing'){const i=curListing();const miss=i?['소재지','가격','면적'].filter(k=>!new RegExp('· '+k+': \\S').test(i.block)):['매물'];add(miss.length?'red':'ok',miss.length?'표시사항 빠짐: '+miss.join(', ')+' — ②에서 채우거나 직접 입력':'중개대상물 표시사항 자동 첨부됨',2);
+    if(st.kind==='listing'){const li=curListing();if(li){const ty=(li.type||'').replace(/\+$/,'');const hw=[li.dong,ty,li.deal].filter(Boolean);
+        const tp=String(li.priceTitle||'').split(/[ /]/)[0],tm=String(li.move||'').replace(/\s/g,'').slice(0,4),tn=title.replace(/\s/g,'');
+        const tOk=hw.every(w=>title.includes(w))&&((tp&&title.includes(tp))||(tm&&tn.includes(tm)));
+        add(tOk?'ok':'warn',tOk?'지침 1: 제목에 동네·유형·거래 형태 + 가격/입주일':'지침 1: 제목에 동네·유형·거래 형태와 가격이나 입주일을 넣어 주세요',2);
+        const p1=(body.split(/\n\s*\n/).map(x=>x.split('\n').filter(l=>!/^\[(사진|카드)\s*\d/.test(l.trim())).join('\n')).find(x=>x.trim())||'');const miss=[];if(!/\d/.test(p1)||!/(만|억)/.test(p1))miss.push('가격');if(!/관리비/.test(p1))miss.push('관리비');if(!/㎡|면적/.test(p1))miss.push('전용면적');if(!/입주/.test(p1))miss.push('입주 가능일');
+        add(miss.length?'warn':'ok',miss.length?'지침 2: 첫 문단에 빠진 것 — '+miss.join(', '):'지침 2: 첫 문단에 가격·관리비·면적·입주일',2);
+        const sec=['비용','집 구조','주차'].filter(w=>!new RegExp('^■.*'+w,'m').test(body));add(sec.length?'warn':'ok',sec.length?'지침 2: 소제목 없음 — '+sec.join(', '):'지침 2: 비용·집 구조와 사진·주차와 방문 소제목');
+        const cond=['주차','엘리베이터','반려동물'].filter(w=>!body.includes(w));add(cond.length?'warn':'ok',cond.length?'지침 3: 방문 조건 빠짐 — '+cond.join(', '):'지침 3: 주차·엘리베이터·반려동물 조건 표기',2);
+        const nCN=(body.match(/[:：]\s*확인 필요/g)||[]).length;if(nCN)add('warn',`지침 3: "확인 필요" ${nCN}곳 — 확인되면 내용으로 바꿔 주세요(그대로 올려도 됨)`)}
+      const i=curListing();const miss=i?['소재지','가격','면적'].filter(k=>!new RegExp('· '+k+': \\S').test(i.block)):['매물'];add(miss.length?'red':'ok',miss.length?'표시사항 빠짐: '+miss.join(', ')+' — ②에서 채우거나 직접 입력':'중개대상물 표시사항 자동 첨부됨',2);
       const x=listings().find(l=>l.id===o.listingId);if(x&&x.status==='거래완료')add('red','이 매물은 거래완료 상태예요 — 광고 글을 올리면 안 돼요',3)}}
   if(st.kind==='case')add(st.cConsent?'ok':'red',st.cConsent?'개인정보 제외·고객 동의 확인':'상담 사례: 개인정보 제외·고객 동의 체크가 필요해요 (2번 칸)',2);
   add(o.tags.length>=5&&o.tags.length<=30?'ok':'warn',`태그 ${o.tags.length}개 (10~30개 권장)`);
@@ -765,7 +936,8 @@ async function finalPhotos(){const out=[];const wm=cfg.wm!==false&&office.name;
       const fs=Math.max(14,Math.round(c.width*0.028));g.font='700 '+fs+'px -apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif';const t=office.name+(office.tel?'  ☎ '+office.tel:'');
       const w=g.measureText(t).width,pad=fs*.6,x=c.width-w-pad*2-fs*.6,y=c.height-fs*2.2;g.fillStyle='rgba(0,0,0,.45)';g.fillRect(x,y,w+pad*2,fs*1.6);g.fillStyle='#fff';g.textBaseline='middle';g.fillText(t,x+pad,y+fs*.8);
       b=await new Promise(r=>c.toBlob(r,'image/jpeg',.9))}}
-    out.push({name:slug()+'-'+String(n+1).padStart(2,'0')+'.jpg',blob:b})}return out}
+    out.push({name:slug()+'-'+String(n+1).padStart(2,'0')+'.jpg',blob:b})}
+  cards.forEach((c,n)=>out.push({name:slug()+'-카드-'+String(n+1).padStart(2,'0')+'.jpg',blob:c.blob}));return out}
 /* 압축 없는 ZIP (사진은 이미 JPEG) */
 const CRC=(()=>{const t=new Uint32Array(256);for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;t[n]=c>>>0}return t})();
 function crc32(u){let c=0xFFFFFFFF;for(let i=0;i<u.length;i++)c=CRC[(c^u[i])&255]^(c>>>8);return(c^0xFFFFFFFF)>>>0}
@@ -778,10 +950,10 @@ async function makeZip(files){const enc=new TextEncoder();const parts=[],cen=[];
   const cs=cen.reduce((a,x)=>a+(x.byteLength||x.length),0);const e=new DataView(new ArrayBuffer(22));e.setUint32(0,0x06054b50,true);e.setUint16(8,files.length,true);e.setUint16(10,files.length,true);e.setUint32(12,cs,true);e.setUint32(16,off,true);
   return new Blob([...parts,...cen,e],{type:'application/zip'})}
 function download(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1500)}
-$('#dlPhotos').onclick=async()=>{if(!photos.length){toast('사진이 없어요 — 3번 칸에서 추가하세요');return}toast('사진 준비 중…');const fs=await finalPhotos();
+$('#dlPhotos').onclick=async()=>{if(!photos.length&&!cards.length){toast('사진이 없어요 — 3번 칸에서 추가하세요');return}toast('사진 준비 중…');const fs=await finalPhotos();
   if(fs.length===1)download(fs[0].blob,fs[0].name);else download(await makeZip(fs),slug()+'-사진.zip');toast(fs.length+'장 내려받기')};
 if(navigator.canShare){try{if(navigator.canShare({files:[new File([new Blob(['x'])],'a.jpg',{type:'image/jpeg'})]}))$('#shPhotos').classList.remove('hide')}catch(e){}}
-$('#shPhotos').onclick=async()=>{if(!photos.length){toast('사진이 없어요');return}const fs=(await finalPhotos()).map(f=>new File([f.blob],f.name,{type:'image/jpeg'}));try{await navigator.share({files:fs,title:st.out.title})}catch(e){}};
+$('#shPhotos').onclick=async()=>{if(!photos.length&&!cards.length){toast('사진이 없어요');return}const fs=(await finalPhotos()).map(f=>new File([f.blob],f.name,{type:'image/jpeg'}));try{await navigator.share({files:fs,title:st.out.title})}catch(e){}};
 
 /* ---------- 기록·계획 ---------- */
 $('#btnRecord').onclick=()=>{const o=st.out;if(!o)return;if(blocked())return;
@@ -806,6 +978,7 @@ $('#goal').onchange=e=>{cfg.goal=+e.target.value;saveCfg();renderHist()};
 /* ---------- 시작 ---------- */
 addEventListener('storage',e=>{if(e.key==='d1c.listings'){renderDbList();renderHist()}if(e.key==='d1c.office'){office=LS.get('d1c.office',{});fillOffice()}});
 (async()=>{fillOffice();renderKind();renderSrc();renderHist();
+  const sc=await blGet('cards');if(sc&&sc.length){cards=sc.map(c=>Object.assign({},c,{url:URL.createObjectURL(c.blob)}));renderCards()}
   const saved=await blGet('photos');if(saved&&saved.length)await setPhotos(saved);else if(st.kind==='listing'&&st.listingId)await loadListingPhotos(st.listingId);
   if(st.out&&st.out.kind===st.kind)showOut()})();
 })();
