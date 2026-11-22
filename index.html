@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>중개사무소 앱 — 중개사 실전 도구 8종</title>
+<title>중개사무소 앱 — 중개사 실전 도구 10종</title>
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#ffffff">
 <link rel="icon" href="img/icon-192.png">
@@ -71,7 +71,7 @@ input{width:100%;min-height:46px;border:1px solid #D6D6D6;border-radius:10px;pad
 <body>
 <div class="top">
   <div class="in">
-    <h1><img src="img/land3-logo.png" alt="랜드3 연구소"><span class="bar"></span><span>중개사무소 앱<small>중개사 실전 도구 8종</small></span></h1>
+    <h1><img src="img/land3-logo.png" alt="랜드3 연구소"><span class="bar"></span><span>중개사무소 앱<small>중개사 실전 도구 10종</small></span></h1>
     <div class="who" id="who"></div>
     <button class="ibtn" id="installBtn" style="display:none">설치</button>
   </div>
@@ -100,7 +100,9 @@ const TOOLS=[
   {id:'lh',num:'⑤',short:'LH 신호등',name:'LH 전세임대 사전점검 신호등',desc:'등기부 PDF·사진 판독 → 공시가격 자동 조회 → LH 통과 가능성 신호등',page:'lh.html',state:'on'},
   {id:'vacancy',num:'⑥',short:'공실클럽',name:'공실클럽 (RSA 동문 전용)',desc:'수수료·이용료 0원 동문 공동중개 — 공실 30초 등록·지도 검색·14일 신선도 확인·문의 일지',page:'gongsil.html',state:'new'},
   {id:'bid',num:'⑦',short:'입찰서류',name:'경매 입찰서류 자동작성',desc:'사건번호·입찰가 → 새 기일입찰표·위임장·준비물 체크리스트 PDF, "0 하나 더" 실수 방지',page:'bid.html',state:'on'},
-  {id:'blog',num:'⑧',short:'블로그',name:'블로그 자동생성',desc:'매물·동네·상식·상담사례 → 검색용 제목 5안·본문·태그 + 표시사항 자동 첨부 → 서식 복사·사진 내보내기·발행 기록',page:'blog.html',state:'new'}
+  {id:'blog',num:'⑧',short:'블로그',name:'블로그 자동생성',desc:'매물·동네·상식·상담사례 → 검색용 제목 5안·본문·태그 + 표시사항 자동 첨부 → 서식 복사·사진 내보내기·발행 기록',page:'blog.html',state:'new'},
+  {id:'listings',num:'⑨',short:'매물장',name:'매물장',desc:'나만 보는 매물 장부 — 상태·광고 만료·14일 확인, 지도, 엑셀 가져오기 → ②광고·⑥공실클럽·⑩손님 매칭으로 바로 넘기기',page:'maemul.html',state:'new'},
+  {id:'customers',num:'⑩',short:'고객관리',name:'고객관리',desc:'손님·의뢰인 온도·상담 일지·다음 연락일 → 매물장 자동 매칭·추천 문자, 계약·잔금·만기 알림',page:'crm.html',state:'new'}
 ];
 const BADGE={on:'<span class="badge b-on">사용 가능</span>',new:'<span class="badge b-new">새로 나옴</span>',soon:'<span class="badge b-soon">준비 중</span>'};
 let me=null,cur='home';const built={};
@@ -110,7 +112,7 @@ function tabsHtml(){return `<button data-t="home" class="${cur==='home'?'on':''}
 function renderTabs(){$('#tabs').innerHTML=tabsHtml();$('#tabs').querySelectorAll('button').forEach(b=>b.onclick=()=>go(b.dataset.t));
   const on=$('#tabs .on');if(on)on.scrollIntoView({inline:'nearest',block:'nearest'})}
 function renderWho(){$('#who').innerHTML=me?`${esc(me.office||'')} ${esc(me.name||'')} <button class="ibtn" id="lo" style="margin-left:6px">로그아웃</button>`:'';
-  const lo=$('#lo');if(lo)lo.onclick=async()=>{const t=token();try{await rpc('lh_logout',{p_token:t})}catch(e){}try{localStorage.removeItem(TK)}catch(e){}me=null;gsInfo=null;reloadFrames();renderAll()}}
+  const lo=$('#lo');if(lo)lo.onclick=async()=>{const t=token();try{await rpc('lh_logout',{p_token:t})}catch(e){}try{localStorage.removeItem(TK)}catch(e){}me=null;gsInfo=null;jg=null;reloadFrames();renderAll()}}
 
 function pane(id){let p=document.getElementById('p-'+id);if(!p){p=document.createElement('div');p.className='pane';p.id='p-'+id;$('#stage').appendChild(p)}return p}
 function go(id){
@@ -149,11 +151,12 @@ function renderHome(){
       <button class="stat good" data-go="lh"><b>⑤ LH 매물장</b><div class="v">${me?(lhCount==null?'…':lhCount):'-'}</div><div class="s">${me?'등록한 매물':'로그인하면 보여요'}</div></button>
       <button class="stat" data-go="land"><b>④ 토지 시세 상담</b><div class="v">${hist.length}</div><div class="s">${hist[0]?'최근: '+esc(hist[0].address.split(' ').slice(-3).join(' ')):'아직 조회 없음'}</div></button>
     </div>
+    ${jgHtml()}
     ${bidsUp.length?`<h2 class="sec">다가오는 입찰기일</h2><div class="card"><ul class="recent">${bidsUp.slice(0,5).map(b=>`<li><span>${esc(b.court)} ${esc(b.case)} · ${esc(b.name||'')}${b.type==='agent'?'(대리)':''}</span><span>${b.dd===0?'오늘':'D-'+b.dd}${b.price?' · '+wonShort(b.price):''}</span></li>`).join('')}</ul></div>`:''}
     ${gsInfo&&gsInfo.ok&&(gsInfo.unread||gsInfo.stale)?`<h2 class="sec">⑥ 공실클럽</h2><div class="card"><ul class="recent">${gsInfo.unread?`<li><span>새 공동중개 문의</span><span><a href="#vacancy">${gsInfo.unread}건 보기</a></span></li>`:''}${gsInfo.stale?`<li><span>"아직 공실인가요?" 확인할 내 공실</span><span><a href="#vacancy">${gsInfo.stale}건</a></span></li>`:''}</ul></div>`:''}
     ${blogHtml()}
     ${hist.length?`<h2 class="sec">최근 토지 시세 상담</h2><div class="card"><ul class="recent">${hist.slice(0,5).map(h=>`<li><span>${esc(h.address)}</span><span>${wonShort(h.lo)}~${wonShort(h.hi)}</span></li>`).join('')}</ul></div>`:''}
-    <h2 class="sec">도구 8종</h2>
+    <h2 class="sec">도구 10종</h2>
     <div class="grid">${TOOLS.map(t=>`<button class="tool ${t.state==='soon'?'dim':''}" data-go="${t.id}">${BADGE[t.state]}<span class="num">${t.num}</span><h3>${esc(t.name)}</h3><p>${esc(t.desc)}</p></button>`).join('')}</div>
     <div class="foot">랜드3 연구소 · 모든 결과는 참고용 사전 점검이며 최종 판단은 관계기관·전문가 확인이 필요합니다.<br>② 다방광고 자료는 이 기기에만 저장됩니다.</div>
   </div>`;
@@ -170,15 +173,25 @@ function blogHtml(){const bh=LSget('bl.history',[]),cfg=LSget('bl.cfg',{goal:3})
   const down=bh.filter(h=>h.listingId&&!h.cleared&&(dl.find(x=>x.id===h.listingId)||{}).status==='거래완료');
   if(!bh.length&&!down.length)return'';
   return `<h2 class="sec">⑧ 블로그</h2><div class="card"><ul class="recent"><li><span>이번 주 발행</span><span><a href="#blog">${wk} / ${goal}편</a></span></li>${down.length?`<li><span style="color:var(--red)">거래완료 매물 글 — 정리 필요</span><span><a href="#blog">${down.length}건</a></span></li>`:''}</ul></div>`}
-let gsInfo=null;
+let gsInfo=null,jg=null;
+function jgHtml(){if(!me||!jg)return'';const md=x=>String(x||'').slice(5).replace('-','/');
+  const ev=(jg.cr_events||[]);
+  return `<div class="stats" style="margin-top:10px">
+      <button class="stat ${jg.cr_due_n?'warn':''}" data-go="customers"><b>⑩ 오늘 연락할 손님</b><div class="v">${jg.cr_due_n}</div><div class="s">${(jg.cr_due||[]).slice(0,3).map(c=>esc(c.name)).join(', ')||'다음 연락일 기준'}</div></button>
+      <button class="stat ${ev.length?'warn':''}" data-go="customers"><b>⑩ 계약·잔금·만기</b><div class="v">${ev.length}</div><div class="s">${ev[0]?esc(md(ev[0].date)+' '+ev[0].name+' '+ev[0].what):'7일 안 일정 없음'}</div></button>
+      <button class="stat ${jg.mj_not_down||jg.mj_ad_soon?'warn':''}" data-go="listings"><b>⑨ 광고 내림·만료</b><div class="v">${jg.mj_not_down+jg.mj_ad_soon}</div><div class="s">내림 미확인 ${jg.mj_not_down} · 만료 임박 ${jg.mj_ad_soon}</div></button>
+      <button class="stat ${jg.mj_stale?'warn':''}" data-go="listings"><b>⑨ 매물장</b><div class="v">${jg.mj_active}</div><div class="s">진행 중 · 14일 미확인 ${jg.mj_stale}</div></button>
+    </div>`}
+async function loadJg(){if(!token())return;try{jg=await rpc('jg_today',{p_token:token()})}catch(e){jg=null}if(cur==='home')renderHome()}
 async function loadGs(){if(!token())return;try{gsInfo=await rpc('gs_me',{p_token:token()})}catch(e){gsInfo=null}if(cur==='home')renderHome()}
-async function loadLh(){loadGs();if(!token())return;try{const l=await rpc('lh_list',{p_token:token()});lhCount=Array.isArray(l)?l.length:(l&&l.length)||0}catch(e){lhCount=null}if(cur==='home')renderHome()}
+async function loadLh(){loadGs();loadJg();if(!token())return;try{const l=await rpc('lh_list',{p_token:token()});lhCount=Array.isArray(l)?l.length:(l&&l.length)||0}catch(e){lhCount=null}if(cur==='home')renderHome()}
 async function loadMe(){const t=token();if(!t){me=null;return}try{me=await rpc('lh_me',{p_token:t})}catch(e){me=token()?(me||{name:'',office:'(연결 확인 중)'}):null}}
 function renderAll(){renderWho();renderTabs();if(cur==='home')renderHome()}
 
 addEventListener('storage',async e=>{if(e.key===TK){await loadMe();lhCount=null;reloadFrames(cur);renderAll();loadLh()}else if(cur==='home')renderHome()});
 addEventListener('hashchange',()=>go(location.hash.slice(1)||'home'));
-document.addEventListener('visibilitychange',()=>{if(!document.hidden&&cur==='home')renderHome()});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&cur==='home'){renderHome();loadJg()}});
+addEventListener('hashchange',()=>{if(location.hash==='#home'||!location.hash)loadJg()});
 
 (async()=>{go(location.hash.slice(1)||'home');await loadMe();renderAll();loadLh()})();
 

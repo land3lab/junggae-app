@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>고객관리 — 손님·의뢰인 관리 · 중개사무소 앱 ⑩</title>
+<script>if(/[?&]embed=1/.test(location.search))document.documentElement.classList.add("embed")</script>
+<meta name="theme-color" content="#ffffff">
+<link rel="icon" href="img/icon-192.png">
+<link rel="apple-touch-icon" href="img/icon-192.png">
+<style>
+:root{--bg:#F7F7F7;--card:#fff;--ink:#23292B;--sub:#5C6366;--line:#E6E6E6;--brand:#EE6A2C;--brand-soft:#FDEEE5;
+  --red:#b42318;--red-soft:#fdecea;--yel:#7a5400;--yel-soft:#fff4d6;--grn:#17733f;--grn-soft:#e4f4ea;--r:14px}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;font-size:16px;line-height:1.55;-webkit-text-size-adjust:100%}
+header{background:var(--brand);color:#fff;padding:16px}
+header h1{margin:0;font-size:19px;letter-spacing:-.3px}
+header p{margin:2px 0 0;font-size:13px;opacity:.85}
+.embed header{display:none}
+.wrap{max-width:1000px;margin:0 auto;padding:12px 12px 60px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px;margin:0 0 12px}
+.card h2{font-size:16.5px;margin:0 0 10px}
+h3.sec{font-size:15px;margin:16px 2px 8px;color:var(--sub)}
+label.f{display:block;font-size:13.5px;color:var(--sub);font-weight:600}
+input[type=text],input[type=tel],input[type=search],input[type=date],select,textarea{width:100%;min-height:46px;border:1px solid #D6D6D6;border-radius:10px;padding:10px 12px;font:inherit;color:var(--ink);background:#fff;margin-top:4px}
+textarea{min-height:90px;resize:vertical}
+input:focus,select:focus,textarea:focus{outline:2px solid #F9B48F;border-color:var(--brand)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.full{grid-column:1/-1}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.btn{min-height:46px;border:1px solid #D6D6D6;background:#fff;border-radius:10px;padding:10px 16px;font:inherit;font-weight:700;color:var(--ink);cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.btn.pri{background:var(--brand);border-color:var(--brand);color:#fff}
+.btn.sm{min-height:44px;padding:8px 12px;font-size:14px}
+.btn.red{color:var(--red);border-color:#f0c4bf}
+.btn:disabled{opacity:.5;cursor:default}
+.seg{display:flex;border:1px solid #D6D6D6;border-radius:10px;overflow:hidden;margin-top:4px;flex-wrap:nowrap}
+.seg button{flex:1;min-height:44px;border:0;background:#fff;font:inherit;font-weight:700;color:var(--sub);cursor:pointer;padding:0 6px;white-space:nowrap}
+.seg button+button{border-left:1px solid #D6D6D6}
+.seg button.on{background:var(--brand);color:#fff}
+.hint{font-size:13px;color:var(--sub);margin:4px 0 0}
+.note{padding:11px 14px;border-radius:12px;font-size:14px;margin:10px 0 0}
+.note.y{background:var(--yel-soft);color:var(--yel)} .note.r{background:var(--red-soft);color:var(--red)} .note.g{background:var(--grn-soft);color:var(--grn)} .note.b{background:var(--brand-soft);color:var(--brand)}
+.hide{display:none!important}
+nav.sub{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin:0 0 12px;position:sticky;top:0;z-index:20;background:var(--bg);padding:4px 0 8px}
+nav.sub::-webkit-scrollbar{display:none}
+nav.sub button{flex:none;min-height:44px;border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 15px;font:inherit;font-size:14.5px;font-weight:700;color:var(--sub);cursor:pointer}
+nav.sub button.on{background:var(--brand);border-color:var(--brand);color:#fff}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 8px}
+.chips button{min-height:40px;border:1px solid var(--line);background:#fff;border-radius:999px;padding:4px 13px;font:inherit;font-size:14px;font-weight:700;color:var(--sub);cursor:pointer}
+.chips button.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.chips button small{font-weight:600;opacity:.75;margin-left:3px}
+.filters{display:grid;grid-template-columns:1fr 1fr 2fr;gap:8px}
+.alerts .note{margin:0 0 8px;cursor:pointer}
+.res-head{display:flex;justify-content:space-between;align-items:center;margin:4px 2px 8px;gap:8px}
+.res-head b{font-size:15px}
+.list{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px}
+.it{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px;cursor:pointer;text-align:left;font:inherit;color:inherit;display:flex;gap:11px;width:100%}
+.it:hover{border-color:#F5A47C;box-shadow:0 4px 14px rgba(0,0,0,.05)}
+.it .th{width:78px;height:78px;flex:none;border-radius:10px;background:#EFEFEF center/cover no-repeat;display:flex;align-items:center;justify-content:center;color:#B5B9BB;font-size:24px}
+.it .bd{min-width:0;flex:1}
+.it .top{display:flex;gap:5px;align-items:center;flex-wrap:wrap;font-size:12.5px;color:var(--sub)}
+.tag{display:inline-block;font-size:12px;font-weight:800;border-radius:6px;padding:2px 7px;background:var(--brand-soft);color:var(--brand)}
+.tag.m{background:#eef0ef;color:#4b5450}
+.tag.y{background:var(--yel-soft);color:var(--yel)} .tag.r{background:var(--red-soft);color:var(--red)} .tag.g{background:var(--grn-soft);color:var(--grn)} .tag.k{background:var(--ink);color:#fff}
+.it .pr{font-size:18px;font-weight:800;letter-spacing:-.4px;margin:3px 0 0}
+.it .pr small{font-size:12.5px;font-weight:600;color:var(--sub);margin-left:4px}
+.it .ad{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.it .sp{font-size:13px;color:var(--sub)}
+#map{height:64vh;min-height:360px;border-radius:14px;border:1px solid var(--line);background:#EBEBEB}
+.empty{text-align:center;color:var(--sub);padding:34px 10px;font-size:14.5px}
+.modal{position:fixed;inset:0;background:rgba(20,24,22,.55);z-index:70;display:flex;align-items:flex-end;justify-content:center}
+.modal .box{background:#fff;width:100%;max-width:680px;max-height:92vh;overflow:auto;border-radius:18px 18px 0 0;padding:16px 16px 24px}
+@media (min-width:700px){.modal{align-items:center}.modal .box{border-radius:18px}}
+.mh{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:8px}
+.mh h3{margin:0;font-size:19px}
+.x{min-width:44px;min-height:44px;border:0;background:#F2F2F2;border-radius:10px;font-size:20px;cursor:pointer}
+.photos{display:flex;gap:6px;overflow-x:auto;scroll-snap-type:x mandatory;margin:6px 0 10px}
+.photos img{height:200px;max-width:88%;object-fit:cover;border-radius:10px;scroll-snap-align:start;flex:none;background:#eee}
+.kv{display:grid;grid-template-columns:100px 1fr;gap:4px 10px;font-size:14.5px;margin:8px 0}
+.kv dt{color:var(--sub)} .kv dd{margin:0;font-weight:600}
+.box2{border:1px solid var(--line);border-radius:12px;padding:12px;margin-top:10px}
+.box2 h4{margin:0 0 6px;font-size:15px}
+.private{background:#F4F6F5;border-radius:12px;padding:12px;margin-top:10px;font-size:14.5px}
+.acts{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px}
+.acts .btn{min-height:52px;font-size:13.5px;padding:6px;flex-direction:column;gap:0;line-height:1.25}
+.acts .btn span{font-size:18px}
+.adrow{display:grid;grid-template-columns:1fr 1.2fr 1.2fr auto auto;gap:6px;align-items:center;margin-top:6px;font-size:14px}
+.adrow input,.adrow select{min-height:40px;margin:0;padding:6px 8px}
+.steps{display:flex;gap:4px;margin:8px 0}
+.steps button{flex:1;min-height:42px;border:1px solid var(--line);background:#fff;border-radius:8px;font:inherit;font-size:13px;font-weight:700;color:var(--sub);cursor:pointer;padding:2px}
+.steps button.on{background:var(--brand);border-color:var(--brand);color:#fff}
+.thumbs{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.thumbs div{position:relative}
+.thumbs img{width:84px;height:84px;object-fit:cover;border-radius:8px;display:block}
+.thumbs button{position:absolute;right:-6px;top:-6px;width:28px;height:28px;border-radius:50%;border:0;background:#23292B;color:#fff;cursor:pointer;font-size:15px;line-height:1}
+.thumbs .rep{position:absolute;left:4px;bottom:4px;font-size:11px;background:var(--brand);color:#fff;border-radius:4px;padding:0 4px}
+.chk{display:flex;gap:8px;align-items:flex-start;font-size:14px;margin-top:10px}
+.chk input{width:22px;height:22px;flex:none;margin-top:1px}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#23292B;color:#fff;padding:10px 16px;border-radius:10px;font-size:14px;opacity:0;pointer-events:none;transition:.2s;z-index:90;max-width:90vw}
+.toast.show{opacity:1}
+.mt{border-top:1px solid var(--line);padding:8px 0;font-size:14px;display:flex;justify-content:space-between;gap:8px;align-items:center}
+.mt:first-child{border-top:0}
+table.pv{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px}
+table.pv th,table.pv td{border:1px solid var(--line);padding:4px 6px;text-align:left;white-space:nowrap}
+.pvwrap{overflow:auto;max-height:240px}
+.leaflet-popup-content{font-family:inherit;font-size:13.5px;line-height:1.45;margin:10px 12px}
+.leaflet-popup-content .btn{min-height:36px;padding:4px 10px;font-size:13px;margin-top:6px}
+@media (max-width:620px){.grid3,.grid4{grid-template-columns:1fr 1fr}.filters{grid-template-columns:1fr 1fr}.filters .q{grid-column:1/-1}.acts{grid-template-columns:1fr 1fr}.adrow{grid-template-columns:1fr 1fr}}
+</style>
+<style>
+.cu{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 14px;cursor:pointer;text-align:left;font:inherit;color:inherit;display:block;width:100%}
+.cu:hover{border-color:#F5A47C;box-shadow:0 4px 14px rgba(0,0,0,.05)}
+.cu .nm{font-size:17px;font-weight:800;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.cu .w{font-size:13.5px;color:var(--sub);margin-top:2px}
+.cu .ll{font-size:13px;color:var(--sub);border-top:1px dashed var(--line);margin-top:7px;padding-top:6px;display:flex;justify-content:space-between;gap:6px}
+.temp{display:inline-block;font-size:12px;font-weight:800;border-radius:6px;padding:2px 7px}
+.t-A{background:#fde3d6;color:#b13b0a}.t-B{background:var(--yel-soft);color:var(--yel)}.t-C{background:#e6eef7;color:#2d5a8a}.t-휴면{background:#eef0ef;color:#6b736f}
+.tl{border-left:3px solid var(--line);margin:6px 0 0 6px;padding-left:12px}
+.tl .ev{position:relative;padding:6px 0 10px;font-size:14.5px}
+.tl .ev::before{content:"";position:absolute;left:-19px;top:11px;width:11px;height:11px;border-radius:50%;background:var(--brand)}
+.tl .ev .h{font-size:13px;color:var(--sub)}
+.pick{display:flex;flex-direction:column;gap:6px;max-height:260px;overflow:auto;margin-top:6px}
+.pick label{display:flex;gap:8px;align-items:center;border:1px solid var(--line);border-radius:10px;padding:8px 10px;font-size:14px;cursor:pointer}
+.pick input{width:20px;height:20px;flex:none}
+.pick .sc{margin-left:auto;font-weight:800;color:var(--brand);white-space:nowrap}
+.quick{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.quick button{min-height:38px;border:1px solid var(--line);background:#fff;border-radius:999px;padding:4px 12px;font:inherit;font-size:13.5px;font-weight:700;color:var(--sub);cursor:pointer}
+.quick button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.cbx{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.cbx label{display:flex;align-items:center;gap:5px;border:1px solid #D6D6D6;border-radius:999px;padding:6px 11px;font-size:14px;font-weight:600;color:var(--ink);cursor:pointer;background:#fff}
+.cbx input{width:18px;height:18px;margin:0}
+.cbx label:has(input:checked){background:var(--brand-soft);border-color:var(--brand);color:var(--l3-deep,#C9531B)}
+.stat4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}
+.stat4 button{background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px;text-align:left;font:inherit;color:inherit;cursor:pointer}
+.stat4 b{display:block;font-size:12.5px;color:var(--sub)} .stat4 .v{font-size:22px;font-weight:800}
+.stat4 .warn .v{color:var(--red)}
+@media (max-width:620px){.stat4{grid-template-columns:1fr 1fr}}
+</style>
+<link rel="stylesheet" href="land3.css">
+</head>
+<body>
+<header><h1>고객관리</h1><p>중개사무소 앱 ⑩ · 누구에게 무엇을 보여줬고 언제 다시 연락할지 — 매물장과 자동 매칭</p></header>
+<div class="wrap" id="app"><div class="empty">불러오는 중…</div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+"use strict";
+const SB_URL="https://dwtylilyvmvbpsryvlcg.supabase.co", SB_KEY="sb_publishable_Vht7Hh-4GF-mpbnprPp3FQ_AgGPTKTH", TK="junggae-token";
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const LS={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){return false}}};
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.remove('show'),2600)}
+const token=()=>{try{return localStorage.getItem(TK)||''}catch(e){return''}};
+async function rpc(fn,args){
+  let r;try{r=await fetch(SB_URL+'/rest/v1/rpc/'+fn,{method:'POST',headers:{apikey:SB_KEY,'Content-Type':'application/json'},body:JSON.stringify(Object.assign({p_token:token()},args||{}))})}catch(e){throw new Error('인터넷 연결을 확인하세요')}
+  const t=await r.text();let j=null;try{j=t?JSON.parse(t):null}catch(e){}
+  if(!r.ok){const m=(j&&j.message)||('서버 오류 '+r.status);if(m==='AUTH_REQUIRED'){try{localStorage.removeItem(TK)}catch(e){}S.me=null;render()}throw new Error(m)}
+  return j}
+async function copy(text){try{await navigator.clipboard.writeText(text);return true}catch(e){const ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);ta.select();let ok=false;try{ok=document.execCommand('copy')}catch(_){}ta.remove();return ok}}
+
+const KINDS=[['임차','임차 손님(전·월세 찾는)'],['매수','매수 손님'],['매도','매도 의뢰인'],['임대','임대 의뢰인(집주인)'],['투자','투자자'],['법인','법인'],['공동중개','동문·공동중개 상대']];
+const SEEK=['임차','매수','투자','법인'];
+const SOURCES=['다방','네이버','직방','블로그','유튜브','당근','소개','워크인','전화','공실클럽','기타'];
+const TEMPS=[['A','🔥A 바로 계약'],['B','B 비교 중'],['C','C 탐색 중'],['휴면','❄ 휴면']];
+const LOGT=['전화','문자','방문','현장안내','계약','메모'];
+const REACT=['좋음','보통','별로'];
+const DEALS=['월세','전세','매매','단기'];
+const MKINDS=['원룸','투룸','쓰리룸+','오피스텔','아파트','빌라','단독·다가구','상가','사무실','지식산업센터','공장·창고','토지','건물','기타'];
+const MUST=['주차','엘리베이터','반려동물','LH 전세임대','신축(5년 이내)','역세권','즉시입주'];
+const ACTIVE=['접수','광고중','계약진행'];
+const S={me:null,tab:'today',f:LS.get('cr.filter',{grp:'진행',temp:'',kind:'',q:''}),list:[],mj:[],edit:null,today:null};
+
+/* ---------- 표시 ---------- */
+function man(won){if(won==null||won==='')return'';const m=Math.round(won/1e4);if(m>=1e4){const e=Math.floor(m/1e4),r=m%1e4;return e+'억'+(r?' '+r.toLocaleString():'')}return m.toLocaleString()}
+const ymd=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+const today=()=>ymd(new Date());
+const addDays=(s,n)=>{const d=new Date(s+'T00:00:00');d.setDate(d.getDate()+n);return ymd(d)};
+const addMonths=(s,n)=>{const d=new Date(s+'T00:00:00');d.setMonth(d.getMonth()+n);return ymd(d)};
+const dday=s=>Math.round((new Date(s+'T00:00:00')-new Date(today()+'T00:00:00'))/864e5);
+const ddT=s=>{const n=dday(s);return n===0?'오늘':n<0?(-n)+'일 지남':'D-'+n};
+const md=s=>s?s.slice(5).replace('-','/'):'';
+function ago(ts){const d=Math.floor((Date.now()-new Date(ts))/864e5);return d<=0?'오늘':d===1?'어제':d+'일 전'}
+const tel=x=>String(x||'').replace(/\D/g,''),fmtTel=x=>{const d=tel(x);return d.length===11?d.replace(/(\d{3})(\d{4})(\d{4})/,'$1-$2-$3'):d.length===10?d.replace(/(\d{2,3})(\d{3,4})(\d{4})/,'$1-$2-$3'):d};
+const kindName=k=>(KINDS.find(x=>x[0]===k)||[,k])[1];
+const tempT=t=>`<span class="temp t-${esc(t)}">${esc((TEMPS.find(x=>x[0]===t)||[,t])[1])}</span>`;
+function priceText(l){if(l.deal==='매매')return'매매 '+(man(l.price)||'-');if(l.deal==='전세')return'전세 '+(man(l.deposit)||'-');return(l.deal==='단기'?'단기 ':'월세 ')+(man(l.deposit)||'0')+'/'+(man(l.rent)||'0')}
+function lTitle(l){return `${priceText(l)} · ${l.kind} · ${l.addr.split(' ').slice(-2).join(' ')}${l.ho?' '+l.ho:''}`}
+function wantsText(w){if(!w)return'';const a=[];if(w.deals&&w.deals.length)a.push(w.deals.join('/'));if(w.kinds&&w.kinds.length)a.push(w.kinds.join('·'));
+  if(w.area)a.push(w.area);if(w.maxDeposit)a.push('보증금 '+man(w.maxDeposit)+'↓');if(w.maxRent)a.push('월세 '+man(w.maxRent)+'↓');if(w.maxPrice)a.push('매매 '+man(w.maxPrice)+'↓');
+  if(w.minArea)a.push(w.minArea+'㎡↑');if(w.minRooms)a.push('방'+w.minRooms+'↑');if(w.moveBy)a.push(md(w.moveBy)+'까지 입주');if(w.must&&w.must.length)a.push(w.must.join(','));return a.join(' · ')}
+
+/* ---------- 매칭 점수 (매물장과 같은 규칙) ---------- */
+function score(w,l){if(!w||!l)return 0;let s=100;const why=[];
+  if(w.deals&&w.deals.length&&!w.deals.includes(l.deal))return 0;
+  if(w.kinds&&w.kinds.length&&!w.kinds.includes(l.kind))return 0;
+  const over=(v,mx)=>mx&&v!=null&&v>mx;
+  if(l.deal==='매매'){if(over(l.price,w.maxPrice*1.05))return 0;if(over(l.price,w.maxPrice)){s-=15;why.push('예산 살짝 초과')}}
+  else{if(over(l.deposit,w.maxDeposit*1.1))return 0;if(over(l.deposit,w.maxDeposit)){s-=15;why.push('보증금 살짝 초과')}
+    if(l.deal!=='전세'){if(over(l.rent,w.maxRent*1.15))return 0;if(over(l.rent,w.maxRent)){s-=15;why.push('월세 살짝 초과')}}}
+  if(w.area){const ks=w.area.split(/[,\s/]+/).filter(Boolean);if(ks.length&&!ks.some(k=>(l.addr+' '+(l.bldg||'')+' '+(l.region||'')).includes(k))){s-=35;why.push('희망 지역 밖')}}
+  if(w.minArea&&l.area&&+l.area<+w.minArea){s-=15;why.push('면적 작음')}
+  if(w.minRooms&&l.rooms!=null&&l.rooms<+w.minRooms){s-=20;why.push('방 수 부족')}
+  const m=w.must||[];
+  if(m.includes('주차')&&(!l.park||/불가|없|^0/.test(l.park))){s-=15;why.push('주차?')}
+  if(m.includes('엘리베이터')&&l.elevator!==true){s-=15;why.push('엘리베이터?')}
+  if(m.includes('LH 전세임대')&&l.lh_light&&l.lh_light!=='초록'){s-=25;why.push('LH '+l.lh_light)}
+  if(m.includes('반려동물')&&!/반려|애완|펫/.test((l.memo||'')+(l.options||''))){s-=5;why.push('반려동물 확인')}
+  score.why=why;return Math.max(s,0)}
+function matchesFor(c){if(!SEEK.includes(c.kind))return[];return S.mj.filter(l=>ACTIVE.includes(l.status)).map(l=>{const sc=score(c.wants,l);return{l,sc,why:score.why||[]}}).filter(x=>x.sc>=50).sort((a,b)=>b.sc-a.sc)}
+function customersFor(l){return S.list.filter(c=>c.stage!=='종료'&&SEEK.includes(c.kind)).map(c=>{const sc=score(c.wants,l);return{c,sc,why:score.why||[]}}).filter(x=>x.sc>=50).sort((a,b)=>b.sc-a.sc||(a.c.temp>b.c.temp?1:-1))}
+
+/* ---------- 화면 ---------- */
+function render(){
+  const A=$('#app');
+  if(!token()||!S.me){A.innerHTML=`<div class="card"><h2>로그인이 필요해요</h2><p class="hint" style="font-size:14.5px">고객관리는 중개사무소 앱 공용 계정으로 들어옵니다. 홈 탭에서 로그인(처음이면 ⑤ LH 탭에서 가입)한 뒤 다시 열어 주세요. 고객 정보는 나만 봅니다 — 동문끼리도 공유되지 않습니다.</p>
+    <div class="row" style="margin-top:10px"><a class="btn pri" href="index.html#home" target="_top">홈으로 가서 로그인</a><button class="btn" id="retry">다시 확인</button></div></div>`;
+    $('#retry').onclick=boot;return}
+  const due=S.list.filter(c=>c.stage!=='종료'&&c.next_at&&dday(c.next_at)<=0).length;
+  const tabs=[['today','📅 오늘',due],['list','👥 고객'],['new',S.edit?'✏️ 수정':'➕ 고객 등록'],['io','⇅ 가져오기·정리']];
+  A.innerHTML=`<nav class="sub">${tabs.map(([k,t,b])=>`<button data-tab="${k}" class="${S.tab===k?'on':''}">${t}${b?` <span class="tag r" style="margin-left:3px">${b}</span>`:''}</button>`).join('')}</nav><div id="pane"></div>`;
+  $$('nav.sub button').forEach(b=>b.onclick=()=>{if(b.dataset.tab!=='new')S.edit=null;S.tab=b.dataset.tab;render()});
+  ({today:paneToday,list:paneList,new:paneNew,io:paneIO})[S.tab]();
+}
+function cuCard(c){const ll=c.last_log;const mt=SEEK.includes(c.kind)?matchesFor(c).filter(x=>!(c.shown||[]).includes(x.l.id)).length:0;
+  return `<button class="cu" data-id="${c.id}"><div class="nm">${esc(c.name)} ${tempT(c.temp)}<span class="tag m">${esc(c.kind)}</span>${c.stage!=='진행'?`<span class="tag ${c.stage==='계약'?'g':'m'}">${esc(c.stage)}</span>`:''}${c.next_at?`<span class="tag ${dday(c.next_at)<=0?'r':'y'}" style="margin-left:auto">📞 ${dday(c.next_at)===0?'오늘':md(c.next_at)}${dday(c.next_at)<0?' 지남':''}</span>`:''}</div>
+    <div class="w">${esc(wantsText(c.wants)||c.memo||'')}</div>
+    <div class="ll"><span>${ll?esc(md(ll.at)+' '+ll.type+(ll.body?' · '+ll.body:'')):'기록 없음'}</span><span>${mt?`<b style="color:var(--brand)">새 맞는 매물 ${mt}</b>`:c.source?esc(c.source):''}</span></div></button>`}
+
+/* ---------- 오늘 ---------- */
+function paneToday(){const L=S.list.filter(c=>c.stage!=='종료');
+  const due=L.filter(c=>c.next_at&&dday(c.next_at)<=0).sort((a,b)=>a.next_at<b.next_at?-1:1);
+  const soon=L.filter(c=>c.next_at&&dday(c.next_at)>0&&dday(c.next_at)<=7).sort((a,b)=>a.next_at<b.next_at?-1:1);
+  const hot=L.filter(c=>c.temp==='A'&&!(c.next_at&&dday(c.next_at)<=0));
+  const ev=[];L.forEach(c=>(c.deals||[]).forEach(d=>{[['계약',d.contract],['중도금',d.middle],['잔금',d.balance]].forEach(([w,dt])=>{if(dt&&dday(dt)>=0&&dday(dt)<=14)ev.push({c,w,dt,d})});
+    if(d.expiry){const n=dday(d.expiry);if(n>=0&&n<=200)ev.push({c,w:'만기',dt:d.expiry,d,far:n>92?'6개월 전 — 갱신·이사 의사 확인':n>60?'3개월 전 — 재계약 조건 협의':'곧 만기'})}}));
+  ev.sort((a,b)=>a.dt<b.dt?-1:1);
+  const newMatch=L.filter(c=>SEEK.includes(c.kind)&&c.temp!=='휴면').map(c=>({c,n:matchesFor(c).filter(x=>!(c.shown||[]).includes(x.l.id)).length})).filter(x=>x.n).sort((a,b)=>b.n-a.n);
+  $('#pane').innerHTML=`<div class="stat4">
+      <button class="${due.length?'warn':''}" data-j="due"><b>오늘 연락할 손님</b><div class="v">${due.length}</div></button>
+      <button data-j="hot"><b>🔥 A 손님</b><div class="v">${L.filter(c=>c.temp==='A').length}</div></button>
+      <button data-j="ev"><b>2주 안 계약 일정</b><div class="v">${ev.filter(e=>e.w!=='만기').length}</div></button>
+      <button data-j="nm"><b>새로 맞는 매물</b><div class="v">${newMatch.length}<small style="font-size:13px;color:var(--sub)">명</small></div></button></div>
+    <h3 class="sec" id="j-due">📞 오늘 연락할 손님 ${due.length}</h3>
+    ${due.length?`<div class="list">${due.map(cuCard).join('')}</div>`:`<div class="card hint" style="margin:0">오늘 연락할 손님이 없어요. 상담 기록을 남길 때 "다음 연락일"을 정하면 여기에 모입니다.</div>`}
+    ${ev.length?`<h3 class="sec" id="j-ev">📆 계약·잔금·만기 일정</h3><div class="card" style="padding:8px 14px">${ev.map(e=>`<div class="mt"><span><b>${esc(e.c.name)}</b> · ${esc(e.w)}${e.d.title?' · '+esc(e.d.title):''}${e.far?`<br><span class="hint">${e.far}</span>`:''}</span><span><span class="tag ${dday(e.dt)<=3?'r':'y'}">${md(e.dt)} ${ddT(e.dt)}</span> <button class="btn sm" data-id="${e.c.id}" style="min-height:38px">열기</button></span></div>`).join('')}</div>`:''}
+    ${newMatch.length?`<h3 class="sec" id="j-nm">✨ 안내 안 한 맞는 매물이 있는 손님</h3><div class="card" style="padding:8px 14px">${newMatch.slice(0,12).map(x=>`<div class="mt"><span><b>${esc(x.c.name)}</b> ${tempT(x.c.temp)} <span class="hint">${esc(wantsText(x.c.wants))}</span></span><span><b style="color:var(--brand)">${x.n}건</b> <button class="btn sm" data-id="${x.c.id}" data-m="1" style="min-height:38px">보기</button></span></div>`).join('')}</div>`:''}
+    ${soon.length?`<h3 class="sec">이번 주 연락 예정 ${soon.length}</h3><div class="list">${soon.map(cuCard).join('')}</div>`:''}
+    ${hot.length?`<h3 class="sec" id="j-hot">🔥 A 손님(바로 계약 가능)</h3><div class="list">${hot.map(cuCard).join('')}</div>`:''}
+    ${!S.list.length?`<div class="empty">아직 고객이 없어요.<br><button class="btn pri" style="margin-top:12px" id="goNew">➕ 첫 고객 등록</button></div>`:''}`;
+  bindOpen();$$('[data-j]').forEach(b=>b.onclick=()=>{const t=$('#j-'+b.dataset.j);if(t)t.scrollIntoView({behavior:'smooth'})});
+  const g=$('#goNew');if(g)g.onclick=()=>{S.tab='new';render()}}
+function bindOpen(){$$('#pane [data-id]').forEach(b=>b.onclick=()=>openCust(b.dataset.id,b.dataset.m?'match':''))}
+
+/* ---------- 고객 목록 ---------- */
+function paneList(){const f=S.f,q=(f.q||'').toLowerCase();
+  const L=S.list.filter(c=>(f.grp==='전체'||(f.grp==='진행'?c.stage==='진행':f.grp==='계약'?c.stage==='계약':c.stage==='종료'))&&(!f.temp||c.temp===f.temp)&&(!f.kind||(f.kind==='찾는'?SEEK.includes(c.kind):f.kind==='내놓은'?['매도','임대'].includes(c.kind):c.kind===f.kind))
+    &&(!q||[c.name,c.phone,c.memo,wantsText(c.wants),c.source].join(' ').toLowerCase().includes(q)))
+    .sort((a,b)=>{const o={A:0,B:1,C:2,'휴면':3};return(o[a.temp]-o[b.temp])||((a.next_at||'9')<(b.next_at||'9')?-1:1)});
+  const cnt=g=>S.list.filter(c=>g==='전체'||(g==='진행'?c.stage==='진행':g==='계약'?c.stage==='계약':c.stage==='종료')).length;
+  $('#pane').innerHTML=`<div class="chips">${['진행','계약','종료','전체'].map(k=>`<button data-g="${k}" class="${f.grp===k?'on':''}">${k}<small>${cnt(k)}</small></button>`).join('')}</div>
+    <div class="card" style="padding:12px"><div class="filters">
+      <label class="f">종류<select id="fKind"><option value="">전체</option><option value="찾는" ${f.kind==='찾는'?'selected':''}>찾는 손님(임차·매수·투자)</option><option value="내놓은" ${f.kind==='내놓은'?'selected':''}>내놓은 의뢰인(매도·임대)</option>${KINDS.map(([k,t])=>`<option value="${k}" ${f.kind===k?'selected':''}>${t}</option>`).join('')}</select></label>
+      <label class="f">온도<select id="fTemp"><option value="">전체</option>${TEMPS.map(([k,t])=>`<option value="${k}" ${f.temp===k?'selected':''}>${t}</option>`).join('')}</select></label>
+      <label class="f q">검색<input type="search" id="fQ" value="${esc(f.q)}" placeholder="이름·전화·조건·메모"></label></div></div>
+    <div class="res-head"><b>고객 ${L.length}명</b><button class="btn sm pri" id="goNew">➕ 등록</button></div>
+    ${L.length?`<div class="list">${L.map(cuCard).join('')}</div>`:'<div class="empty">조건에 맞는 고객이 없어요.</div>'}`;
+  $$('.chips button').forEach(b=>b.onclick=()=>{S.f.grp=b.dataset.g;LS.set('cr.filter',S.f);paneList()});
+  $('#fKind').onchange=$('#fTemp').onchange=()=>{S.f.kind=$('#fKind').value;S.f.temp=$('#fTemp').value;LS.set('cr.filter',S.f);paneList()};
+  let t=null;$('#fQ').oninput=()=>{clearTimeout(t);t=setTimeout(()=>{S.f.q=$('#fQ').value.trim();LS.set('cr.filter',S.f);paneList();const i=$('#fQ');i.focus();i.setSelectionRange(i.value.length,i.value.length)},350)};
+  $('#goNew').onclick=()=>{S.tab='new';S.edit=null;render()};bindOpen()}
+
+/* ---------- 고객 상세 ---------- */
+function modal(html){const d=document.createElement('div');d.className='modal';d.innerHTML=`<div class="box">${html}</div>`;document.body.appendChild(d);
+  d.onclick=e=>{if(e.target===d)close()};const close=()=>{d.remove();removeEventListener('keydown',k)};const k=e=>{if(e.key==='Escape')close()};addEventListener('keydown',k);d.close=close;return d}
+async function openCust(id,focus,preLid){let c;try{c=await rpc('cr_get',{p_id:id})}catch(e){toast(e.message);return}
+  const mj=id2=>S.mj.find(l=>l.id===id2);const seek=SEEK.includes(c.kind);
+  const shown=new Set((c.logs||[]).flatMap(g=>g.listing_ids||[]));
+  const M=seek?matchesFor(c):[];
+  const d=modal(`<div class="mh"><div><h3>${esc(c.name)} ${tempT(c.temp)}</h3><div class="hint" style="margin:2px 0 0">${esc(kindName(c.kind))}${c.source?' · '+esc(c.source):''} · 등록 ${ago(c.created_at)}${c.stage!=='진행'?' · '+esc(c.stage):''}</div></div><button class="x">×</button></div>
+    ${c.phone?`<div class="row"><a class="btn pri sm" href="tel:${tel(c.phone)}">📞 ${fmtTel(c.phone)}</a><a class="btn sm" href="sms:${tel(c.phone)}">💬 문자</a></div>`:''}
+    <div class="quick" id="qTemp">${TEMPS.map(([k,t])=>`<button data-t="${k}" class="${c.temp===k?'on':''}">${t}</button>`).join('')}</div>
+    ${seek&&wantsText(c.wants)?`<div class="note b">🎯 ${esc(wantsText(c.wants))}</div>`:''}
+    ${c.memo?`<div class="hint" style="white-space:pre-wrap;font-size:14px;margin-top:8px">${esc(c.memo)}</div>`:''}
+    <div class="box2"><h4>상담 기록 남기기</h4>
+      <div class="quick" id="lType">${LOGT.map(t=>`<button data-v="${t}" class="${t==='전화'?'on':''}">${t}</button>`).join('')}</div>
+      <div class="grid" style="margin-top:6px"><label class="f">날짜<input type="date" id="lAt" value="${today()}"></label>
+        <label class="f">손님 반응<select id="lReact"><option value="">-</option>${REACT.map(r=>`<option>${r}</option>`).join('')}</select></label>
+        <label class="f full">내용<textarea id="lBody" style="min-height:64px" placeholder="예: 봉천동 투룸 2곳 안내, 채광 좋은 쪽 선호. 보증금 2천까지 올릴 수 있음"></textarea></label></div>
+      ${S.mj.length?`<label class="f" style="margin-top:6px">안내·소개한 매물(매물장)</label><div class="pick" id="lPick">${(M.length?M.map(x=>x.l):[]).concat(S.mj.filter(l=>ACTIVE.includes(l.status)&&!M.some(x=>x.l.id===l.id))).slice(0,60).map(l=>{const x=M.find(y=>y.l.id===l.id);
+        return `<label><input type="checkbox" value="${l.id}" ${preLid===l.id?'checked':''}><span>${esc(lTitle(l))}${shown.has(l.id)?' <span class="tag m">안내함</span>':''}</span>${x?`<span class="sc">${x.sc}%</span>`:''}</label>`}).join('')}</div>`:''}
+      <label class="f" style="margin-top:8px">다음 연락일</label>
+      <div class="quick" id="lNext">${[['','없음'],[addDays(today(),1),'내일'],[addDays(today(),3),'3일 뒤'],[addDays(today(),7),'1주 뒤'],[addDays(today(),14),'2주 뒤'],[addMonths(today(),1),'1달 뒤']].map(([v,t])=>`<button data-v="${v}" class="${v===(c.next_at&&dday(c.next_at)>0?c.next_at:addDays(today(),3))?'on':''}">${t}</button>`).join('')}<input type="date" id="lNextD" style="width:auto;min-height:38px;margin:0;padding:4px 8px"></div>
+      <button class="btn pri" id="lSave" style="width:100%;margin-top:10px">기록 저장</button></div>
+    ${seek?`<div class="box2" id="mBox"><h4>✨ 조건에 맞는 내 매물 ${M.length}건</h4>${M.length?`<div class="pick" id="mPick">${M.slice(0,20).map(x=>`<label><input type="checkbox" value="${x.l.id}"><span>${esc(lTitle(x.l))}${shown.has(x.l.id)?' <span class="tag m">안내함</span>':' <span class="tag">새</span>'}${x.why.length?`<br><span class="hint">${esc(x.why.join(' · '))}</span>`:''}</span><span class="sc">${x.sc}%</span></label>`).join('')}</div>
+      <div class="row" style="margin-top:8px"><button class="btn sm" id="mCopy">📋 고른 매물 추천 문자 복사</button>${c.phone?`<button class="btn sm" id="mSms">💬 문자로 보내기</button>`:''}</div><p class="hint">동·호수·의뢰인 정보는 빠집니다. 보낸 뒤 "상담 기록"에 소개한 매물로 체크해 두세요.</p>`
+      :`<p class="hint" style="margin:0">${S.mj.length?'지금 매물장에 맞는 매물이 없어요. 조건을 조금 넓혀 보거나 공실클럽에서 찾아보세요.':'매물장(⑨)에 매물을 넣으면 자동으로 맞춰 드립니다.'}</p>`}</div>`:''}
+    <div class="box2"><h4>상담 이력 ${c.logs.length}건</h4>${c.logs.length?`<div class="tl">${c.logs.map(g=>`<div class="ev"><div class="h">${esc(g.at)} · <b>${esc(g.type)}</b>${g.reaction?' · 반응 '+esc(g.reaction):''} <a href="#" data-dl="${g.id}" style="color:var(--sub);margin-left:6px">지우기</a></div>${g.body?`<div style="white-space:pre-wrap">${esc(g.body)}</div>`:''}${(g.listing_ids||[]).map(i=>{const l=mj(i);return l?`<div class="hint">🏠 ${esc(lTitle(l))}</div>`:''}).join('')}</div>`).join('')}</div>`:'<p class="hint" style="margin:0">아직 기록이 없어요.</p>'}</div>
+    <div class="box2"><h4>계약 일정</h4><div id="deals"></div><button class="btn sm" id="dAdd" style="margin-top:6px">+ 계약 일정 추가</button></div>
+    <div class="row" style="margin-top:14px"><button class="btn sm" id="cEdit">✏️ 정보·조건 수정</button>${c.stage!=='종료'?'<button class="btn sm" id="cEnd">거래 종료</button>':'<button class="btn sm" id="cRe">다시 진행</button>'}<button class="btn sm red" id="cDel">삭제(파기)</button></div>`);
+  d.querySelector('.x').onclick=d.close;
+  const reopen=async(msg,f)=>{if(msg)toast(msg);await loadAll();d.close();openCust(id,f)};
+  d.querySelectorAll('#qTemp button').forEach(b=>b.onclick=async()=>{try{await rpc('cr_save',{p_id:id,p_d:Object.assign(toSave(c),{temp:b.dataset.t})});await reopen('온도를 바꿨어요')}catch(e){toast(e.message)}});
+  let lt='전화',nx=null;
+  d.querySelectorAll('#lType button').forEach(b=>b.onclick=()=>{lt=b.dataset.v;d.querySelectorAll('#lType button').forEach(x=>x.classList.toggle('on',x===b))});
+  const nb=d.querySelectorAll('#lNext button');nb.forEach(b=>{if(b.classList.contains('on'))nx=b.dataset.v;b.onclick=()=>{nx=b.dataset.v;nb.forEach(x=>x.classList.toggle('on',x===b));d.querySelector('#lNextD').value=''}});
+  d.querySelector('#lNextD').onchange=e=>{nx=e.target.value;nb.forEach(x=>x.classList.remove('on'))};
+  d.querySelector('#lSave').onclick=async()=>{const ids=[...d.querySelectorAll('#lPick input:checked')].map(i=>i.value);const body=d.querySelector('#lBody').value.trim();
+    if(!body&&!ids.length&&lt!=='전화'&&lt!=='문자'){toast('내용을 적거나 매물을 고르세요');return}
+    if(/\d{6}[-\s]?[1-8]\d{6}/.test(body)){toast('주민등록번호처럼 보이는 숫자는 적지 마세요');return}
+    try{await rpc('cr_log_add',{p_cid:id,p_d:{type:lt,at:d.querySelector('#lAt').value,body,listing_ids:ids,reaction:d.querySelector('#lReact').value,next_at:nx||''}});await reopen('기록했어요'+(nx?' · 다음 연락 '+md(nx):''))}catch(e){toast(e.message)}};
+  d.querySelectorAll('[data-dl]').forEach(a=>a.onclick=async e=>{e.preventDefault();if(!confirm('이 기록을 지울까요?'))return;try{await rpc('cr_log_delete',{p_id:+a.dataset.dl});await reopen('지웠어요')}catch(er){toast(er.message)}});
+  const recText=()=>{const ids=[...d.querySelectorAll('#mPick input:checked')].map(i=>i.value);const ls=(ids.length?ids:M.slice(0,3).map(x=>x.l.id)).map(mj).filter(Boolean);
+    const o=LS.get('d1c.office',{});
+    return `${c.name}님, 말씀하신 조건에 맞는 매물 안내드립니다.\n\n`+ls.map((l,i)=>`${i+1}) ${priceText(l)}${l.mgmt?' (관리비 '+man(l.mgmt)+'만)':''}\n   ${l.kind} · ${l.addr.split(' ').slice(1,3).join(' ')}${l.bldg?' '+l.bldg:''}\n   ${[l.area?l.area+'㎡('+(l.area*.3025).toFixed(1)+'평)':'',l.floor?l.floor+'층':'',l.rooms!=null?'방'+l.rooms:'',l.move_in?'입주 '+l.move_in:''].filter(Boolean).join(' · ')}`).join('\n\n')+
+      `\n\n편하실 때 보러 가실 시간 알려 주세요.${o.name?'\n— '+o.name+(o.phone?' '+o.phone:''):''}`};
+  const mc=d.querySelector('#mCopy');if(mc)mc.onclick=async()=>toast(await copy(recText())?'추천 문자를 복사했어요 — 카톡에 붙여넣으세요':'복사가 막혔어요');
+  const ms=d.querySelector('#mSms');if(ms)ms.onclick=()=>{location.href='sms:'+tel(c.phone)+'?body='+encodeURIComponent(recText())};
+  // 계약 일정
+  const drawDeals=()=>{const box=d.querySelector('#deals');box.innerHTML=(c.deals||[]).length?c.deals.map(x=>`<div class="mt"><span><b>${esc(x.title||'계약')}</b>${x.listing_id&&mj(x.listing_id)?' · 🏠'+esc(mj(x.listing_id).addr.split(' ').slice(-2).join(' ')):''}<br><span class="hint">${[['계약',x.contract],['중도금',x.middle],['잔금',x.balance],['만기',x.expiry]].filter(y=>y[1]).map(([w,dt])=>w+' '+dt.replace(/-/g,'.')+(dday(dt)>=0&&dday(dt)<=200?' ('+ddT(dt)+')':'')).join(' · ')}</span></span><button class="btn sm" data-de="${x.id}" style="min-height:38px">수정</button></div>`).join(''):'<p class="hint" style="margin:0">계약하면 계약일·잔금일·만기일을 넣어 두세요. 잔금 3일 전, 만기 6개월·3개월 전에 홈에서 알려 드립니다.</p>';
+    box.querySelectorAll('[data-de]').forEach(b=>b.onclick=()=>dealForm(c,c.deals.find(x=>x.id===b.dataset.de),d))};
+  drawDeals();d.querySelector('#dAdd').onclick=()=>dealForm(c,null,d);
+  d.querySelector('#cEdit').onclick=()=>{d.close();S.edit=c;S.tab='new';render()};
+  const st=async s=>{try{await rpc('cr_save',{p_id:id,p_d:Object.assign(toSave(c),{stage:s,next_at:s==='종료'?'':c.next_at||''})});await reopen(s==='종료'?'거래 종료로 옮겼어요 — 보관기간이 지나면 정리 탭에서 파기하세요':'다시 진행으로 옮겼어요')}catch(e){toast(e.message)}};
+  const ce=d.querySelector('#cEnd');if(ce)ce.onclick=()=>st('종료');const cr=d.querySelector('#cRe');if(cr)cr.onclick=()=>st('진행');
+  d.querySelector('#cDel').onclick=async()=>{if(!confirm(c.name+' 고객과 상담 기록·계약 일정을 모두 파기할까요? 되돌릴 수 없습니다.'))return;try{await rpc('cr_delete',{p_ids:[id]});toast('파기했어요');d.close();await loadAll();render()}catch(e){toast(e.message)}};
+  if(focus==='match'){const mb=d.querySelector('#mBox');if(mb)setTimeout(()=>mb.scrollIntoView({behavior:'smooth'}),80)}
+  if(focus==='log')setTimeout(()=>d.querySelector('#lBody').focus(),80);
+}
+function dealForm(c,x,parent){x=x||{};const act=S.mj;
+  const m=modal(`<div class="mh"><h3>계약 일정 ${x.id?'수정':'추가'}</h3><button class="x">×</button></div>
+    <div class="grid"><label class="f full">이름<input type="text" id="dT" value="${esc(x.title||'')}" placeholder="예: 봉천동 투룸 월세"></label>
+      ${act.length?`<label class="f full">매물(매물장)<select id="dL"><option value="">(선택 안 함)</option>${act.map(l=>`<option value="${l.id}" ${x.listing_id===l.id?'selected':''}>${esc(lTitle(l))}</option>`).join('')}</select></label>`:''}
+      <label class="f">계약일<input type="date" id="dC" value="${esc(x.contract||'')}"></label><label class="f">중도금<input type="date" id="dM" value="${esc(x.middle||'')}"></label>
+      <label class="f">잔금일<input type="date" id="dB" value="${esc(x.balance||'')}"></label><label class="f">임대차 만기일<input type="date" id="dE" value="${esc(x.expiry||'')}"></label>
+      <div class="full quick" id="dQ"><span class="hint" style="align-self:center">만기 = 잔금일 +</span><button data-y="1">1년</button><button data-y="2">2년</button></div>
+      <label class="f full">메모<input type="text" id="dMemo" value="${esc(x.memo||'')}" placeholder="예: 잔금 때 관리비 정산"></label></div>
+    <div class="row" style="margin-top:12px"><button class="btn pri" id="dS" style="flex:1">저장</button>${x.id?'<button class="btn red" id="dX">삭제</button>':''}</div>`);
+  m.querySelector('.x').onclick=m.close;
+  m.querySelectorAll('#dQ button').forEach(b=>b.onclick=()=>{const base=m.querySelector('#dB').value||m.querySelector('#dC').value;if(!base){toast('잔금일을 먼저 넣으세요');return}const dd=new Date(base+'T00:00:00');dd.setFullYear(dd.getFullYear()+(+b.dataset.y));dd.setDate(dd.getDate()-1);m.querySelector('#dE').value=ymd(dd)});
+  const lsel=m.querySelector('#dL');if(lsel)lsel.onchange=()=>{const l=S.mj.find(y=>y.id===lsel.value);if(l&&!m.querySelector('#dT').value)m.querySelector('#dT').value=`${l.addr.split(' ').slice(-2).join(' ')} ${l.kind} ${l.deal}`};
+  m.querySelector('#dS').onclick=async()=>{const lid=lsel?lsel.value:'';
+    try{await rpc('cr_deal_save',{p_cid:c.id,p_id:x.id||null,p_d:{title:m.querySelector('#dT').value.trim(),listing_id:lid,contract:m.querySelector('#dC').value,middle:m.querySelector('#dM').value,balance:m.querySelector('#dB').value,expiry:m.querySelector('#dE').value,memo:m.querySelector('#dMemo').value.trim()}});
+      if(lid&&!x.id){const l=S.mj.find(y=>y.id===lid);if(l&&ACTIVE.includes(l.status)&&l.status!=='계약진행'&&confirm('매물장의 이 매물을 "계약진행"으로 바꿀까요?'))try{await rpc('mj_status',{p_id:lid,p_status:'계약진행'})}catch(e){}}
+      toast('계약 일정을 저장했어요');m.close();parent.close();await loadAll();openCust(c.id)}catch(e){toast(e.message)}};
+  const dx=m.querySelector('#dX');if(dx)dx.onclick=async()=>{if(!confirm('이 계약 일정을 지울까요?'))return;try{await rpc('cr_deal_delete',{p_id:x.id});m.close();parent.close();await loadAll();openCust(c.id)}catch(e){toast(e.message)}}}
+function toSave(c){return{name:c.name,phone:c.phone||'',kind:c.kind,source:c.source||'',temp:c.temp,stage:c.stage,wants:c.wants||{},memo:c.memo||'',consent:true,next_at:c.next_at||''}}
+
+/* ---------- 등록·수정 ---------- */
+function paneNew(){const e=S.edit||{kind:'임차',temp:'B',wants:{}};const w=e.wants||{};const v=k=>esc(e[k]??'');const mv=k=>w[k]?Math.round(w[k]/1e4*10)/10:'';
+  $('#pane').innerHTML=`<div class="card"><h2>${S.edit?'고객 정보 수정':'고객 등록'}</h2>
+    <div class="grid">
+      <label class="f">이름·호칭<input type="text" id="cName" value="${v('name')}" placeholder="예: 김민수 / 302호 신혼부부"></label>
+      <label class="f">휴대폰<input type="tel" id="cPhone" value="${esc(fmtTel(e.phone))}" placeholder="010-0000-0000"></label>
+      <label class="f">종류<select id="cKind">${KINDS.map(([k,t])=>`<option value="${k}" ${e.kind===k?'selected':''}>${t}</option>`).join('')}</select></label>
+      <label class="f">어디서 왔나요<select id="cSrc"><option value="">선택</option>${SOURCES.map(s=>`<option ${e.source===s?'selected':''}>${s}</option>`).join('')}</select></label></div>
+    <label class="f" style="margin-top:10px">온도</label><div class="seg" id="cTemp">${TEMPS.map(([k,t])=>`<button type="button" data-v="${k}" class="${e.temp===k?'on':''}">${t}</button>`).join('')}</div>
+    <div id="wantsBox" class="box2"><h4>🎯 찾는 조건 <span class="hint" style="font-weight:500">— 매물장 자동 매칭에 씁니다</span></h4>
+      <label class="f">거래</label><div class="cbx" id="wDeal">${DEALS.map(x=>`<label><input type="checkbox" value="${x}" ${(w.deals||[]).includes(x)?'checked':''}>${x}</label>`).join('')}</div>
+      <label class="f" style="margin-top:8px">유형</label><div class="cbx" id="wKind">${MKINDS.map(x=>`<label><input type="checkbox" value="${x}" ${(w.kinds||[]).includes(x)?'checked':''}>${x}</label>`).join('')}</div>
+      <div class="grid3" style="margin-top:8px">
+        <label class="f full">희망 지역(동네·역, 쉼표로)<input type="text" id="wArea" value="${esc(w.area||'')}" placeholder="예: 봉천동, 신림동, 서울대입구"></label>
+        <label class="f">보증금 최대(만원)<input type="text" id="wDep" inputmode="decimal" value="${mv('maxDeposit')}"></label>
+        <label class="f">월세 최대(만원)<input type="text" id="wRent" inputmode="decimal" value="${mv('maxRent')}"></label>
+        <label class="f">매매가 최대(만원)<input type="text" id="wPrice" inputmode="decimal" value="${mv('maxPrice')}"></label>
+        <label class="f">최소 면적(㎡)<input type="text" id="wMinA" inputmode="decimal" value="${esc(w.minArea||'')}"></label>
+        <label class="f">최소 방 수<input type="text" id="wMinR" inputmode="numeric" value="${esc(w.minRooms||'')}"></label>
+        <label class="f">입주 희망일<input type="date" id="wMove" value="${esc(w.moveBy||'')}"></label></div>
+      <label class="f" style="margin-top:8px">꼭 필요한 것</label><div class="cbx" id="wMust">${MUST.map(x=>`<label><input type="checkbox" value="${x}" ${(w.must||[]).includes(x)?'checked':''}>${x}</label>`).join('')}</div></div>
+    <label class="f" style="margin-top:10px">메모<textarea id="cMemo" placeholder="예: 직장 강남, 12월 중순 이사, 고양이 1마리">${v('memo')}</textarea></label>
+    <div class="grid" style="margin-top:8px"><label class="f">다음 연락일<input type="date" id="cNext" value="${v('next_at')||(!S.edit?addDays(today(),1):'')}"></label></div>
+    <label class="chk"><input type="checkbox" id="cConsent" ${S.edit?'checked':''}><span>고객에게 <b>개인정보 수집·이용 동의</b>를 받았습니다(중개 상담 목적, 거래 종료 후 파기). 주민등록번호·계좌번호는 적지 않습니다.</span></label>
+    <div class="row" style="margin-top:14px"><button class="btn pri" id="cSave" style="flex:1">${S.edit?'수정 저장':'고객 저장'}</button>${S.edit?'<button class="btn" id="cCancel">취소</button>':''}</div></div>`;
+  let temp=e.temp||'B';$$('#cTemp button').forEach(b=>b.onclick=()=>{temp=b.dataset.v;$$('#cTemp button').forEach(x=>x.classList.toggle('on',x===b))});
+  const wv=()=>$('#wantsBox').classList.toggle('hide',!SEEK.includes($('#cKind').value));$('#cKind').onchange=wv;wv();
+  if(S.edit)$('#cCancel').onclick=()=>{const id=S.edit.id;S.edit=null;S.tab='list';render();openCust(id)};
+  $('#cSave').onclick=async()=>{const n=s=>{const x=String($(s).value).replace(/[^\d.]/g,'');return x?Math.round(parseFloat(x)*1e4):null};const ch=s=>$$(s+' input:checked').map(i=>i.value);
+    if(!$('#cConsent').checked){toast('개인정보 수집·이용 동의를 받았는지 체크하세요');$('#cConsent').focus();return}
+    const kind=$('#cKind').value;const wants=SEEK.includes(kind)?{deals:ch('#wDeal'),kinds:ch('#wKind'),area:$('#wArea').value.trim(),maxDeposit:n('#wDep'),maxRent:n('#wRent'),maxPrice:n('#wPrice'),
+      minArea:$('#wMinA').value.replace(/[^\d.]/g,'')||null,minRooms:$('#wMinR').value.replace(/\D/g,'')||null,moveBy:$('#wMove').value||null,must:ch('#wMust')}:{};
+    Object.keys(wants).forEach(k=>{if(wants[k]==null||wants[k]===''||(Array.isArray(wants[k])&&!wants[k].length))delete wants[k]});
+    const data={name:$('#cName').value.trim(),phone:$('#cPhone').value,kind,source:$('#cSrc').value,temp,stage:S.edit?S.edit.stage:'진행',wants,memo:$('#cMemo').value.trim(),consent:true,next_at:$('#cNext').value};
+    if(!data.name){toast('이름이나 호칭을 넣으세요');$('#cName').focus();return}
+    if(/\d{6}[-\s]?[1-8]\d{6}/.test(data.memo)){toast('주민등록번호처럼 보이는 숫자는 적지 마세요');return}
+    const b=$('#cSave');b.disabled=true;
+    try{const j=await rpc('cr_save',{p_id:S.edit?S.edit.id:null,p_d:data});toast(S.edit?'수정했어요':'고객을 저장했어요');S.edit=null;S.tab='list';await loadAll();render();openCust(j.id,SEEK.includes(kind)?'match':'log')}
+    catch(e){toast(e.message);b.disabled=false}}}
+
+/* ---------- 가져오기·정리 ---------- */
+function csvParse(t){t=t.replace(/^﻿/,'');const rows=[];let row=[],cell='',q=false;
+  for(let i=0;i<t.length;i++){const c=t[i];if(q){if(c==='"'){if(t[i+1]==='"'){cell+='"';i++}else q=false}else cell+=c}
+    else if(c==='"')q=true;else if(c===','||c==='\t'){row.push(cell);cell=''}else if(c==='\n'||c==='\r'){if(c==='\r'&&t[i+1]==='\n')i++;row.push(cell);if(row.some(x=>x.trim()!==''))rows.push(row);row=[];cell=''}else cell+=c}
+  row.push(cell);if(row.some(x=>x.trim()!==''))rows.push(row);return rows}
+function vcfParse(t){const out=[];t.split(/END:VCARD/i).forEach(b=>{const fn=(b.match(/^FN[^:]*:(.*)$/mi)||[])[1];const n=(b.match(/^N[^:]*:(.*)$/mi)||[])[1];const telM=(b.match(/^TEL[^:]*:(.*)$/mi)||[])[1];
+  const name=(fn||(n?n.split(';').slice(0,2).reverse().join(''):'')||'').trim();if(name||telM)out.push({name:name||'(이름 없음)',phone:tel(telM||'')})});return out}
+const csvCell=v=>{const s=String(v??'');return /[",\n\r]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s};
+function dlFile(name,text){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type:'text/csv;charset=utf-8'}));a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500)}
+function paneIO(){const ended=S.list.filter(c=>c.stage==='종료');const old=ended.filter(c=>(Date.now()-new Date(c.updated_at))/864e5>365);
+  $('#pane').innerHTML=`<div class="card"><h2>연락처·엑셀 가져오기</h2>
+    <p class="hint" style="margin:0 0 8px">휴대폰 연락처에서 "공유 → vCard(.vcf)"로 내보낸 파일, 또는 엑셀 CSV(이름·휴대폰·종류·메모 열)를 올리세요. 고른 사람만 가져옵니다.</p>
+    <input type="file" id="impF" accept=".vcf,.csv,text/vcard,text/csv,.txt"><div id="impBox"></div></div>
+    <div class="card"><h2>내보내기 (백업)</h2><p class="hint" style="margin:0 0 8px">고객 ${S.list.length}명을 CSV로 내려받습니다. 개인정보가 들어 있으니 내 기기에만 보관하고, 다 쓰면 지우세요.</p><button class="btn" id="exp">⬇ CSV 내려받기</button></div>
+    <div class="card"><h2>🧹 정리(파기)</h2><p class="hint" style="margin:0 0 8px">거래가 끝나 더 필요 없는 고객 정보는 파기해 주세요(개인정보 보호법 — 목적 달성 후 지체 없이 파기). 계약서·확인설명서 사본은 공인중개사법에 따라 별도로 5년 보존합니다.</p>
+      <b>종료 고객 ${ended.length}명</b>${old.length?` · 1년 넘게 손대지 않은 ${old.length}명`:''}
+      ${ended.length?`<div class="pick" id="endPick">${ended.map(c=>`<label><input type="checkbox" value="${c.id}" ${old.includes(c)?'checked':''}><span>${esc(c.name)} · ${esc(c.kind)} · 마지막 수정 ${ago(c.updated_at)}</span></label>`).join('')}</div><button class="btn red" id="purge" style="margin-top:8px">고른 고객 파기</button>`:'<p class="hint">종료된 고객이 없어요.</p>'}</div>`;
+  $('#exp').onclick=()=>{if(!confirm('개인정보가 들어 있는 파일입니다. 내려받을까요?'))return;
+    const H=['이름','휴대폰','종류','온도','단계','유입','찾는조건','메모','다음연락','등록일'];
+    dlFile('고객관리_'+today()+'.csv','﻿'+[H.join(',')].concat(S.list.map(c=>[c.name,fmtTel(c.phone),c.kind,c.temp,c.stage,c.source,wantsText(c.wants),c.memo,c.next_at,(c.created_at||'').slice(0,10)].map(csvCell).join(','))).join('\r\n'))};
+  const pg=$('#purge');if(pg)pg.onclick=async()=>{const ids=$$('#endPick input:checked').map(i=>i.value);if(!ids.length)return;if(!confirm(ids.length+'명의 정보와 상담 기록을 파기합니다. 되돌릴 수 없어요.'))return;
+    try{const j=await rpc('cr_delete',{p_ids:ids});toast(j.n+'명 파기했어요');await loadAll();render()}catch(e){toast(e.message)}};
+  $('#impF').onchange=async ev=>{const f=ev.target.files[0];if(!f)return;let txt=await f.text();if(/�/.test(txt.slice(0,2000))){try{txt=new TextDecoder('euc-kr').decode(await f.arrayBuffer())}catch(e){}}
+    let recs=[];if(/BEGIN:VCARD/i.test(txt))recs=vcfParse(txt);
+    else{const rows=csvParse(txt);if(rows.length<2){$('#impBox').innerHTML='<div class="note r">읽을 자료가 없어요.</div>';return}const h=rows[0].map(x=>x.replace(/\s/g,''));
+      const ix=al=>h.findIndex(x=>al.some(a=>x.includes(a)));const iN=ix(['이름','성명','고객']),iP=ix(['휴대폰','전화','연락처','핸드폰']),iK=ix(['종류','구분']),iM=ix(['메모','비고','조건']);
+      recs=rows.slice(1).map(r=>({name:(r[iN]||'').trim(),phone:tel(r[iP]||''),kind:(r[iK]||'').trim(),memo:(r[iM]||'').trim()})).filter(r=>r.name||r.phone)}
+    const have=new Set(S.list.map(c=>c.phone).filter(Boolean));
+    $('#impBox').innerHTML=`<p class="hint">${recs.length}명 읽음 — 가져올 사람을 고르세요. 이미 있는 번호는 빼 두었어요.</p>
+      <div class="row"><button class="btn sm" id="selAll">모두 선택</button><label class="f" style="display:flex;gap:6px;align-items:center">종류<select id="impK" style="width:auto;margin:0">${KINDS.map(([k,t])=>`<option value="${k}">${t}</option>`).join('')}</select></label></div>
+      <div class="pick">${recs.map((r,i)=>`<label><input type="checkbox" value="${i}" ${have.has(r.phone)?'disabled':''}><span>${esc(r.name)} ${fmtTel(r.phone)}${have.has(r.phone)?' <span class="tag m">이미 있음</span>':''}${r.memo?' · '+esc(r.memo.slice(0,40)):''}</span></label>`).join('')}</div>
+      <label class="chk"><input type="checkbox" id="impC"><span>고른 사람 모두 <b>개인정보 수집·이용 동의</b>를 받았습니다.</span></label>
+      <button class="btn pri" id="impGo" style="margin-top:8px">가져오기</button>`;
+    $('#selAll').onclick=()=>$$('#impBox .pick input:not(:disabled)').forEach(i=>i.checked=true);
+    $('#impGo').onclick=async()=>{const sel=$$('#impBox .pick input:checked').map(i=>recs[+i.value]);if(!sel.length){toast('가져올 사람을 고르세요');return}if(!$('#impC').checked){toast('동의를 받았는지 체크하세요');return}
+      const b=$('#impGo');b.disabled=true;let n=0;const dk=$('#impK').value;
+      for(const r of sel){const k=KINDS.some(x=>x[0]===r.kind)?r.kind:dk;try{await rpc('cr_save',{p_id:null,p_d:{name:r.name,phone:r.phone,kind:k,temp:'C',stage:'진행',wants:{},memo:r.memo||'',consent:true,source:'',next_at:''}});n++;b.textContent=`가져오는 중… ${n}/${sel.length}`}catch(e){toast(r.name+': '+e.message)}}
+      toast(n+'명 가져왔어요');await loadAll();S.tab='list';render()}}}
+
+/* ---------- 매물장 → 맞는 손님 ---------- */
+function checkMatch(){const j=LS.get('jg.match',null);if(!j||!S.me||Date.now()-j.at>10*60e3)return;try{localStorage.removeItem('jg.match')}catch(e){}
+  const l=S.mj.find(x=>x.id===j.id);if(!l){toast('매물장에서 매물을 찾지 못했어요');return}
+  const R=customersFor(l);
+  const m=modal(`<div class="mh"><div><h3>이 매물에 맞는 손님 ${R.length}명</h3><div class="hint" style="margin:2px 0 0">🏠 ${esc(lTitle(l))}</div></div><button class="x">×</button></div>
+    ${R.length?R.map(x=>`<div class="mt"><span><b>${esc(x.c.name)}</b> ${tempT(x.c.temp)}${(x.c.shown||[]).includes(l.id)?' <span class="tag m">안내함</span>':''}<br><span class="hint">${esc(wantsText(x.c.wants))}${x.why.length?' · '+esc(x.why.join(', ')):''}</span></span>
+      <span style="text-align:right"><b style="color:var(--brand)">${x.sc}%</b><br>${x.c.phone?`<a class="btn sm" href="tel:${tel(x.c.phone)}" style="min-height:36px">📞</a> `:''}<button class="btn sm" data-c="${x.c.id}" style="min-height:36px">기록</button></span></div>`).join('')
+      :`<p class="hint">찾는 조건이 맞는 손님이 아직 없어요. 고객의 "찾는 조건"(거래·유형·예산·지역)을 넣어 두면 다음부터 바로 골라 드립니다.</p>`}`);
+  m.querySelector('.x').onclick=m.close;m.querySelectorAll('[data-c]').forEach(b=>b.onclick=()=>{m.close();openCust(b.dataset.c,'log',l.id)})}
+
+/* ---------- 시작 ---------- */
+async function loadAll(){const[a,b]=await Promise.all([rpc('cr_list'),rpc('mj_list').catch(()=>[])]);S.list=a||[];S.mj=b||[]}
+async function boot(){if(!token()){S.me=null;render();return}
+  try{S.me=await rpc('lh_me');await loadAll()}catch(e){if(token())$('#app').innerHTML=`<div class="note r">${esc(e.message)}</div>`;else render();return}
+  render();checkMatch()}
+addEventListener('storage',async e=>{if(e.key===TK)boot();else if(e.key==='jg.match'&&e.newValue){try{await loadAll();render()}catch(er){}checkMatch()}});
+document.addEventListener('visibilitychange',async()=>{if(!document.hidden&&S.me&&!document.querySelector('.modal')&&S.tab!=='new'){try{await loadAll();render()}catch(e){}checkMatch()}});
+boot();
+})();
+</script>
+</body>
+</html>
