@@ -886,7 +886,10 @@ $('#btnReset').addEventListener('click',()=>modal('새로 시작할까요?','<p>
 fillOffice();writeForm();refresh();saveList();
 if(outputs&&outputs.dabang){$('#outWrap').classList.remove('hide');renderOut();$('#btnGen').textContent='🔁 다시 만들기'}
 idbGet('draft').then(bl=>{if(Array.isArray(bl)&&bl.length){photos=bl.map(b=>({blob:b,url:URL.createObjectURL(b)}));renderPhotos();refresh()}});
+/* sample.js(테스트용 샘플 매물)에서 쓰는 연결 */
+window.__d1c={get D(){return D},set D(v){D=v},get list(){return list},set list(v){list=v},saveList,renderList,fallback,idbPut,idbDel,shrink,man,modal,toast,CH};
 })();
 </script>
+<script src="sample.js"></script>
 </body>
 </html>
