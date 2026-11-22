@@ -5,10 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>토지 얼마나 해요? — 중개사무소 앱 ④</title>
 <script>if(/[?&]embed=1/.test(location.search))document.documentElement.classList.add("embed")</script>
-<meta name="theme-color" content="#1f4d3f">
-<link rel="icon" href="icon.svg">
+<meta name="theme-color" content="#ffffff">
+<link rel="icon" href="img/icon-192.png">
+<link rel="apple-touch-icon" href="img/icon-192.png">
 <style>
-:root{--bg:#f6f5f1;--card:#fff;--ink:#1d2321;--sub:#56605b;--line:#e1dfd7;--brand:#1f4d3f;--brand-soft:#e5efea;
+:root{--bg:#F7F7F7;--card:#fff;--ink:#23292B;--sub:#5C6366;--line:#E6E6E6;--brand:#EE6A2C;--brand-soft:#FDEEE5;
   --red:#b42318;--red-soft:#fdecea;--yel:#7a5400;--yel-soft:#fff4d6;--grn:#17733f;--grn-soft:#e4f4ea;--r:14px}
 *{box-sizing:border-box}
 html,body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;font-size:16px;line-height:1.55;-webkit-text-size-adjust:100%}
@@ -21,13 +22,13 @@ header p{margin:2px 0 0;font-size:13px;opacity:.85}
 .card h2{font-size:16.5px;margin:0 0 10px;display:flex;align-items:center;gap:8px}
 .n{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--brand);color:#fff;font-size:13px}
 label.f{display:block;font-size:13.5px;color:var(--sub);font-weight:600}
-input[type=text],input[type=tel],input[type=password],input[type=number],select,textarea{width:100%;min-height:46px;border:1px solid #cfccc2;border-radius:10px;padding:10px 12px;font:inherit;color:var(--ink);background:#fff;margin-top:4px}
+input[type=text],input[type=tel],input[type=password],input[type=number],select,textarea{width:100%;min-height:46px;border:1px solid #D6D6D6;border-radius:10px;padding:10px 12px;font:inherit;color:var(--ink);background:#fff;margin-top:4px}
 textarea{min-height:130px;resize:vertical;line-height:1.6}
-input:focus,select:focus,textarea:focus{outline:2px solid #8fb5a6;border-color:var(--brand)}
+input:focus,select:focus,textarea:focus{outline:2px solid #F9B48F;border-color:var(--brand)}
 .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .grid .full{grid-column:1/-1}
-.btn{min-height:46px;border:1px solid #cfccc2;background:#fff;border-radius:10px;padding:10px 16px;font:inherit;font-weight:700;color:var(--ink);cursor:pointer}
+.btn{min-height:46px;border:1px solid #D6D6D6;background:#fff;border-radius:10px;padding:10px 16px;font:inherit;font-weight:700;color:var(--ink);cursor:pointer}
 .btn.pri{background:var(--brand);border-color:var(--brand);color:#fff}
 .btn.sm{min-height:44px;padding:8px 12px;font-size:14px}
 .btn:disabled{opacity:.5;cursor:default}
@@ -38,7 +39,7 @@ input:focus,select:focus,textarea:focus{outline:2px solid #8fb5a6;border-color:v
 .chk{display:flex;align-items:center;gap:8px;min-height:44px;font-size:14.5px;cursor:pointer}
 .chk input{width:22px;height:22px;accent-color:var(--brand)}
 .facts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.fact{background:#faf9f6;border:1px solid var(--line);border-radius:10px;padding:10px}
+.fact{background:#FAFAFA;border:1px solid var(--line);border-radius:10px;padding:10px}
 .fact b{display:block;font-size:12.5px;color:var(--sub);font-weight:600}
 .fact span{font-size:15.5px;font-weight:700}
 .big{font-size:26px;font-weight:800;letter-spacing:-.5px;color:var(--brand)}
@@ -50,45 +51,45 @@ input:focus,select:focus,textarea:focus{outline:2px solid #8fb5a6;border-color:v
 .conf.hi{background:var(--grn-soft);color:var(--grn)} .conf.mid{background:var(--yel-soft);color:var(--yel)} .conf.lo{background:var(--red-soft);color:var(--red)}
 table.t{width:100%;border-collapse:collapse;font-size:13.5px}
 table.t th,table.t td{border-bottom:1px solid var(--line);padding:7px 6px;text-align:right;white-space:nowrap}
-table.t th{color:var(--sub);font-weight:600;background:#faf9f6}
+table.t th{color:var(--sub);font-weight:600;background:#FAFAFA}
 table.t td:first-child,table.t th:first-child{text-align:left}
 .tw{overflow-x:auto}
 .bars{display:flex;align-items:flex-end;gap:4px;height:120px;margin:8px 0 2px}
 .bars div{flex:1;background:#9fc2b4;border-radius:4px 4px 0 0;position:relative;min-width:8px}
 .bars div:last-child{background:var(--brand)}
 .barl{display:flex;gap:4px;font-size:11.5px;color:var(--sub)}.barl span{flex:1;text-align:center;min-width:8px}
-.prog{height:8px;background:#ebe9e2;border-radius:99px;overflow:hidden;margin:8px 0}
+.prog{height:8px;background:#ECECEC;border-radius:99px;overflow:hidden;margin:8px 0}
 .prog i{display:block;height:100%;background:var(--brand);width:0;transition:width .2s}
 .choice{display:block;width:100%;text-align:left;margin:6px 0}
 .hide{display:none!important}
-.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#1d2321;color:#fff;padding:10px 16px;border-radius:10px;font-size:14px;opacity:0;pointer-events:none;transition:.2s;z-index:50}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#23292B;color:#fff;padding:10px 16px;border-radius:10px;font-size:14px;opacity:0;pointer-events:none;transition:.2s;z-index:50}
 .toast.show{opacity:1}
 .bar{position:sticky;bottom:0;background:rgba(246,245,241,.96);padding:10px 0;display:flex;gap:8px;flex-wrap:wrap}
 .bar .btn{flex:1}
 /* ---------- 리포트(인쇄) ---------- */
 #report,#pvbar{display:none}
 /* ---------- 리포트 공통 ---------- */
-.rp h1{font-size:18pt;margin:0 0 2mm;color:#1f4d3f;line-height:1.3}
-.rp h2{font-size:12.5pt;margin:6mm 0 2mm;border-left:4px solid #1f4d3f;padding-left:3mm}
+.rp h1{font-size:18pt;margin:0 0 2mm;color:#EE6A2C;line-height:1.3}
+.rp h2{font-size:12.5pt;margin:6mm 0 2mm;border-left:4px solid #EE6A2C;padding-left:3mm}
 .rp .meta{font-size:9.5pt;color:#555}
 .rp table{width:100%;border-collapse:collapse;font-size:9.5pt}
 .rp th,.rp td{border:1px solid #ccc;padding:1.6mm 2mm;text-align:right}
 .rp th{background:#f1f3f2}
 .rp td:first-child,.rp th:first-child{text-align:left}
-.rp .range{font-size:20pt;font-weight:800;color:#1f4d3f;margin:2mm 0}
-.rp .box{border:1.5px solid #1f4d3f;border-radius:3mm;padding:4mm;margin:3mm 0}
+.rp .range{font-size:20pt;font-weight:800;color:#EE6A2C;margin:2mm 0}
+.rp .box{border:1.5px solid #EE6A2C;border-radius:3mm;padding:4mm;margin:3mm 0}
 .rp .disc{font-size:8.5pt;color:#444;border-top:1px solid #999;margin-top:6mm;padding-top:2mm}
 .rp .ment{white-space:pre-wrap;font-size:10pt;line-height:1.6}
 .rp .office{font-size:9.5pt;text-align:right;margin-top:4mm}
 /* ---------- 미리보기(화면) ---------- */
 @media screen{
   body.pv{overflow:hidden}
-  body.pv #pvbar{display:flex;position:fixed;left:0;right:0;top:0;z-index:60;background:#1d2321;color:#fff;padding:8px 10px;gap:8px;align-items:center}
+  body.pv #pvbar{display:flex;position:fixed;left:0;right:0;top:0;z-index:60;background:#23292B;color:#fff;padding:8px 10px;gap:8px;align-items:center}
   #pvbar b{flex:1;font-size:15px}
   #pvbar .btn{min-height:44px}
   #pvbar .btn.ghost{background:transparent;color:#fff;border-color:#6b7470}
   body.pv #report{display:block;position:fixed;inset:60px 0 0 0;z-index:55;overflow:auto;background:#6b7470;padding:16px 0 40px}
-  #report .rp{width:210mm;min-height:297mm;padding:14mm;margin:0 auto 18px;background:#fff;color:#1d2321;box-shadow:0 4px 18px rgba(0,0,0,.3);font-size:11pt;line-height:1.5;position:relative;zoom:var(--pz,1)}
+  #report .rp{width:210mm;min-height:297mm;padding:14mm;margin:0 auto 18px;background:#fff;color:#23292B;box-shadow:0 4px 18px rgba(0,0,0,.3);font-size:11pt;line-height:1.5;position:relative;zoom:var(--pz,1)}
   #report .rp::after{content:attr(data-p);position:absolute;right:6mm;bottom:4mm;font-size:8.5pt;color:#999}
   #report .rp.over{outline:3px solid #d97706}
   #pvwarn{margin:0 auto 12px;max-width:210mm;background:#fff4d6;color:#7a5400;padding:10px 14px;border-radius:10px;font-size:14px;zoom:var(--pz,1)}
@@ -103,6 +104,7 @@ table.t td:first-child,table.t th:first-child{text-align:left}
   .rp{page-break-after:always}.rp:last-child{page-break-after:auto}
 }
 </style>
+<link rel="stylesheet" href="land3.css">
 </head>
 <body>
 <header><h1>토지 얼마나 해요?</h1><p>중개사무소 앱 ④ · 주소 하나 → 근거가 보이는 시세 범위 → 고객용 상담 리포트</p></header>

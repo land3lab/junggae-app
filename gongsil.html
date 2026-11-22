@@ -5,10 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>공실클럽 — RSA 동문 공동중개 · 중개사무소 앱 ⑥</title>
 <script>if(/[?&]embed=1/.test(location.search))document.documentElement.classList.add("embed")</script>
-<meta name="theme-color" content="#1f4d3f">
-<link rel="icon" href="icon.svg">
+<meta name="theme-color" content="#ffffff">
+<link rel="icon" href="img/icon-192.png">
+<link rel="apple-touch-icon" href="img/icon-192.png">
 <style>
-:root{--bg:#f6f5f1;--card:#fff;--ink:#1d2321;--sub:#56605b;--line:#e1dfd7;--brand:#1f4d3f;--brand-soft:#e5efea;
+:root{--bg:#F7F7F7;--card:#fff;--ink:#23292B;--sub:#5C6366;--line:#E6E6E6;--brand:#EE6A2C;--brand-soft:#FDEEE5;
   --red:#b42318;--red-soft:#fdecea;--yel:#7a5400;--yel-soft:#fff4d6;--grn:#17733f;--grn-soft:#e4f4ea;--r:14px}
 *{box-sizing:border-box}
 html,body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;font-size:16px;line-height:1.55;-webkit-text-size-adjust:100%}
@@ -20,21 +21,21 @@ header p{margin:2px 0 0;font-size:13px;opacity:.85}
 .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px;margin:0 0 12px}
 .card h2{font-size:16.5px;margin:0 0 10px}
 label.f{display:block;font-size:13.5px;color:var(--sub);font-weight:600}
-input[type=text],input[type=tel],input[type=search],select,textarea{width:100%;min-height:46px;border:1px solid #cfccc2;border-radius:10px;padding:10px 12px;font:inherit;color:var(--ink);background:#fff;margin-top:4px}
+input[type=text],input[type=tel],input[type=search],select,textarea{width:100%;min-height:46px;border:1px solid #D6D6D6;border-radius:10px;padding:10px 12px;font:inherit;color:var(--ink);background:#fff;margin-top:4px}
 textarea{min-height:90px;resize:vertical}
-input:focus,select:focus,textarea:focus{outline:2px solid #8fb5a6;border-color:var(--brand)}
+input:focus,select:focus,textarea:focus{outline:2px solid #F9B48F;border-color:var(--brand)}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 .full{grid-column:1/-1}
 .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-.btn{min-height:46px;border:1px solid #cfccc2;background:#fff;border-radius:10px;padding:10px 16px;font:inherit;font-weight:700;color:var(--ink);cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.btn{min-height:46px;border:1px solid #D6D6D6;background:#fff;border-radius:10px;padding:10px 16px;font:inherit;font-weight:700;color:var(--ink);cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:6px}
 .btn.pri{background:var(--brand);border-color:var(--brand);color:#fff}
 .btn.sm{min-height:44px;padding:8px 12px;font-size:14px}
 .btn.red{color:var(--red);border-color:#f0c4bf}
 .btn:disabled{opacity:.5;cursor:default}
-.seg{display:flex;border:1px solid #cfccc2;border-radius:10px;overflow:hidden;margin-top:4px;flex-wrap:nowrap}
+.seg{display:flex;border:1px solid #D6D6D6;border-radius:10px;overflow:hidden;margin-top:4px;flex-wrap:nowrap}
 .seg button{flex:1;min-height:44px;border:0;background:#fff;font:inherit;font-weight:700;color:var(--sub);cursor:pointer;padding:0 6px;white-space:nowrap}
-.seg button+button{border-left:1px solid #cfccc2}
+.seg button+button{border-left:1px solid #D6D6D6}
 .seg button.on{background:var(--brand);color:#fff}
 .hint{font-size:13px;color:var(--sub);margin:4px 0 0}
 .note{padding:11px 14px;border-radius:12px;font-size:14px;margin:10px 0 0}
@@ -51,7 +52,7 @@ nav.sub .bd{display:inline-block;min-width:19px;height:19px;border-radius:99px;b
 .res-head b{font-size:15px}
 .list{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:10px}
 .it{background:#fff;border:1px solid var(--line);border-radius:14px;padding:13px 14px;cursor:pointer;text-align:left;font:inherit;color:inherit;display:block;width:100%}
-.it:hover{border-color:#9fbcb1;box-shadow:0 4px 14px rgba(0,0,0,.05)}
+.it:hover{border-color:#F5A47C;box-shadow:0 4px 14px rgba(0,0,0,.05)}
 .it .top{display:flex;gap:6px;align-items:center;flex-wrap:wrap;font-size:13px;color:var(--sub)}
 .tag{display:inline-block;font-size:12px;font-weight:800;border-radius:6px;padding:2px 7px;background:var(--brand-soft);color:var(--brand)}
 .tag.m{background:#eef0ef;color:#4b5450}
@@ -61,7 +62,7 @@ nav.sub .bd{display:inline-block;min-width:19px;height:19px;border-radius:99px;b
 .it .ad{font-size:14.5px;font-weight:600}
 .it .sp{font-size:13.5px;color:var(--sub)}
 .it .ow{display:flex;justify-content:space-between;gap:6px;border-top:1px dashed var(--line);margin-top:8px;padding-top:7px;font-size:13px;color:var(--sub)}
-#map{height:62vh;min-height:360px;border-radius:14px;border:1px solid var(--line);background:#e8e6df}
+#map{height:62vh;min-height:360px;border-radius:14px;border:1px solid var(--line);background:#EBEBEB}
 .both{display:grid;grid-template-columns:1.15fr 1fr;gap:10px;align-items:start}
 .both #map{position:sticky;top:64px;height:calc(100vh - 90px);min-height:420px}
 .both .list{grid-template-columns:1fr;max-height:none}
@@ -74,7 +75,7 @@ nav.sub .bd{display:inline-block;min-width:19px;height:19px;border-radius:99px;b
 @media (min-width:700px){.modal{align-items:center}.modal .box{border-radius:18px}}
 .mh{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:8px}
 .mh h3{margin:0;font-size:18px}
-.x{min-width:44px;min-height:44px;border:0;background:#f1f0eb;border-radius:10px;font-size:20px;cursor:pointer}
+.x{min-width:44px;min-height:44px;border:0;background:#F2F2F2;border-radius:10px;font-size:20px;cursor:pointer}
 .photos{display:flex;gap:6px;overflow-x:auto;scroll-snap-type:x mandatory;margin:6px 0 10px}
 .photos img{height:220px;max-width:88%;object-fit:cover;border-radius:10px;scroll-snap-align:start;flex:none;background:#eee}
 .kv{display:grid;grid-template-columns:96px 1fr;gap:4px 10px;font-size:14.5px;margin:8px 0}
@@ -86,8 +87,8 @@ nav.sub .bd{display:inline-block;min-width:19px;height:19px;border-radius:99px;b
 .thumbs{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
 .thumbs div{position:relative}
 .thumbs img{width:84px;height:84px;object-fit:cover;border-radius:8px;display:block}
-.thumbs button{position:absolute;right:-6px;top:-6px;width:28px;height:28px;border-radius:50%;border:0;background:#1d2321;color:#fff;cursor:pointer;font-size:15px;line-height:1}
-.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#1d2321;color:#fff;padding:10px 16px;border-radius:10px;font-size:14px;opacity:0;pointer-events:none;transition:.2s;z-index:90;max-width:90vw}
+.thumbs button{position:absolute;right:-6px;top:-6px;width:28px;height:28px;border-radius:50%;border:0;background:#23292B;color:#fff;cursor:pointer;font-size:15px;line-height:1}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#23292B;color:#fff;padding:10px 16px;border-radius:10px;font-size:14px;opacity:0;pointer-events:none;transition:.2s;z-index:90;max-width:90vw}
 .toast.show{opacity:1}
 .stale{background:var(--yel-soft);border-radius:10px;padding:10px 12px;margin-top:8px;font-size:14px;color:var(--yel)}
 .stale.r{background:var(--red-soft);color:var(--red)}
@@ -96,6 +97,7 @@ nav.sub .bd{display:inline-block;min-width:19px;height:19px;border-radius:99px;b
 .leaflet-popup-content .btn{min-height:36px;padding:4px 10px;font-size:13px;margin-top:6px}
 @media (max-width:620px){.grid,.grid3{grid-template-columns:1fr 1fr}.filters{grid-template-columns:1fr 1fr}.filters .rg{grid-column:1/-1}}
 </style>
+<link rel="stylesheet" href="land3.css">
 </head>
 <body>
 <header><h1>공실클럽</h1><p>중개사무소 앱 ⑥ · RSA 총동문회 동문 전용 · 수수료·이용료 0원 공동중개</p></header>
@@ -211,7 +213,7 @@ async function drawMap(L){try{await leaflet()}catch(e){$('#map').outerHTML=`<div
   const pts=L.filter(l=>l.lat&&l.lng);const groups={};pts.forEach(l=>{const k=l.lat.toFixed(5)+','+l.lng.toFixed(5);(groups[k]=groups[k]||[]).push(l)});
   const bounds=[];Object.values(groups).forEach(g=>{const ll=[g[0].lat,g[0].lng];bounds.push(ll);
     const mk=window.L.marker(ll).addTo(m);g.forEach(l=>S.marks[l.id]=mk);
-    mk.bindPopup(g.map(l=>{const[p,u]=priceText(l);return `<div style="margin-bottom:6px"><b>${esc(l.deal)} ${esc(p)}${u?' '+u:''}</b><br>${esc(l.kind)} · ${esc(l.addr_detail||'')}<br><span style="color:#56605b">${esc(l.owner?.office||'')}</span><br><button class="btn" data-pid="${l.id}">자세히</button></div>`}).join(''))});
+    mk.bindPopup(g.map(l=>{const[p,u]=priceText(l);return `<div style="margin-bottom:6px"><b>${esc(l.deal)} ${esc(p)}${u?' '+u:''}</b><br>${esc(l.kind)} · ${esc(l.addr_detail||'')}<br><span style="color:#5C6366">${esc(l.owner?.office||'')}</span><br><button class="btn" data-pid="${l.id}">자세히</button></div>`}).join(''))});
   m.on('popupopen',e=>e.popup.getElement().querySelectorAll('[data-pid]').forEach(b=>b.onclick=()=>openDetail(b.dataset.pid)));
   if(bounds.length)m.fitBounds(bounds,{padding:[30,30],maxZoom:16});else{const c=RC[S.f.region]||[37.5665,126.978,10];m.setView([c[0],c[1]],c[2])}
   const miss=L.length-pts.length;if(miss)$('#nomap').textContent=`주소 위치를 못 찾은 ${miss}건은 목록에서 보세요.`;

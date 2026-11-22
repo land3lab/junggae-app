@@ -5,25 +5,28 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>중개사무소 앱 — 중개사 실전 도구 7종</title>
 <link rel="manifest" href="manifest.webmanifest">
-<meta name="theme-color" content="#1f4d3f">
-<link rel="icon" href="icon.svg">
+<meta name="theme-color" content="#ffffff">
+<link rel="icon" href="img/icon-192.png">
+<link rel="apple-touch-icon" href="img/icon-192.png">
 <style>
-:root{--bg:#f6f5f1;--ink:#1d2321;--sub:#56605b;--line:#e1dfd7;--brand:#1f4d3f;--brand-soft:#e5efea;--red:#b42318;--red-soft:#fdecea;--yel:#7a5400;--yel-soft:#fff4d6;--grn:#17733f;--grn-soft:#e4f4ea}
+:root{--bg:#F7F7F7;--ink:#23292B;--sub:#5C6366;--line:#E6E6E6;--brand:#EE6A2C;--brand-soft:#FDEEE5;--red:#b42318;--red-soft:#fdecea;--yel:#7a5400;--yel-soft:#fff4d6;--grn:#17733f;--grn-soft:#e4f4ea}
 *{box-sizing:border-box}
 html,body{margin:0;height:100%}
 body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;line-height:1.5;display:flex;flex-direction:column;height:100dvh}
-.top{background:var(--brand);color:#fff;flex:none}
+.top{background:#fff;color:var(--ink);flex:none;border-bottom:1px solid var(--line);box-shadow:0 1px 0 rgba(0,0,0,.02)}
 .top .in{max-width:1100px;margin:0 auto;padding:10px 12px 0;display:flex;align-items:center;gap:10px}
-.top h1{margin:0;font-size:17px;letter-spacing:-.3px;flex:1;white-space:nowrap}
-.top h1 small{font-size:12px;font-weight:400;opacity:.8;margin-left:6px}
-.who{font-size:12.5px;opacity:.9;text-align:right}
-.ibtn{min-height:36px;background:transparent;border:1px solid #6f9c8c;color:#fff;border-radius:8px;padding:4px 10px;font:inherit;font-size:13px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center}
+.top h1{margin:0;font-size:17px;letter-spacing:-.3px;flex:1;white-space:nowrap;display:flex;align-items:center;gap:10px;color:var(--ink)}
+.top h1 img{height:46px;width:auto;display:block}
+.top h1 .bar{width:1px;height:26px;background:var(--line)}
+.top h1 small{font-size:12px;font-weight:500;color:var(--sub);margin-left:2px}
+.who{font-size:12.5px;color:var(--sub);text-align:right}
+.ibtn{min-height:36px;background:transparent;border:1px solid var(--line);color:var(--ink);border-radius:8px;padding:4px 10px;font:inherit;font-size:13px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center}
 nav.tabs{max-width:1100px;margin:0 auto;display:flex;gap:2px;padding:8px 8px 0;overflow-x:auto;scrollbar-width:none}
 nav.tabs::-webkit-scrollbar{display:none}
-nav.tabs button{flex:none;min-height:44px;border:0;border-radius:10px 10px 0 0;background:transparent;color:#d6e6df;font:inherit;font-size:14.5px;font-weight:600;padding:8px 13px;cursor:pointer;white-space:nowrap}
-nav.tabs button.on{background:var(--bg);color:var(--brand)}
-nav.tabs button.soon{color:#9fbcb1;font-weight:500}
-nav.tabs button .d{display:inline-block;width:7px;height:7px;border-radius:50%;background:#7fd3a5;margin-left:5px;vertical-align:middle}
+nav.tabs button{flex:none;min-height:44px;border:0;border-radius:10px 10px 0 0;background:transparent;color:var(--ink);font:inherit;font-size:14.5px;font-weight:600;padding:8px 13px;border-bottom:3px solid transparent!important;cursor:pointer;white-space:nowrap}
+nav.tabs button.on{background:var(--brand-soft);color:var(--l3-deep,#C9531B);border-bottom-color:var(--l3-orange,#F77235)!important}
+nav.tabs button.soon{color:#A3A8AA;font-weight:500}
+nav.tabs button .d{display:inline-block;width:7px;height:7px;border-radius:50%;background:#F77235;margin-left:5px;vertical-align:middle}
 #stage{flex:1;position:relative;min-height:0}
 .pane{position:absolute;inset:0;overflow:auto;display:none}
 .pane.on{display:block}
@@ -33,14 +36,14 @@ nav.tabs button .d{display:inline-block;width:7px;height:7px;border-radius:50%;b
 h2.sec{font-size:15px;margin:18px 2px 8px;color:var(--sub)}
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
 .stat{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;cursor:pointer;text-align:left;font:inherit;color:inherit;min-height:96px}
-.stat:hover{border-color:#9fbcb1}
+.stat:hover{border-color:#F5A47C}
 .stat b{display:block;font-size:12.5px;color:var(--sub);font-weight:600}
 .stat .v{font-size:26px;font-weight:800;letter-spacing:-.5px}
 .stat .s{font-size:12.5px;color:var(--sub)}
 .stat.warn .v{color:var(--red)} .stat.good .v{color:var(--grn)}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px}
 .tool{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 16px;cursor:pointer;text-align:left;font:inherit;color:inherit;position:relative;min-height:112px}
-.tool:hover{border-color:#9fbcb1;box-shadow:0 4px 14px rgba(0,0,0,.05)}
+.tool:hover{border-color:#F5A47C;box-shadow:0 4px 14px rgba(0,0,0,.05)}
 .tool .num{font-size:12px;font-weight:700;color:var(--brand);background:var(--brand-soft);border-radius:999px;padding:2px 8px}
 .tool h3{font-size:16px;margin:8px 0 3px}
 .tool p{margin:0;font-size:13px;color:var(--sub)}
@@ -49,8 +52,8 @@ h2.sec{font-size:15px;margin:18px 2px 8px;color:var(--sub)}
 .tool.dim{opacity:.7}
 .login .grid2{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:end}
 label.f{display:block;font-size:13px;color:var(--sub);font-weight:600}
-input{width:100%;min-height:46px;border:1px solid #cfccc2;border-radius:10px;padding:10px 12px;font:inherit;margin-top:4px}
-.btn{min-height:46px;border:1px solid #cfccc2;background:#fff;border-radius:10px;padding:10px 16px;font:inherit;font-weight:700;cursor:pointer;color:var(--ink);text-decoration:none;display:inline-flex;align-items:center;justify-content:center}
+input{width:100%;min-height:46px;border:1px solid #D6D6D6;border-radius:10px;padding:10px 12px;font:inherit;margin-top:4px}
+.btn{min-height:46px;border:1px solid #D6D6D6;background:#fff;border-radius:10px;padding:10px 16px;font:inherit;font-weight:700;cursor:pointer;color:var(--ink);text-decoration:none;display:inline-flex;align-items:center;justify-content:center}
 .btn.pri{background:var(--brand);border-color:var(--brand);color:#fff}
 .msg{font-size:13.5px;margin-top:8px}.msg.r{color:var(--red)}
 .soonbox{max-width:620px;margin:40px auto;padding:0 16px;text-align:center}
@@ -61,13 +64,14 @@ input{width:100%;min-height:46px;border:1px solid #cfccc2;border-radius:10px;pad
 .recent li{display:flex;justify-content:space-between;gap:8px;padding:9px 0;border-bottom:1px solid var(--line);font-size:14px}
 .recent li:last-child{border:0}
 .recent li span:last-child{color:var(--brand);font-weight:700;white-space:nowrap}
-@media (max-width:720px){nav.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;padding:8px 6px 0;overflow:visible}nav.tabs button{border-radius:10px 10px 0 0;padding:6px 2px;font-size:13px;min-height:44px}nav.tabs button.on{border-radius:10px 10px 0 0}.stats{grid-template-columns:1fr 1fr}.top h1 small{display:none}.login .grid2{grid-template-columns:1fr}}
+@media (max-width:720px){nav.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;padding:8px 6px 0;overflow:visible}nav.tabs button{border-radius:10px 10px 0 0;padding:6px 2px;font-size:13px;min-height:44px}nav.tabs button.on{border-radius:10px 10px 0 0}.stats{grid-template-columns:1fr 1fr}.top h1 small{display:none}.top h1 img{height:30px}.top h1{font-size:15.5px;gap:8px}.login .grid2{grid-template-columns:1fr}}
 </style>
+<link rel="stylesheet" href="land3.css">
 </head>
 <body>
 <div class="top">
   <div class="in">
-    <h1>중개사무소 앱<small>중개사 실전 도구 7종 · 랜드3 연구소</small></h1>
+    <h1><img src="img/land3-logo.png" alt="랜드3 연구소"><span class="bar"></span><span>중개사무소 앱<small>중개사 실전 도구 7종</small></span></h1>
     <div class="who" id="who"></div>
     <button class="ibtn" id="installBtn" style="display:none">설치</button>
   </div>
@@ -93,8 +97,7 @@ const TOOLS=[
   {id:'land',num:'④',short:'토지 시세',name:'토지 얼마나 해요?',desc:'주소 1개 → 실거래·공시지가 근거 시세 범위 → 고객용 상담 리포트 PDF',page:'land.html',state:'on'},
   {id:'bid',num:'⑦',short:'입찰서류',name:'경매 입찰서류 자동작성',desc:'사건번호·입찰가 → 새 기일입찰표·위임장·준비물 체크리스트 PDF, "0 하나 더" 실수 방지',page:'bid.html',state:'on'},
   {id:'vacancy',num:'⑥',short:'공실클럽',name:'공실클럽 (RSA 동문 전용)',desc:'수수료·이용료 0원 동문 공동중개 — 공실 30초 등록·지도 검색·14일 신선도 확인·문의 일지',page:'gongsil.html',state:'new'},
-  {id:'shorts',num:'③',short:'AI쇼츠',name:'AI쇼츠 자동 업로드',desc:'매물 사진 → 대본·자막·음성 → 승인 후 유튜브 예약 업로드',state:'soon',
-    plan:['②다방 매물·사진 불러오기','훅3초·본문20초·CTA5초 대본','자막·로고·연락처 고정 템플릿','사람 승인 후 예약 업로드']},
+  {id:'shorts',num:'③',short:'AI쇼츠',name:'AI쇼츠 만들기',desc:'② 매물·사진 → 훅·본문·마무리 대본 + 내 목소리 → 표시사항 고정 30초 세로영상 → 확인 후 유튜브 업로드',page:'shorts.html',state:'new'},
   {id:'pc',num:'①',short:'똥컴 PC',name:'똥컴 업그레이드',desc:'오래된 사무실 PC 진단 → 처방 → 실행(윈도우 프로그램)',state:'soon',
     plan:['사양 자동 진단(CPU·RAM·HDD/SSD·부팅시간)','용도·예산 질문 3개','처방전: 0원 청소 / SSD·RAM / ChromeOS Flex','전후 비교 카드']}
 ];

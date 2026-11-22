@@ -1,0 +1,24 @@
+/* 랜드3 연구소 공통 디자인 — 명함 로고 색 기준 (주황 #F77235 · 차콜 #23292B)
+   모든 화면의 <style> 뒤에 불러와서 색 변수와 머리글만 덮어씁니다. 기능 코드는 건드리지 않습니다. */
+:root{
+  --bg:#F7F7F7;--card:#fff;--ink:#23292B;--sub:#5C6366;--faint:#80878A;--line:#E6E6E6;
+  --brand:#EE6A2C;--brand-soft:#FDEEE5;--l3-orange:#F77235;--l3-deep:#C9531B;--l3-charcoal:#23292B;
+}
+body{font-family:"Pretendard",-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif}
+
+/* 도구 화면 머리글: 흰 바탕 + 로고 + 주황 밑줄 (허브 안에서는 원래대로 숨김) */
+header{background:#fff!important;color:var(--l3-charcoal)!important;border-bottom:3px solid var(--l3-orange)}
+header h1{color:var(--l3-charcoal)!important;display:flex;align-items:center;gap:10px}
+header h1::before{content:"";width:40px;height:36px;flex:none;background:url(img/land3-icon.png) center/contain no-repeat}
+header p,header .sub{color:var(--sub)!important;opacity:1!important}
+
+/* 입력칸 포커스·주 버튼 */
+input:focus,select:focus,textarea:focus{outline:2px solid #F9B48F!important;border-color:var(--l3-orange)!important}
+.btn.pri,.btn.primary,button.pri{background:var(--brand)!important;border-color:var(--brand)!important;color:#fff!important}
+.btn.pri:hover:not(:disabled){background:var(--l3-deep)!important;border-color:var(--l3-deep)!important}
+.n{background:var(--l3-orange)}
+.seg button.on{background:var(--l3-charcoal)!important;color:#fff!important}
+a{color:var(--l3-deep)}
+.btn,a.btn{color:var(--ink)}
+.btn.pri,a.btn.pri{color:#fff}
+.note.b{color:var(--l3-deep)!important}

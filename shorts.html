@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI쇼츠 만들기 — 중개사무소 앱 ③</title>
+<script>if(/[?&]embed=1/.test(location.search))document.documentElement.classList.add("embed")</script>
+<meta name="theme-color" content="#ffffff">
+<link rel="icon" href="img/icon-192.png">
+<link rel="apple-touch-icon" href="img/icon-192.png">
+<style>
+:root{--bg:#F7F7F7;--card:#fff;--ink:#23292B;--sub:#5C6366;--line:#E6E6E6;--brand:#EE6A2C;--brand-soft:#FDEEE5;
+  --red:#b42318;--red-soft:#fdecea;--yel:#7a5400;--yel-soft:#fff4d6;--grn:#17733f;--grn-soft:#e4f4ea;--r:14px}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;font-size:16px;line-height:1.55;-webkit-text-size-adjust:100%}
+header{background:var(--brand);color:#fff;padding:16px}
+header h1{margin:0;font-size:19px;letter-spacing:-.3px}
+header p{margin:2px 0 0;font-size:13px;opacity:.85}
+.embed header{display:none}
+.wrap{max-width:820px;margin:0 auto;padding:12px 12px 40px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px;margin:0 0 12px}
+.card h2{font-size:16.5px;margin:0 0 10px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.n{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--brand);color:#fff;font-size:13px;flex:none}
+label.f{display:block;font-size:13.5px;color:var(--sub);font-weight:600}
+input[type=text],input[type=tel],input[type=number],select,textarea{width:100%;min-height:46px;border:1px solid #D6D6D6;border-radius:10px;padding:10px 12px;font:inherit;color:var(--ink);background:#fff;margin-top:4px}
+textarea{min-height:64px;resize:vertical}
+input:focus,select:focus,textarea:focus{outline:2px solid #F9B48F;border-color:var(--brand)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.full{grid-column:1/-1}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.btn{min-height:46px;border:1px solid #D6D6D6;background:#fff;border-radius:10px;padding:10px 16px;font:inherit;font-weight:700;color:var(--ink);cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.btn.pri{background:var(--brand);border-color:var(--brand);color:#fff}
+.btn.red{background:var(--red);border-color:var(--red);color:#fff}
+.btn.sm{min-height:40px;padding:6px 12px;font-size:14px}
+.btn:disabled{opacity:.45;cursor:default}
+.seg{display:flex;border:1px solid #D6D6D6;border-radius:10px;overflow:hidden;margin:0 0 12px}
+.seg button{flex:1;min-height:46px;border:0;background:#fff;font:inherit;font-weight:700;color:var(--sub);cursor:pointer}
+.seg button+button{border-left:1px solid #D6D6D6}
+.seg button.on{background:var(--brand);color:#fff}
+.hint{font-size:13px;color:var(--sub);margin:4px 0 0;font-weight:400}
+.note{padding:11px 14px;border-radius:12px;font-size:14px;margin:10px 0 0}
+.note.y{background:var(--yel-soft);color:var(--yel)} .note.r{background:var(--red-soft);color:var(--red)} .note.g{background:var(--grn-soft);color:var(--grn)} .note.b{background:var(--brand-soft);color:var(--brand)}
+.hide{display:none!important}
+.chk{display:flex;align-items:flex-start;gap:9px;min-height:44px;font-size:14.5px;cursor:pointer;padding:8px 0}
+.chk input{width:22px;height:22px;accent-color:var(--brand);flex:none;margin:0}
+/* 매물 목록 */
+.lst{display:flex;gap:10px;align-items:center;padding:10px;border:1px solid var(--line);border-radius:12px;margin-bottom:8px;cursor:pointer;background:#fff;width:100%;text-align:left;font:inherit;color:inherit}
+.lst.on{border-color:var(--brand);outline:2px solid #F9B48F}
+.lst .th{width:64px;height:64px;border-radius:10px;background:#ddd center/cover;flex:none}
+.lst .t1{font-weight:700}.lst .t2{font-size:13px;color:var(--sub)}
+.chip{display:inline-block;font-size:12px;font-weight:700;border-radius:20px;padding:1px 8px;background:var(--brand-soft);color:var(--brand)}
+.chip.r{background:var(--red-soft);color:var(--red)}.chip.g{background:var(--grn-soft);color:var(--grn)}
+/* 사진 */
+.photos{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:8px}
+.photos div{aspect-ratio:9/16;border-radius:8px;background:#ddd center/cover;position:relative}
+.photos div b{position:absolute;left:4px;top:4px;background:rgba(0,0,0,.6);color:#fff;font-size:11px;border-radius:6px;padding:0 5px}
+.photos div button{position:absolute;right:2px;top:2px;border:0;background:rgba(0,0,0,.6);color:#fff;border-radius:50%;width:24px;height:24px;cursor:pointer}
+/* 장면 */
+.scene{display:grid;grid-template-columns:62px 1fr;gap:10px;padding:10px;border:1px solid var(--line);border-radius:12px;margin-bottom:8px}
+.scene .ph{width:62px;aspect-ratio:9/16;border-radius:8px;background:#ccc center/cover;border:0;cursor:pointer;position:relative;padding:0}
+.scene .ph span{position:absolute;bottom:2px;left:0;right:0;font-size:10px;color:#fff;background:rgba(0,0,0,.55)}
+.scene .top{display:flex;gap:6px;align-items:center;flex-wrap:wrap;font-size:13px;color:var(--sub)}
+.scene .top input{width:70px;min-height:36px;margin:0;padding:4px 8px}
+.scene textarea{min-height:54px;margin-top:6px}
+.scene .lint{font-size:12.5px;color:var(--red)}
+.tot{font-weight:800;color:var(--brand)}
+/* 미리보기 */
+.stagebox{display:flex;gap:14px;flex-wrap:wrap;align-items:flex-start}
+#cv{width:270px;height:480px;border-radius:14px;background:#111;display:block;max-width:100%}
+#outVid{width:270px;max-width:100%;border-radius:14px;background:#000}
+.prog{height:8px;background:#EBEBEB;border-radius:6px;overflow:hidden;margin-top:8px}
+.prog i{display:block;height:100%;width:0;background:var(--brand);transition:width .2s}
+.tele{background:#111;color:#fff;border-radius:12px;padding:14px;font-size:19px;line-height:1.6;white-space:pre-wrap;max-height:260px;overflow:auto}
+.tele .cur{color:#F99A66}
+.copybox{border:1px solid var(--line);border-radius:10px;padding:10px;margin-top:8px;background:#FAFAFA}
+.copybox b{font-size:13px;color:var(--sub)}
+.copybox pre{white-space:pre-wrap;font:inherit;font-size:14px;margin:4px 0 6px;max-height:180px;overflow:auto}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#23292B;color:#fff;padding:10px 18px;border-radius:20px;font-size:14px;z-index:9;opacity:0;transition:opacity .2s;pointer-events:none}
+.toast.on{opacity:1}
+@media (max-width:560px){.grid{grid-template-columns:1fr}.photos{grid-template-columns:repeat(4,1fr)}#cv,#outVid{width:100%;height:auto;aspect-ratio:9/16}}
+</style>
+<link rel="stylesheet" href="land3.css">
+</head>
+<body>
+<header><h1>③ AI쇼츠 만들기</h1><p>매물 사진 → 대본·자막·내 목소리 → 사람 확인 후 유튜브 업로드</p></header>
+<div class="wrap">
+
+<div class="note b" style="margin:0 0 12px">사진으로 만드는 30초 세로 영상(9:16)입니다. 영상은 <b>이 휴대폰 안에서만</b> 만들어지고 서버로 보내지 않습니다. 매물 쇼츠도 <b>표시·광고 규정 대상</b>이라 사무소 정보와 가격·소재지 표시를 자막에 고정해 넣습니다.</div>
+
+<!-- 1. 매물 -->
+<section class="card">
+  <h2><span class="n">1</span>매물 고르기</h2>
+  <div class="seg" id="srcSeg"><button data-s="dabang" class="on">② 다방 매물장에서</button><button data-s="manual">직접 입력</button></div>
+  <div id="srcDabang">
+    <div id="dbList"></div>
+    <p class="hint">② 다방광고 원클릭에서 <b>매물장에 저장</b>한 매물이 여기 나옵니다. 사진도 같이 불러옵니다.</p>
+  </div>
+  <div id="srcManual" class="hide">
+    <div class="grid">
+      <label class="f">동네 (동·읍·면)<input type="text" data-m="dong" placeholder="예: 봉천동"></label>
+      <label class="f">종류<input type="text" data-m="type" placeholder="예: 투룸 / 아파트 / 상가"></label>
+      <label class="f">거래 형태<select data-m="deal"><option>월세</option><option>전세</option><option>매매</option><option>단기임대</option></select></label>
+      <label class="f">가격 표시<input type="text" data-m="price" placeholder="예: 보증금 1,000만 / 월 55만"></label>
+      <label class="f full">소재지 (표시광고용)<input type="text" data-m="loc" placeholder="예: 서울 관악구 봉천동, 3층"></label>
+      <label class="f">면적<input type="text" data-m="area" placeholder="예: 전용 33㎡(10평)"></label>
+      <label class="f">방·욕실·층<input type="text" data-m="spec" placeholder="예: 방2 욕실1 · 3층/5층"></label>
+      <label class="f full">장점 1<input type="text" data-m="p1" placeholder="예: 봉천역 도보 7분(실측)"></label>
+      <label class="f full">장점 2<input type="text" data-m="p2" placeholder="예: 남향이라 오후까지 밝음"></label>
+      <label class="f full">장점 3<input type="text" data-m="p3" placeholder="예: 2024년 도배·장판 새로 함"></label>
+    </div>
+  </div>
+  <div style="margin-top:12px">
+    <div class="row"><b style="font-size:14px">사진</b><span class="hint" id="phCnt">0장</span>
+      <label class="btn sm">＋ 사진 추가<input type="file" id="phIn" accept="image/*" multiple hidden></label></div>
+    <div class="photos" id="photos"></div>
+    <p class="hint">세로 사진이 가장 잘 나옵니다. 가로 사진은 가운데를 잘라 씁니다. 문패·사람 얼굴·우편물이 찍힌 사진은 빼 주세요.</p>
+  </div>
+</section>
+
+<!-- 2. 사무소 -->
+<section class="card">
+  <h2><span class="n">2</span>사무소 정보 <span class="hint">② 다방과 같이 씁니다</span></h2>
+  <div id="offWarn" class="note r hide">표시·광고 필수 항목이 비어 있어요. 아래를 채워 주세요.</div>
+  <div class="grid">
+    <label class="f">사무소 명칭<input type="text" data-o="name"></label>
+    <label class="f">개업공인중개사 성명<input type="text" data-o="ceo"></label>
+    <label class="f">등록번호<input type="text" data-o="regno"></label>
+    <label class="f">연락처<input type="tel" data-o="tel"></label>
+    <label class="f full">사무소 소재지<input type="text" data-o="addr"></label>
+  </div>
+  <div class="row" style="margin-top:10px"><label class="btn sm">로고 넣기(선택)<input type="file" id="logoIn" accept="image/*" hidden></label><span class="hint" id="logoMsg"></span><button class="btn sm hide" id="logoDel">로고 빼기</button></div>
+</section>
+
+<!-- 3. 대본 -->
+<section class="card">
+  <h2><span class="n">3</span>대본 · 자막 <span class="hint">훅 3초 + 본문 20초 + 마무리 5초</span></h2>
+  <div class="row"><button class="btn pri" id="btnGen">✨ 대본 만들기</button><button class="btn sm" id="btnHook">훅 문장 바꾸기</button><button class="btn sm" id="btnAddScene">＋ 장면 추가</button></div>
+  <div id="scenes" style="margin-top:12px"></div>
+  <div class="row"><span>총 길이 <span class="tot" id="totSec">0초</span></span><span class="hint">쇼츠는 60초 이하. 15~35초를 권합니다. 사진 칸을 누르면 다른 사진으로 바뀝니다.</span></div>
+  <div id="lintBox"></div>
+</section>
+
+<!-- 4. 목소리 -->
+<section class="card">
+  <h2><span class="n">4</span>목소리</h2>
+  <div class="seg" id="voiceSeg"><button data-v="none" class="on">자막만 (무음)</button><button data-v="mine">내 목소리 녹음</button></div>
+  <div id="voiceNone"><p class="hint" style="margin:0">무음으로 만든 뒤 유튜브 앱에서 무료 배경음악을 붙일 수 있습니다. 실제 목소리가 들어가면 신뢰도와 시청 유지율이 더 좋습니다.</p></div>
+  <div id="voiceMine" class="hide">
+    <div class="tele" id="tele"></div>
+    <div class="row" style="margin-top:10px"><button class="btn red" id="btnRec">● 녹음 시작</button><span class="hint" id="recMsg">조용한 곳에서, 휴대폰을 입에서 한 뼘 떨어뜨리고 읽어 주세요.</span></div>
+    <div id="voiceDone" class="hide" style="margin-top:8px">
+      <audio id="voicePlay" controls style="width:100%"></audio>
+      <div class="row" style="margin-top:6px"><span class="chip g" id="voiceLen"></span><button class="btn sm" id="btnFit">장면 길이를 녹음에 맞추기</button><button class="btn sm" id="btnVoiceDel">녹음 지우기</button></div>
+    </div>
+  </div>
+</section>
+
+<!-- 5. 만들기 -->
+<section class="card">
+  <h2><span class="n">5</span>영상 만들기</h2>
+  <div class="stagebox">
+    <canvas id="cv" width="720" height="1280"></canvas>
+    <div style="flex:1;min-width:220px">
+      <div class="row"><button class="btn" id="btnPlay">▶ 미리보기</button><button class="btn pri" id="btnMake">🎬 영상 만들기</button></div>
+      <div class="prog"><i id="prog"></i></div>
+      <p class="hint" id="makeMsg">영상 길이만큼 시간이 걸립니다(30초 영상 → 약 30초). 만드는 동안 화면을 끄거나 다른 앱으로 옮기지 마세요.</p>
+      <video id="outVid" class="hide" controls playsinline></video>
+    </div>
+  </div>
+</section>
+
+<!-- 6. 승인 -->
+<section class="card" id="approveCard">
+  <h2><span class="n">6</span>확인하고 올리기</h2>
+  <p class="hint" style="margin-top:0" id="apHint">영상을 만든 뒤 끝까지 보고, 아래 4가지를 확인해야 올리기 버튼이 열립니다.</p>
+  <label class="chk"><input type="checkbox" class="ap"> 가격·면적·소재지가 실제 매물과 같다</label>
+  <label class="chk"><input type="checkbox" class="ap"> 사무소 명칭·등록번호·연락처·대표 이름이 맞다 (중개보조원 번호 아님)</label>
+  <label class="chk"><input type="checkbox" class="ap"> 문패·얼굴·차량번호·우편물 같은 개인정보가 안 보인다</label>
+  <label class="chk"><input type="checkbox" class="ap"> 과장·단정 표현이 없고, 거래가 끝나면 영상을 내린다</label>
+  <div class="row" style="margin-top:8px"><button class="btn pri" id="btnApprove" disabled>✅ 승인</button></div>
+  <div id="upBox" class="hide" style="margin-top:12px">
+    <div class="row">
+      <button class="btn pri" id="btnShare">📤 유튜브 앱으로 보내기</button>
+      <a class="btn" id="btnDown" download>⬇ 영상 저장</a>
+      <a class="btn" href="https://studio.youtube.com/" target="_blank" rel="noopener">YouTube Studio 열기</a>
+    </div>
+    <p class="hint">휴대폰: [유튜브 앱으로 보내기] → 공유 목록에서 <b>YouTube</b> 선택 → 쇼츠 업로드 화면에서 아래 제목·설명을 붙여넣고 <b>예약</b>을 고르면 됩니다. PC: 영상 저장 후 Studio에서 업로드.</p>
+    <div class="copybox"><b>제목</b><pre id="upTitle"></pre><button class="btn sm" data-copy="upTitle">제목 복사</button></div>
+    <div class="copybox"><b>설명 (표시사항 포함)</b><pre id="upDesc"></pre><button class="btn sm" data-copy="upDesc">설명 복사</button></div>
+    <div class="copybox"><b>태그</b><pre id="upTags"></pre><button class="btn sm" data-copy="upTags">태그 복사</button></div>
+  </div>
+</section>
+
+<!-- 7. 기록 -->
+<section class="card">
+  <h2><span class="n">7</span>만든 쇼츠 기록 <span class="hint" id="hisCnt"></span></h2>
+  <div id="hisAlert"></div>
+  <div id="history"></div>
+  <p class="hint">업로드한 뒤 유튜브 주소를 붙여 두면, ② 매물장에서 <b>거래완료</b>로 바꿨을 때 "쇼츠도 내리세요" 알림이 뜹니다(허위매물 방지).</p>
+</section>
+
+<p class="hint" style="text-align:center">랜드3 연구소 · 중개사무소 앱 ③ · 다음 단계: 유튜브 예약 자동 업로드(구글 앱 심사 후), 기본 성우 음성</p>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+"use strict";
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const LS={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){return false}}};
+let toastT;function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('on'),1800)}
+
+/* ---------- IndexedDB: ② 다방(d1c) 사진 읽기 + ③ 자체 저장(sh) ---------- */
+function openDB(name){return new Promise(res=>{try{const r=indexedDB.open(name,1);r.onupgradeneeded=()=>{const s=name==='d1c'?'photos':'files';if(!r.result.objectStoreNames.contains(s))r.result.createObjectStore(s)};r.onsuccess=()=>res(r.result);r.onerror=()=>res(null)}catch(e){res(null)}})}
+const dbs={};
+async function idb(name,mode,fn){dbs[name]=dbs[name]||openDB(name);const db=await dbs[name];if(!db)return null;const st=name==='d1c'?'photos':'files';
+  return new Promise(r=>{try{const t=db.transaction(st,mode);const q=fn(t.objectStore(st));t.oncomplete=()=>r(q&&q.result);t.onerror=()=>r(null)}catch(e){r(null)}})}
+const shPut=(k,v)=>idb('sh','readwrite',s=>s.put(v,k)), shGet=k=>idb('sh','readonly',s=>s.get(k));
+const d1cGet=k=>idb('d1c','readonly',s=>s.get(k));
+
+/* ---------- 금지·과장 표현 (② 다방과 같은 기준) ---------- */
+const BANNED=[['최저가','비교 근거 없으면 과장 광고 소지'],['최저','비교 근거 필요'],['최고급','과장 표현 소지'],['최고','과장 표현 소지'],['유일','근거 필요'],['100%','단정 표현'],['무조건','단정 표현'],['보장','수익·안전 보장 표현 금지'],['확정','미확정 사실 단정 소지'],['특가','가격 과장 소지'],['대박','과장 표현'],['초급매','근거 없으면 과장'],['급매','시세 대비 근거 있을 때만'],['마지막','허위 희소성 소지'],['역대급','과장 표현'],['완벽','과장 표현'],['신축','사용승인일 근거 필요'],['역세권','도보 거리(분)를 함께 쓰세요'],['안전한 집','권리관계 단정 금지'],['깡통','불안 조장 표현'],['실화','과장 표현 소지']];
+function lint(t){t=String(t||'');const f=[];BANNED.forEach(([w,why])=>{if(t.includes(w)&&!f.some(x=>x.w.includes(w)))f.push({w,why})});
+  const tel=(office.tel||'').replace(/\D/g,'');(t.match(/0\d{1,2}[-.\s]?\d{3,4}[-.\s]?\d{4}/g)||[]).forEach(p=>{if(p.replace(/\D/g,'')!==tel)f.push({w:p,why:'사무소 등록 연락처가 아닌 번호'})});return f}
+
+/* ---------- ② 다방 자료 변환 ---------- */
+const num=v=>{const n=parseFloat(String(v??'').replace(/,/g,''));return isFinite(n)?n:null};
+function man(v){const n=num(v);if(n==null)return'';if(n>=10000){const e=Math.floor(n/10000),r=Math.round(n%10000);return e+'억'+(r?' '+r.toLocaleString()+'만':'')}return(Math.round(n*10)/10).toLocaleString()+'만'}
+const py=m=>{const n=num(m);return n==null?'':(Math.round(n*0.3025*10)/10)+'평'};
+function fromDabang(D){
+  const dong=(D.addr||'').split(/\s+/).find(w=>/[동읍면리가]$/.test(w))||'';
+  let price='';if(D.deal==='매매')price='매매 '+man(D.price);else if(D.deal==='전세')price='전세 '+man(D.deposit);else if(D.deal)price=D.deal+' '+man(D.deposit)+'\u00a0/\u00a0월\u00a0'+man(D.rent);
+  const f=String(D.floor||'').trim(),floor=D.floorMode==='lmh'?(D.lmh||''):(f?(/^\d+$/.test(f)?f+'층':f):'');
+  const land=D.type==='토지';
+  const loc=[(D.addr||'').trim(),(!land&&D.dong&&!D.dongNone)?D.dong:'',floor].filter(Boolean).join(', ');
+  const area=D.area?(land?D.area+'㎡('+py(D.area)+')':'전용 '+D.area+'㎡('+py(D.area)+')'):'';
+  const spec=[D.rooms?'방'+D.rooms:'',D.baths?'욕실'+D.baths:'',floor?(floor+(D.totalFloor?'/'+D.totalFloor+'층':'')):'',D.dir||''].filter(Boolean).join(' · ');
+  let move='';if(D.moveMode==='now')move='즉시입주';else if(D.moveMode==='date')move=(D.moveDate||'').replace(/-/g,'.')+' 입주';else if(D.moveMode==='nego')move=(D.moveMonth||'')+' 입주 협의';
+  const pts=(D.memo||'').split(/[,\n]|\.(?!\d)/).map(s=>s.trim()).filter(s=>s&&s.length<=40&&!lint(s).length).slice(0,3);
+  return{dong,type:D.type||'',deal:D.deal||'',price,loc,area,spec,move,points:pts,use:D.use||''};
+}
+function fromManual(){const g=k=>(($(`[data-m="${k}"]`)||{}).value||'').trim();
+  return{dong:g('dong'),type:g('type'),deal:g('deal'),price:g('price')?(g('price').startsWith(g('deal'))?g('price'):g('deal')+' '+g('price')):'',loc:g('loc'),area:g('area'),spec:g('spec'),move:'',points:[g('p1'),g('p2'),g('p3')].filter(Boolean),use:''}}
+
+/* ---------- 상태 ---------- */
+let office=LS.get('d1c.office',{});
+let st=LS.get('sh.draft',{src:'dabang',listingId:null,manual:{},scenes:[],hookN:0,voice:'none'});
+let photos=[];   // {blob,url,bmp}
+let voiceBlob=null,voiceDur=0;
+let logo=LS.get('sh.logo',null),logoImg=null;
+let made=null;   // {blob,url,mime,ext}
+const saveDraft=()=>LS.set('sh.draft',st);
+let info=null;   // 현재 매물 정보
+const listings=()=>LS.get('d1c.listings',[]);
+
+/* ---------- 1. 매물 ---------- */
+function renderSrc(){$$('#srcSeg button').forEach(b=>b.classList.toggle('on',b.dataset.s===st.src));$('#srcDabang').classList.toggle('hide',st.src!=='dabang');$('#srcManual').classList.toggle('hide',st.src!=='manual');
+  if(st.src==='dabang')renderDbList()}
+function renderDbList(){const L=listings();
+  if(!L.length){$('#dbList').innerHTML='<div class="note y">② 다방 매물장이 비어 있어요. ② 탭에서 매물을 저장하거나, 위에서 <b>직접 입력</b>을 고르세요.</div>';return}
+  $('#dbList').innerHTML=L.map(x=>{const i=fromDabang(x.data||{});const s=x.status==='거래완료'?'<span class="chip r">거래완료</span>':x.status==='보류'?'<span class="chip">보류</span>':'<span class="chip g">광고중</span>';
+    return`<button class="lst ${st.listingId===x.id?'on':''}" data-id="${esc(x.id)}"><div class="th" style="${x.thumb?'background-image:url('+x.thumb+')':''}"></div><div><div>${s}</div><div class="t1">${esc([i.dong,i.type,i.price].filter(Boolean).join(' · '))}</div><div class="t2">${esc(i.loc)}</div></div></button>`}).join('');
+  $$('#dbList .lst').forEach(b=>b.onclick=()=>pickListing(b.dataset.id))}
+async function pickListing(id,keepScenes){const x=listings().find(l=>l.id===id);if(!x)return;
+  if(x.status==='거래완료'){toast('거래완료된 매물은 쇼츠를 만들 수 없어요');return}
+  st.listingId=id;info=fromDabang(x.data||{});
+  const bl=(await d1cGet(id))||[];await setPhotos(bl);await shPut('photos',bl);
+  if(!keepScenes){st.scenes=[];genScript()}saveDraft();renderDbList();renderAll();toast('매물을 불러왔어요 · 사진 '+bl.length+'장')}
+async function setPhotos(blobs){photos.forEach(p=>URL.revokeObjectURL(p.url));photos=await Promise.all((blobs||[]).map(async b=>({blob:b,url:URL.createObjectURL(b),bmp:await loadImg(b)})));renderPhotos()}
+function loadImg(b){return new Promise(res=>{const im=new Image();im.onload=()=>res(im);im.onerror=()=>res(null);im.src=URL.createObjectURL(b)})}
+function renderPhotos(){$('#phCnt').textContent=photos.length+'장';
+  $('#photos').innerHTML=photos.map((p,i)=>`<div style="background-image:url(${p.url})"><b>${i+1}</b><button data-del="${i}" aria-label="사진 빼기">×</button></div>`).join('');
+  $$('#photos [data-del]').forEach(b=>b.onclick=async()=>{const i=+b.dataset.del;URL.revokeObjectURL(photos[i].url);photos.splice(i,1);st.scenes.forEach(s=>{if(s.ph>=photos.length)s.ph=0});await shPut('photos',photos.map(p=>p.blob));renderPhotos();renderScenes();drawStill()})}
+async function shrink(file){const im=await loadImg(file);if(!im)return null;const M=1440,k=Math.min(1,M/Math.max(im.naturalWidth,im.naturalHeight));
+  const c=document.createElement('canvas');c.width=Math.round(im.naturalWidth*k);c.height=Math.round(im.naturalHeight*k);c.getContext('2d').drawImage(im,0,0,c.width,c.height);
+  return new Promise(r=>c.toBlob(b=>r(b),'image/jpeg',.86))}
+$('#phIn').onchange=async e=>{const fs=[...e.target.files].slice(0,Math.max(0,12-photos.length));e.target.value='';
+  const add=(await Promise.all(fs.map(shrink))).filter(Boolean);await setPhotos(photos.map(p=>p.blob).concat(add));await shPut('photos',photos.map(p=>p.blob));
+  if(!st.scenes.length&&info)genScript();renderScenes();drawStill();toast(add.length+'장 추가')};
+$$('#srcSeg button').forEach(b=>b.onclick=()=>{st.src=b.dataset.s;if(st.src==='manual'){st.listingId=null;info=fromManual()}saveDraft();renderSrc()});
+$$('[data-m]').forEach(el=>{el.value=(st.manual||{})[el.dataset.m]||(el.tagName==='SELECT'?el.value:'');el.oninput=()=>{st.manual[el.dataset.m]=el.value;if(st.src==='manual')info=fromManual();saveDraft();drawStill()}});
+
+/* ---------- 2. 사무소 ---------- */
+function fillOffice(){$$('[data-o]').forEach(el=>el.value=office[el.dataset.o]||'');offWarn()}
+function offWarn(){const ok=['name','ceo','regno','tel','addr'].every(k=>(office[k]||'').trim());$('#offWarn').classList.toggle('hide',ok);return ok}
+$$('[data-o]').forEach(el=>el.oninput=()=>{office=LS.get('d1c.office',{});office[el.dataset.o]=el.value.trim();LS.set('d1c.office',office);offWarn();drawStill()});
+function renderLogo(){$('#logoMsg').textContent=logo?'로고 들어감 (오른쪽 위)':'';$('#logoDel').classList.toggle('hide',!logo);logoImg=null;if(logo){const im=new Image();im.onload=()=>{logoImg=im;drawStill()};im.src=logo}}
+$('#logoIn').onchange=async e=>{const f=e.target.files[0];e.target.value='';if(!f)return;const im=await loadImg(f);if(!im)return;const c=document.createElement('canvas');const k=Math.min(1,240/Math.max(im.naturalWidth,im.naturalHeight));c.width=im.naturalWidth*k;c.height=im.naturalHeight*k;c.getContext('2d').drawImage(im,0,0,c.width,c.height);logo=c.toDataURL('image/png');LS.set('sh.logo',logo);renderLogo()};
+$('#logoDel').onclick=()=>{logo=null;LS.set('sh.logo',null);renderLogo();drawStill()};
+
+/* ---------- 3. 대본 ---------- */
+const HOOKS=[
+  i=>[i.dong,i.type].filter(Boolean).join(' ')+'\n'+(i.price||''),
+  i=>(i.price||'')+'\n'+[i.dong,i.type].filter(Boolean).join(' ')+' 직접 보고 왔습니다',
+  i=>[i.dong,i.type].filter(Boolean).join(' ')+' 찾으세요?\n'+(i.price||''),
+  i=>(i.points[0]||[i.dong,i.type].join(' '))+'\n'+(i.price||'')];
+function genScript(){if(!info)return;const i=info,n=Math.max(1,photos.length);
+  const body=i.points.slice(0,3).map(p=>p);
+  const spec=[i.area,i.spec].filter(Boolean).join('\n');if(spec)body.push(spec);
+  if(i.move)body.push(i.move);
+  if(!body.length)body.push('자세한 조건은 상담 때 안내드려요');
+  const b=body.slice(0,4),bd=Math.round(20/b.length*10)/10;
+  st.scenes=[{role:'hook',text:HOOKS[st.hookN%HOOKS.length](i).trim(),dur:3,ph:0}]
+    .concat(b.map((t,k)=>({role:'body',text:t,dur:bd,ph:(k+1)%n})))
+    .concat([{role:'cta',text:'자세한 상담은\n'+(office.name||'우리 사무소')+'\n☎ '+(office.tel||''),dur:5,ph:Math.min(n-1,b.length+1)%n}]);
+  saveDraft();renderScenes();drawStill()}
+$('#btnGen').onclick=()=>{if(!info){toast('먼저 매물을 고르세요');return}genScript();toast('대본을 만들었어요 — 고쳐 쓰셔도 됩니다')};
+$('#btnHook').onclick=()=>{if(!info||!st.scenes.length)return;st.hookN++;const h=st.scenes.find(s=>s.role==='hook');if(h)h.text=HOOKS[st.hookN%HOOKS.length](info).trim();saveDraft();renderScenes();drawStill()};
+$('#btnAddScene').onclick=()=>{const ci=st.scenes.findIndex(s=>s.role==='cta');const sc={role:'body',text:'',dur:3,ph:(st.scenes.length)%Math.max(1,photos.length)};if(ci<0)st.scenes.push(sc);else st.scenes.splice(ci,0,sc);saveDraft();renderScenes()};
+const ROLE={hook:'훅',body:'본문',cta:'마무리'};
+function renderScenes(){
+  $('#scenes').innerHTML=st.scenes.length?st.scenes.map((s,k)=>{const p=photos[s.ph];const lt=lint(s.text);
+    return`<div class="scene"><button class="ph" data-ph="${k}" style="${p?'background-image:url('+p.url+')':''}" aria-label="사진 바꾸기"><span>${p?'사진 '+(s.ph+1):'사진 없음'}</span></button><div>
+      <div class="top"><span class="chip ${s.role==='hook'?'r':s.role==='cta'?'g':''}">${k+1}. ${ROLE[s.role]}</span><input type="number" step="0.5" min="1" max="20" inputmode="decimal" data-dur="${k}" value="${s.dur}"> 초
+      ${s.role==='body'?`<button class="btn sm" data-up="${k}">▲</button><button class="btn sm" data-rm="${k}">삭제</button>`:''}</div>
+      <textarea data-tx="${k}" placeholder="화면 자막 (줄바꿈 가능)">${esc(s.text)}</textarea>
+      ${lt.length?'<div class="lint">'+lt.map(f=>'⚠ '+esc(f.w)+' — '+esc(f.why)).join('<br>')+'</div>':''}</div></div>`}).join(''):'<p class="hint">매물을 고르면 대본이 자동으로 만들어집니다.</p>';
+  $$('[data-ph]').forEach(b=>b.onclick=()=>{if(!photos.length)return;const s=st.scenes[+b.dataset.ph];s.ph=(s.ph+1)%photos.length;saveDraft();renderScenes();drawStill(+b.dataset.ph)});
+  $$('[data-dur]').forEach(el=>el.onchange=()=>{st.scenes[+el.dataset.dur].dur=Math.min(20,Math.max(1,num(el.value)||3));saveDraft();renderScenes()});
+  $$('[data-tx]').forEach(el=>{el.oninput=()=>{st.scenes[+el.dataset.tx].text=el.value;saveDraft();totals();drawStill(+el.dataset.tx)};el.onchange=()=>renderScenes()});
+  $$('[data-rm]').forEach(b=>b.onclick=()=>{st.scenes.splice(+b.dataset.rm,1);saveDraft();renderScenes()});
+  $$('[data-up]').forEach(b=>b.onclick=()=>{const k=+b.dataset.up;if(k>1&&st.scenes[k-1].role==='body'){[st.scenes[k-1],st.scenes[k]]=[st.scenes[k],st.scenes[k-1]];saveDraft();renderScenes()}});
+  totals();renderTele()}
+function total(){return st.scenes.reduce((a,s)=>a+(+s.dur||0),0)}
+function totals(){const t=Math.round(total()*10)/10;$('#totSec').textContent=t+'초';$('#totSec').style.color=t>59?'var(--red)':'';
+  const all=lint(st.scenes.map(s=>s.text).join('\n'));$('#lintBox').innerHTML=all.length?'<div class="note r">과장·단정 표현 '+all.length+'개 — 고친 뒤 만드세요: '+all.map(f=>esc(f.w)).join(', ')+'</div>':''}
+
+/* ---------- 4. 목소리 ---------- */
+function renderVoiceSeg(){$$('#voiceSeg button').forEach(b=>b.classList.toggle('on',b.dataset.v===st.voice));$('#voiceNone').classList.toggle('hide',st.voice!=='none');$('#voiceMine').classList.toggle('hide',st.voice!=='mine')}
+$$('#voiceSeg button').forEach(b=>b.onclick=()=>{st.voice=b.dataset.v;saveDraft();renderVoiceSeg()});
+function renderTele(){$('#tele').innerHTML=st.scenes.length?st.scenes.map((s,k)=>'<div data-tl="'+k+'">'+esc(s.text.replace(/☎/g,'전화'))+'</div>').join('<br>'):'대본을 먼저 만드세요.'}
+let rec=null,recChunks=[],recT0=0,recTimer=null;
+$('#btnRec').onclick=async()=>{
+  if(rec&&rec.state==='recording'){rec.stop();return}
+  if(!st.scenes.length){toast('대본을 먼저 만드세요');return}
+  let s;try{s=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true}})}catch(e){$('#recMsg').textContent='마이크를 쓸 수 없어요. 브라우저 설정에서 마이크를 허용해 주세요.';return}
+  const mt=['audio/mp4','audio/webm;codecs=opus','audio/webm'].find(m=>window.MediaRecorder&&MediaRecorder.isTypeSupported(m))||'';
+  rec=new MediaRecorder(s,mt?{mimeType:mt}:undefined);recChunks=[];rec.ondataavailable=e=>e.data.size&&recChunks.push(e.data);
+  rec.onstop=async()=>{s.getTracks().forEach(t=>t.stop());clearInterval(recTimer);$('#btnRec').textContent='● 다시 녹음';
+    voiceBlob=new Blob(recChunks,{type:rec.mimeType||'audio/webm'});voiceDur=(performance.now()-recT0)/1000;
+    try{const ab=await voiceBlob.arrayBuffer();const ac=new(window.AudioContext||window.webkitAudioContext)();const buf=await ac.decodeAudioData(ab);voiceDur=buf.duration;ac.close()}catch(e){}
+    await shPut('voice',{blob:voiceBlob,dur:voiceDur});showVoice();fitToVoice();toast('녹음 완료 — 장면 길이를 녹음에 맞췄어요')};
+  rec.start();recT0=performance.now();$('#btnRec').textContent='■ 녹음 끝내기';
+  recTimer=setInterval(()=>{const t=(performance.now()-recT0)/1000;$('#recMsg').textContent='녹음 중 '+t.toFixed(0)+'초 / 대본 '+Math.round(total())+'초';if(t>58)rec.stop()},300)};
+function showVoice(){$('#voiceDone').classList.toggle('hide',!voiceBlob);if(voiceBlob){$('#voicePlay').src=URL.createObjectURL(voiceBlob);$('#voiceLen').textContent='녹음 '+voiceDur.toFixed(1)+'초'}}
+function fitToVoice(){if(!voiceBlob||!st.scenes.length)return;const L=Math.min(58,voiceDur+0.6);const w=st.scenes.map(s=>Math.max(6,s.text.replace(/\s/g,'').length));const W=w.reduce((a,b)=>a+b,0);
+  st.scenes.forEach((s,k)=>s.dur=Math.max(1.5,Math.round(L*w[k]/W*10)/10));saveDraft();renderScenes()}
+$('#btnFit').onclick=()=>{fitToVoice();toast('장면 길이를 맞췄어요')};
+$('#btnVoiceDel').onclick=async()=>{voiceBlob=null;voiceDur=0;await shPut('voice',null);showVoice()};
+
+/* ---------- 5. 그리기 ---------- */
+const cv=$('#cv'),cx=cv.getContext('2d'),W=720,H=1280,FADE=0.35;
+const FONT='-apple-system,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR","Noto Sans CJK KR",sans-serif';
+function rr(x,y,w,h,r){cx.beginPath();cx.moveTo(x+r,y);cx.arcTo(x+w,y,x+w,y+h,r);cx.arcTo(x+w,y+h,x,y+h,r);cx.arcTo(x,y+h,x,y,r);cx.arcTo(x,y,x+w,y,r);cx.closePath()}
+function wrap(text,maxW){const out=[];const fits=t=>cx.measureText(t).width<=maxW;
+  String(text||'').split('\n').forEach(line=>{let cur='';line.split(/ +/).filter(Boolean).forEach(w=>{const tryL=cur?cur+' '+w:w;if(fits(tryL)){cur=tryL;return}
+    if(cur)out.push(cur);cur='';if(fits(w)){cur=w;return}for(const ch of w){if(!fits(cur+ch)&&cur){out.push(cur);cur=ch}else cur+=ch}});out.push(cur)});
+  return out.filter((l,i,a)=>l.trim()||a.length===1)}
+function fitFont(text,size,weight,maxW){let s=size;cx.font=`${weight} ${s}px ${FONT}`;while(cx.measureText(text).width>maxW&&s>12){s-=1;cx.font=`${weight} ${s}px ${FONT}`}return s}
+function photo(i,p,k,alpha){const im=photos[i]&&photos[i].bmp;cx.globalAlpha=alpha;
+  if(!im){const g=cx.createLinearGradient(0,0,0,H);g.addColorStop(0,'#3A4144');g.addColorStop(1,'#1B2022');cx.fillStyle=g;cx.fillRect(0,0,W,H);cx.globalAlpha=1;return}
+  const iw=im.naturalWidth||im.width,ih=im.naturalHeight||im.height,base=Math.max(W/iw,H/ih);
+  const z=1.04+0.12*(k%2?1-p:p),s=base*z,dw=iw*s,dh=ih*s;   // 켄번즈: 줌 인/아웃 번갈아
+  const ox=(dw-W),oy=(dh-H),dir=[[.5,.5],[0,.5],[1,.5],[.5,0],[.5,1]][k%5];
+  const x=-ox*(0.5+(dir[0]-0.5)*p),y=-oy*(0.5+(dir[1]-0.5)*p);
+  cx.drawImage(im,x,y,dw,dh);cx.globalAlpha=1}
+function sceneAt(t){let a=0;for(let k=0;k<st.scenes.length;k++){const d=+st.scenes[k].dur||1;if(t<a+d||k===st.scenes.length-1)return{k,local:t-a,dur:d};a+=d}return{k:0,local:0,dur:1}}
+function draw(t){cx.clearRect(0,0,W,H);if(!st.scenes.length){photo(0,0,0,1);overlays(null,0,1);return}
+  const{k,local,dur}=sceneAt(t),s=st.scenes[k],p=Math.min(1,local/dur);
+  photo(s.ph,p,k,1);
+  if(k>0&&local<FADE){const ps=st.scenes[k-1];photo(ps.ph,1,k-1,1-local/FADE)}
+  overlays(s,local,dur)}
+function overlays(s,local,dur){
+  const i=info||{dong:'',type:'',price:'',loc:'',area:''};
+  // 위 그늘 + 아래 그늘
+  let g=cx.createLinearGradient(0,0,0,300);g.addColorStop(0,'rgba(0,0,0,.6)');g.addColorStop(1,'rgba(0,0,0,0)');cx.fillStyle=g;cx.fillRect(0,0,W,300);
+  g=cx.createLinearGradient(0,H*0.5,0,H);g.addColorStop(0,'rgba(0,0,0,0)');g.addColorStop(1,'rgba(0,0,0,.75)');cx.fillStyle=g;cx.fillRect(0,H*0.5,W,H*0.5);
+  const cta=s&&s.role==='cta';
+  if(cta){cx.fillStyle='rgba(35,41,43,'+Math.min(.82,local/0.4*.82)+')';cx.fillRect(0,0,W,H)}
+  // 위: 가격 배지 + 동네·종류
+  if(!cta&&i.price){const ps=fitFont(i.price,44,800,W-140);const tw=cx.measureText(i.price).width;rr(40,96,tw+44,ps+30,18);cx.fillStyle='#EE6A2C';cx.fill();cx.fillStyle='#fff';cx.textBaseline='middle';cx.textAlign='left';cx.fillText(i.price,62,96+(ps+30)/2+1);
+    const sub=[i.dong,i.type,i.deal&&!i.price.startsWith(i.deal)?i.deal:''].filter(Boolean).join(' · ');if(sub){fitFont(sub,30,700,W-80);cx.fillStyle='#fff';cx.shadowColor='rgba(0,0,0,.6)';cx.shadowBlur=8;cx.fillText(sub,44,96+ps+30+34);cx.shadowBlur=0}}
+  if(logoImg){const lw=Math.min(150,logoImg.width),lh=logoImg.height*lw/logoImg.width;cx.globalAlpha=.92;cx.drawImage(logoImg,W-lw-36,cta?60:100,lw,lh);cx.globalAlpha=1}
+  // 자막
+  if(s&&s.text&&!cta){const pop=Math.min(1,local/0.25),hook=s.role==='hook';let size=hook?60:52;cx.font=`800 ${size}px ${FONT}`;const ls=s.text.split('\n');while(size>40&&ls.some(l=>cx.measureText(l).width>W-120)){size-=2;cx.font=`800 ${size}px ${FONT}`}const lines=wrap(s.text,W-120).slice(0,4);
+    const lh=size*1.3,bh=lines.length*lh+36,cy=H*0.6;cx.save();cx.translate(W/2,cy);const sc=0.9+0.1*pop;cx.scale(sc,sc);cx.globalAlpha=pop;
+    const bw=Math.min(W-60,Math.max(...lines.map(l=>cx.measureText(l).width))+56);rr(-bw/2,-bh/2,bw,bh,22);cx.fillStyle=hook?'rgba(247,114,53,.96)':'rgba(35,41,43,.72)';cx.fill();
+    cx.fillStyle='#fff';cx.textAlign='center';cx.textBaseline='middle';lines.forEach((l,n)=>cx.fillText(l,0,-bh/2+18+lh*(n+.5)));cx.restore()}
+  // 마무리 카드
+  if(cta){cx.textAlign='center';cx.textBaseline='middle';cx.fillStyle='#F99A66';fitFont('상담 문의',40,800,W-80);cx.fillText('상담 문의',W/2,H*0.30);
+    cx.fillStyle='#fff';fitFont(office.name||'사무소 명칭',60,800,W-80);cx.fillText(office.name||'사무소 명칭',W/2,H*0.38);
+    fitFont('☎ '+(office.tel||''),76,800,W-80);cx.fillText('☎ '+(office.tel||''),W/2,H*0.47);
+    cx.fillStyle='rgba(255,255,255,.85)';const l3=['대표 '+(office.ceo||''),'등록번호 '+(office.regno||'')].join(' · ');fitFont(l3,28,600,W-80);cx.fillText(l3,W/2,H*0.545);
+    fitFont(office.addr||'',26,500,W-80);cx.fillText(office.addr||'',W/2,H*0.585);
+    if(i.price){fitFont(i.price,34,700,W-80);cx.fillStyle='#fff';cx.fillText([i.dong,i.type].filter(Boolean).join(' ')+' · '+i.price,W/2,H*0.66)}}
+  // 표시사항 띠 (쇼츠 아래쪽 UI에 가리지 않는 위치)
+  const l1=[i.loc&&'소재지 '+i.loc,[i.use||i.type,i.deal].filter(Boolean).join('/'),i.area].filter(Boolean).join(' · ');
+  const l2=[office.name,office.ceo&&'대표 '+office.ceo].filter(Boolean).join(' · ');
+  const l3=[office.regno&&'등록번호 '+office.regno,office.tel&&'☎ '+office.tel].filter(Boolean).join(' · ');
+  const by=H*0.725;cx.textAlign='left';cx.textBaseline='middle';rr(24,by,W-48,124,14);cx.fillStyle='rgba(0,0,0,.58)';cx.fill();
+  cx.fillStyle='#fff';fitFont(l1||'매물 정보',25,600,W-84);cx.fillText(l1||'매물 정보를 입력하세요',42,by+28);
+  cx.fillStyle='#FFC4A3';fitFont(l2||'사무소 정보를 입력하세요',26,700,W-84);cx.fillText(l2||'사무소 정보를 입력하세요',42,by+64);
+  if(l3){fitFont(l3,26,700,W-84);cx.fillText(l3,42,by+98)}
+}
+let stillAt=0;function drawStill(k){if(typeof k==='number'){let a=0;for(let j=0;j<k;j++)a+=+st.scenes[j].dur||0;stillAt=a+Math.min(1.2,(+st.scenes[k]?.dur||1)*0.6)}if(!playing)draw(stillAt)}
+
+/* ---------- 재생·녹화 ---------- */
+let playing=false;
+async function run(recordIt){
+  if(playing)return;if(!st.scenes.length){toast('대본을 먼저 만드세요');return}
+  if(recordIt){if(!offWarn()){toast('사무소 정보를 채워 주세요');$('#offWarn').scrollIntoView({block:'center'});return}
+    if(lint(st.scenes.map(s=>s.text).join('\n')).length&&!confirm('과장·단정 표현이 남아 있어요. 그래도 만들까요?'))return;
+    if(total()>59){toast('60초를 넘었어요 — 장면 길이를 줄이세요');return}}
+  playing=true;$('#btnPlay').disabled=$('#btnMake').disabled=true;
+  const T=total();let ac=null,src=null,recr=null,chunks=[],mime='';
+  const useVoice=st.voice==='mine'&&voiceBlob;
+  try{
+    if(useVoice){ac=new(window.AudioContext||window.webkitAudioContext)();const buf=await ac.decodeAudioData(await voiceBlob.arrayBuffer());src=ac.createBufferSource();src.buffer=buf}
+    if(recordIt){
+      const vs=cv.captureStream(30);const tracks=[...vs.getVideoTracks()];
+      if(src){const dest=ac.createMediaStreamDestination();src.connect(dest);tracks.push(...dest.stream.getAudioTracks())}
+      else if(ac){}
+      mime=['video/mp4;codecs=avc1.42E01E,mp4a.40.2','video/mp4;codecs=avc1','video/mp4','video/webm;codecs=vp9,opus','video/webm;codecs=vp8,opus','video/webm'].find(m=>window.MediaRecorder&&MediaRecorder.isTypeSupported(m))||'';
+      if(!window.MediaRecorder)throw new Error('이 브라우저는 영상 만들기를 지원하지 않아요(크롬·사파리 최신판 사용)');
+      recr=new MediaRecorder(new MediaStream(tracks),Object.assign({videoBitsPerSecond:6e6},mime?{mimeType:mime}:{}));recr.ondataavailable=e=>e.data.size&&chunks.push(e.data);
+      draw(0);recr.start(250);
+    }else if(src)src.connect(ac.destination);
+    if(src)src.start();
+    const t0=performance.now();
+    await new Promise(res=>{const step=()=>{const t=(performance.now()-t0)/1000;draw(Math.min(t,T-0.001));$('#prog').style.width=Math.min(100,t/T*100)+'%';
+      if(recordIt)$('#makeMsg').textContent='만드는 중… '+Math.min(T,t).toFixed(0)+' / '+T.toFixed(0)+'초';
+      if(t>=T)res();else requestAnimationFrame(step)};requestAnimationFrame(step)});
+    if(recordIt){await new Promise(r=>setTimeout(r,250));await new Promise(r=>{recr.onstop=r;recr.stop()});
+      const type=(recr.mimeType||mime||'video/webm').split(';')[0];const blob=new Blob(chunks,{type});
+      if(made)URL.revokeObjectURL(made.url);made={blob,url:URL.createObjectURL(blob),mime:type,ext:type.includes('mp4')?'mp4':'webm',at:new Date().toISOString()};
+      const v=$('#outVid');v.src=made.url;v.classList.remove('hide');
+      $('#makeMsg').innerHTML='✅ 완성 · '+(blob.size/1048576).toFixed(1)+'MB · '+made.ext.toUpperCase()+' — 아래 6번에서 확인하고 승인하세요.';
+      $$('.ap').forEach(c=>c.checked=false);$('#upBox').classList.add('hide');apState();
+      $('#approveCard').scrollIntoView({behavior:'smooth',block:'start'})}
+  }catch(e){$('#makeMsg').textContent='⚠ '+(e.message||e)}
+  finally{if(ac)try{ac.close()}catch(e){}playing=false;$('#btnPlay').disabled=$('#btnMake').disabled=false;setTimeout(()=>$('#prog').style.width='0',800);drawStill()}
+}
+$('#btnPlay').onclick=()=>run(false);
+$('#btnMake').onclick=()=>run(true);
+
+/* ---------- 6. 승인·업로드 ---------- */
+function apState(){const ok=made&&$$('.ap').every(c=>c.checked);$('#btnApprove').disabled=!ok;$('#apHint').textContent=made?'영상을 끝까지 보고 4가지를 확인하세요.':'영상을 만든 뒤 끝까지 보고, 아래 4가지를 확인해야 올리기 버튼이 열립니다.'}
+$$('.ap').forEach(c=>c.onchange=apState);
+function pkg(){const i=info||{};const head=[i.dong,i.type,i.deal&&!(i.price||'').startsWith(i.deal)?i.deal:'',i.price].filter(Boolean).join(' ');
+  const title=(head+(i.points&&i.points[0]?' | '+i.points[0]:'')).slice(0,88)+' #Shorts';
+  const desc=[head,'',...(i.points||[]).map(p=>'✔ '+p),'',
+    '[중개대상물 표시사항]','· 소재지: '+(i.loc||''),'· 종류/거래: '+[i.use||i.type,i.deal].filter(Boolean).join(' / '),'· 가격: '+(i.price||''),i.area?'· 면적: '+i.area:'',i.spec?'· '+i.spec:'',i.move?'· 입주: '+i.move:'','',
+    '[중개사무소] '+[office.name,'대표 '+(office.ceo||''),'등록번호 '+(office.regno||''),office.addr,'☎ '+(office.tel||'')].filter(Boolean).join(' · '),'',
+    '※ 영상 촬영일 기준 정보이며, 거래 완료 시 영상을 내립니다.','',
+    ['#Shorts','#'+(i.dong||'부동산'),'#'+((i.dong||'')+(i.type||'')).replace(/\s/g,''),'#'+(i.type||'매물').replace(/\s/g,''),'#'+(i.deal||'부동산'),'#부동산'].filter((x,k,a)=>x.length>1&&a.indexOf(x)===k).join(' ')].filter(x=>x!==null).join('\n').replace(/\n{3,}/g,'\n\n');
+  const tags=[i.dong,i.type,i.deal,(i.dong||'')+' '+(i.type||''),(i.dong||'')+' '+(i.deal||''),'부동산','중개사무소','매물'].filter(x=>x&&x.trim()).join(', ');
+  return{title,desc,tags}}
+$('#btnApprove').onclick=()=>{if($('#btnApprove').disabled)return;const p=pkg();$('#upTitle').textContent=p.title;$('#upDesc').textContent=p.desc;$('#upTags').textContent=p.tags;
+  const fn='shorts_'+((info&&info.dong)||'매물')+'_'+new Date().toISOString().slice(0,10)+'.'+made.ext;$('#btnDown').href=made.url;$('#btnDown').download=fn;made.fn=fn;
+  $('#upBox').classList.remove('hide');
+  const H0=LS.get('sh.history',[]);if(!H0.some(h=>h.at===made.at)){H0.unshift({id:'S'+Date.now().toString(36),at:made.at,listingId:st.listingId,title:p.title.replace(' #Shorts',''),url:'',down:false,thumb:photos[0]?thumbOf():null});LS.set('sh.history',H0.slice(0,100))}
+  renderHistory();toast('승인했어요 — 이제 올리세요')};
+function thumbOf(){const c=document.createElement('canvas');c.width=90;c.height=160;c.getContext('2d').drawImage(cv,0,0,90,160);return c.toDataURL('image/jpeg',.7)}
+$('#btnShare').onclick=async()=>{if(!made)return;const p=pkg();const file=new File([made.blob],made.fn||('shorts.'+made.ext),{type:made.mime});
+  try{await navigator.clipboard.writeText(p.title)}catch(e){}
+  if(navigator.canShare&&navigator.canShare({files:[file]})){try{await navigator.share({files:[file],title:p.title,text:p.desc})}catch(e){}}
+  else{toast('이 기기는 바로 보내기를 지원하지 않아요 — 영상 저장 후 올려 주세요');$('#btnDown').click()}};
+$$('[data-copy]').forEach(b=>b.onclick=async()=>{const t=$('#'+b.dataset.copy).textContent;try{await navigator.clipboard.writeText(t);toast('복사했어요')}catch(e){const ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();toast('복사했어요')}});
+
+/* ---------- 7. 기록 ---------- */
+function renderHistory(){const HL=LS.get('sh.history',[]),L=listings();$('#hisCnt').textContent=HL.length?HL.length+'편':'';
+  const bad=HL.filter(h=>{const l=h.listingId&&L.find(x=>x.id===h.listingId);return l&&l.status==='거래완료'&&!h.down});
+  $('#hisAlert').innerHTML=bad.length?'<div class="note r" style="margin:0 0 10px">🚨 거래완료된 매물의 쇼츠 <b>'+bad.length+'편</b>이 아직 올라가 있어요. 유튜브에서 <b>비공개 또는 삭제</b>한 뒤 [내렸음]을 눌러 주세요.</div>':'';
+  $('#history').innerHTML=HL.length?HL.map(h=>{const l=h.listingId&&L.find(x=>x.id===h.listingId);const done=l&&l.status==='거래완료';
+    return`<div class="lst" style="cursor:default"><div class="th" style="width:46px;height:82px;${h.thumb?'background-image:url('+h.thumb+')':''}"></div><div style="flex:1;min-width:0">
+      <div>${h.down?'<span class="chip">내림</span>':done?'<span class="chip r">거래완료 — 내려야 함</span>':h.url?'<span class="chip g">업로드됨</span>':'<span class="chip">업로드 전</span>'} <span class="hint">${esc(h.at.slice(0,10).replace(/-/g,'.'))}</span></div>
+      <div class="t1" style="font-size:14px">${esc(h.title)}</div>
+      <div class="row" style="margin-top:4px"><input type="text" data-url="${h.id}" value="${esc(h.url)}" placeholder="유튜브 주소 붙여넣기" style="flex:1;min-width:150px;min-height:38px;margin:0;padding:6px 10px">
+      ${h.url?`<a class="btn sm" href="${esc(h.url)}" target="_blank" rel="noopener">열기</a>`:''}
+      ${!h.down?`<button class="btn sm" data-down="${h.id}">내렸음</button>`:''}<button class="btn sm" data-hdel="${h.id}">삭제</button></div></div></div>`}).join(''):'<p class="hint">아직 만든 쇼츠가 없어요.</p>';
+  const upd=(id,fn)=>{const A=LS.get('sh.history',[]);const h=A.find(x=>x.id===id);if(h){fn(h,A);LS.set('sh.history',A.filter(x=>!x._del))}renderHistory()};
+  $$('[data-url]').forEach(el=>el.onchange=()=>upd(el.dataset.url,h=>{const v=el.value.trim();h.url=/^https?:\/\//.test(v)?v:(v?'https://'+v:'')}));
+  $$('[data-down]').forEach(b=>b.onclick=()=>upd(b.dataset.down,h=>h.down=true));
+  $$('[data-hdel]').forEach(b=>b.onclick=()=>{if(confirm('기록을 지울까요? (유튜브 영상은 그대로)'))upd(b.dataset.hdel,h=>h._del=true)})}
+
+/* ---------- 시작 ---------- */
+function renderAll(){renderPhotos();renderScenes();renderVoiceSeg();drawStill()}
+async function init(){
+  fillOffice();renderLogo();renderSrc();renderVoiceSeg();
+  const v=await shGet('voice');if(v&&v.blob){voiceBlob=v.blob;voiceDur=v.dur||0;showVoice()}
+  if(st.src==='dabang'&&st.listingId&&listings().some(l=>l.id===st.listingId)){info=fromDabang(listings().find(l=>l.id===st.listingId).data||{});setPhotos((await d1cGet(st.listingId))||(await shGet('photos'))||[]).then(()=>{renderScenes();drawStill()})}
+  else{if(st.src==='manual')info=fromManual();const bl=await shGet('photos');await setPhotos(bl||[])}
+  renderAll();renderHistory();
+  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>drawStill());
+}
+addEventListener('storage',e=>{if(e.key==='d1c.listings'){if(st.src==='dabang')renderDbList();renderHistory()}if(e.key==='d1c.office'){office=LS.get('d1c.office',{});fillOffice();drawStill()}});
+init();
+})();
+</script>
+</body>
+</html>
