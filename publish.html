@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>통합 발행 — 중개사무소 앱 ⑪</title>
+<script>if(/[?&]embed=1/.test(location.search))document.documentElement.classList.add("embed")</script>
+<meta name="theme-color" content="#ffffff">
+<link rel="icon" href="img/icon-192.png">
+<link rel="apple-touch-icon" href="img/icon-192.png">
+<style>
+:root{--bg:#F7F7F7;--card:#fff;--ink:#23292B;--sub:#5C6366;--line:#E6E6E6;--brand:#EE6A2C;--brand-soft:#FDEEE5;
+  --red:#b42318;--red-soft:#fdecea;--yel:#7a5400;--yel-soft:#fff4d6;--grn:#17733f;--grn-soft:#e4f4ea;--r:14px}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;font-size:16px;line-height:1.55;-webkit-text-size-adjust:100%}
+header{background:var(--brand);color:#fff;padding:16px}
+header h1{margin:0;font-size:19px;letter-spacing:-.3px}
+header p{margin:2px 0 0;font-size:13px;opacity:.85}
+.embed header{display:none}
+.wrap{max-width:860px;margin:0 auto;padding:12px 12px 48px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px;margin:0 0 12px}
+.card h2{font-size:16.5px;margin:0 0 10px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.n{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--brand);color:#fff;font-size:13px;flex:none}
+label.f{display:block;font-size:13.5px;color:var(--sub);font-weight:600}
+input[type=text],input[type=tel],input[type=url],input[type=datetime-local],select,textarea{width:100%;min-height:46px;border:1px solid #D6D6D6;border-radius:10px;padding:10px 12px;font:inherit;color:var(--ink);background:#fff;margin-top:4px}
+textarea{min-height:120px;resize:vertical;font-size:14.5px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.full{grid-column:1/-1}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.btn{min-height:46px;border:1px solid #D6D6D6;background:#fff;border-radius:10px;padding:10px 16px;font:inherit;font-weight:700;color:var(--ink);cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.btn.pri{background:var(--brand);border-color:var(--brand);color:#fff}
+.btn.dark{background:#23292B;border-color:#23292B;color:#fff}
+.btn.sm{min-height:40px;padding:6px 12px;font-size:14px}
+.btn.big{min-height:56px;font-size:17px;width:100%}
+.btn:disabled{opacity:.45;cursor:default}
+.hint{font-size:13px;color:var(--sub);margin:4px 0 0;font-weight:400}
+.note{padding:11px 14px;border-radius:12px;font-size:14px;margin:10px 0 0}
+.note.y{background:var(--yel-soft);color:var(--yel)} .note.r{background:var(--red-soft);color:var(--red)} .note.g{background:var(--grn-soft);color:var(--grn)} .note.b{background:var(--brand-soft);color:var(--brand)}
+.hide{display:none!important}
+.chip{display:inline-block;font-size:12px;font-weight:700;border-radius:20px;padding:1px 8px;background:var(--brand-soft);color:var(--brand);white-space:nowrap}
+.chip.r{background:var(--red-soft);color:var(--red)}.chip.g{background:var(--grn-soft);color:var(--grn)}.chip.y{background:var(--yel-soft);color:var(--yel)}.chip.k{background:#EEF0F1;color:#5C6366}
+/* 매물 목록 */
+.lsts{max-height:360px;overflow:auto;padding-right:2px}
+.lst{display:flex;gap:10px;align-items:center;padding:10px;border:1px solid var(--line);border-radius:12px;margin-bottom:8px;cursor:pointer;background:#fff;width:100%;text-align:left;font:inherit;color:inherit}
+.lst.on{border-color:var(--brand);outline:2px solid #F9B48F}
+.lst .th{width:58px;height:58px;border-radius:10px;background:#ddd center/cover;flex:none}
+.lst .t1{font-weight:700}.lst .t2{font-size:13px;color:var(--sub)}
+/* 채널 */
+.chs{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.ch{border:1px solid #D6D6D6;border-radius:12px;padding:10px 8px;text-align:center;cursor:pointer;background:#fff;font:inherit;color:inherit;position:relative}
+.ch.on{border-color:var(--brand);background:var(--brand-soft)}
+.ch .ic{font-size:24px;display:block}.ch b{display:block;font-size:14px}.ch small{display:block;font-size:11.5px;color:var(--sub)}
+.ch .auto{position:absolute;top:6px;right:6px}
+.times{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+/* 진행 */
+.steps{list-style:none;padding:0;margin:10px 0 0}
+.steps li{display:flex;gap:10px;align-items:center;padding:8px 0;border-bottom:1px dashed var(--line);font-size:15px}
+.steps li i{font-style:normal;width:24px;text-align:center}
+.steps li span{flex:1}.steps li em{font-style:normal;font-size:13px;color:var(--sub)}
+.spin{display:inline-block;width:16px;height:16px;border:2px solid #F9B48F;border-top-color:var(--brand);border-radius:50%;animation:sp 1s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+/* 결과 */
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0 10px}
+.tabs button{min-height:40px;border:1px solid #D6D6D6;background:#fff;border-radius:20px;padding:4px 14px;font:inherit;font-weight:700;font-size:14px;cursor:pointer;color:var(--sub)}
+.tabs button.on{background:#23292B;border-color:#23292B;color:#fff}
+.cards{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.cards img{width:100%;aspect-ratio:4/5;object-fit:cover;border-radius:8px;border:1px solid var(--line);background:#eee}
+.prev{border:1px solid var(--line);border-radius:10px;padding:12px;max-height:320px;overflow:auto;font-size:14.5px;background:#FAFAFA}
+.prev table{border-collapse:collapse;width:100%}.prev td{border:1px solid #ddd;padding:4px 8px}
+video{width:240px;max-width:100%;border-radius:12px;background:#000}
+/* 예약표 */
+.job{border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:10px}
+.job .hd{display:flex;gap:10px;align-items:center}
+.job .th{width:48px;height:48px;border-radius:8px;background:#ddd center/cover;flex:none}
+.job .hd b{display:block}.job .hd small{color:var(--sub);font-size:13px}
+.slot{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:8px 0;border-top:1px dashed var(--line);font-size:14.5px}
+.slot .nm{min-width:108px;font-weight:700}.slot .tm{color:var(--sub);flex:1;min-width:120px}
+.slot.due{background:#FFF8F2}
+.filter{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+/* 도우미 */
+.mb{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:flex-end;justify-content:center;z-index:20}
+.mb>div{background:#fff;width:100%;max-width:560px;max-height:92vh;overflow:auto;border-radius:18px 18px 0 0;padding:18px}
+@media(min-width:700px){.mb{align-items:center}.mb>div{border-radius:18px}}
+.mb h3{margin:0 0 10px;font-size:17px}
+.do{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px dashed var(--line)}
+.do .k{width:26px;height:26px;border-radius:50%;background:var(--brand);color:#fff;display:grid;place-items:center;font-size:13px;font-weight:800;flex:none}
+.do .v{flex:1}.do .v p{margin:0 0 6px;font-size:14.5px}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#23292B;color:#fff;padding:10px 18px;border-radius:20px;font-size:14px;z-index:30;opacity:0;transition:opacity .2s;pointer-events:none;max-width:90vw;text-align:center}
+.toast.on{opacity:1}
+/* 쇼츠 만드는 화면(보이는 상태여야 영상이 녹화됨) */
+#workArea{position:fixed;right:8px;bottom:8px;width:300px;height:560px;border:0;border-radius:12px;box-shadow:0 4px 24px rgba(0,0,0,.25);background:#fff;z-index:15;overflow:hidden}
+#workArea iframe{width:100%;height:100%;border:0}
+#workArea .cap{position:absolute;left:0;right:0;top:0;background:#23292B;color:#fff;font-size:12.5px;padding:6px 10px;z-index:2}
+@media (max-width:560px){.grid,.times{grid-template-columns:1fr}.chs{grid-template-columns:repeat(3,1fr)}.cards{grid-template-columns:repeat(3,1fr)}#workArea{width:46vw;height:82vw}}
+</style>
+<link rel="stylesheet" href="land3.css">
+</head>
+<body>
+<header><h1>⑪ 통합 발행</h1><p>매물 1건 → 블로그·인스타·유튜브 자료를 한 번에 → 채널별 예약 → 시간 되면 알림·올리기 도우미</p></header>
+<div class="wrap">
+
+<div class="note b" style="margin:0 0 12px">매물 하나를 고르고 <b>[한 번에 만들기]</b>를 누르면 네이버·티스토리 블로그 글, 인스타 카드뉴스·캡션, 쇼츠/릴스 영상이 한꺼번에 만들어지고 예약표에 올라갑니다. 지금은 <b>예약 시간에 알림 → 버튼 몇 번으로 올리기</b> 방식이고, 유튜브·인스타는 계정 연결 후 <b>완전 자동 업로드</b>로 바뀝니다(아래 5번).</div>
+
+<div id="offBox" class="card hide">
+  <h2>사무소 정보 <span class="hint">표시·광고 필수 — ② 다방과 같이 씁니다</span></h2>
+  <div class="grid">
+    <label class="f">사무소 명칭<input type="text" data-o="name"></label>
+    <label class="f">개업공인중개사 성명<input type="text" data-o="ceo"></label>
+    <label class="f">등록번호<input type="text" data-o="regno"></label>
+    <label class="f">연락처<input type="tel" data-o="tel"></label>
+    <label class="f full">사무소 소재지<input type="text" data-o="addr"></label>
+  </div>
+</div>
+
+<!-- 1. 매물 -->
+<section class="card">
+  <h2><span class="n">1</span>매물 고르기 <span class="hint" id="lsCnt"></span></h2>
+  <input type="text" id="lsQ" placeholder="동네·종류로 찾기 (예: 봉천동 원룸)">
+  <div class="lsts" id="lsBox" style="margin-top:8px"></div>
+  <p class="hint">② 다방광고 원클릭의 <b>매물장</b>에 있는 광고 중 매물이 나옵니다. 테스트하려면 ② 매물장의 <b>🧪 샘플 매물 50개</b>를 누르세요.</p>
+</section>
+
+<!-- 2. 채널·예약 -->
+<section class="card">
+  <h2><span class="n">2</span>올릴 곳과 예약 시각</h2>
+  <div class="chs" id="chs"></div>
+  <div class="row" style="margin-top:10px">
+    <label class="f" style="flex:1;min-width:200px">올릴 시각 (모든 채널)<input type="datetime-local" id="tAll"></label>
+    <label class="hint" style="display:flex;gap:6px;align-items:center;margin-top:18px"><input type="checkbox" id="tEach"> 채널마다 시간 다르게</label>
+  </div>
+  <div class="times hide" id="tBox"></div>
+  <div class="row" style="margin-top:6px">
+    <button class="btn sm" data-q="0">지금</button><button class="btn sm" data-q="1">1시간 뒤</button><button class="btn sm" data-q="t9">내일 오전 9시</button><button class="btn sm" data-q="t19">내일 저녁 7시</button><button class="btn sm" data-q="spread">채널별로 나눠 올리기</button>
+  </div>
+  <p class="hint">"채널별로 나눠 올리기"는 블로그 → 인스타 → 유튜브를 2시간 간격으로 띄웁니다(같은 시간에 몰리는 것보다 노출에 유리).</p>
+</section>
+
+<!-- 3. 만들기 -->
+<section class="card">
+  <h2><span class="n">3</span>한 번에 만들기</h2>
+  <button class="btn pri big" id="btnMake">🚀 한 번에 만들기</button>
+  <ul class="steps" id="steps"></ul>
+  <div id="makeMsg"></div>
+</section>
+
+<!-- 4. 결과 확인 -->
+<section class="card hide" id="outCard">
+  <h2><span class="n">4</span>확인하고 예약하기</h2>
+  <div class="tabs" id="outTabs"><button data-t="blog" class="on">블로그</button><button data-t="ig">인스타 피드</button><button data-t="video">쇼츠·릴스</button></div>
+  <div data-p="blog">
+    <label class="f">제목<select id="oTitle"></select></label>
+    <div class="prev" id="oBlog" style="margin-top:8px"></div>
+    <p class="hint" id="oBlogInfo"></p>
+  </div>
+  <div data-p="ig" class="hide">
+    <div class="cards" id="oCards"></div>
+    <label class="f" style="margin-top:10px">인스타 피드 캡션 <span class="hint" id="igLen"></span><textarea id="oIg" style="min-height:220px"></textarea></label>
+  </div>
+  <div data-p="video" class="hide">
+    <div class="row" style="align-items:flex-start"><video id="oVid" controls playsinline></video>
+      <div style="flex:1;min-width:220px">
+        <label class="f">유튜브 제목<input type="text" id="oYtT"></label>
+        <label class="f" style="margin-top:8px">유튜브 설명<textarea id="oYtD"></textarea></label>
+        <label class="f" style="margin-top:8px">릴스 캡션<textarea id="oReels"></textarea></label>
+      </div></div>
+    <p class="hint" id="oVidInfo"></p>
+  </div>
+  <div class="note y" id="oWarn" style="display:none"></div>
+  <button class="btn dark big" id="btnSave" style="margin-top:12px">📅 예약표에 저장</button>
+</section>
+
+<!-- 예약표 -->
+<section class="card">
+  <h2>📅 발행 예약표 <span class="chip" id="dueChip" style="display:none"></span></h2>
+  <div class="filter" id="jf"><button class="btn sm" data-f="todo">할 일</button><button class="btn sm" data-f="all">전체</button><button class="btn sm" data-f="done">완료</button></div>
+  <div id="jobs"></div>
+  <div class="row" style="margin-top:6px"><button class="btn sm" id="btnNoti">🔔 예약 시간 알림 켜기</button><span class="hint" id="notiMsg"></span></div>
+  <p class="hint">알림은 이 화면(또는 허브)이 열려 있을 때 뜹니다. 휴대폰을 닫아도 알림을 받으려면 각 예약의 <b>📆 캘린더에 넣기</b>를 누르세요.</p>
+</section>
+
+<!-- 5. 자동 업로드 -->
+<section class="card">
+  <h2><span class="n">5</span>계정 연결·자동 업로드</h2>
+  <div class="grid">
+    <label class="f">네이버 블로그 아이디<input type="text" id="cNaver" placeholder="예: ktma9028"></label>
+    <label class="f">티스토리 주소<input type="text" id="cTistory" placeholder="예: land3lab (land3lab.tistory.com)"></label>
+  </div>
+  <div style="margin-top:10px;font-size:14.5px">
+    <div class="slot"><span class="nm">▶ 유튜브 쇼츠</span><span class="tm">유튜브 공식 API로 <b>예약 공개까지 자동</b> 가능 — 구글 클라우드 앱 등록·심사 필요</span><span class="chip y">2단계 준비 중</span></div>
+    <div class="slot"><span class="nm">◎ 인스타 피드·릴스</span><span class="tm">인스타 공식 API로 자동 게시 가능 — 프로페셔널(비즈니스·크리에이터) 계정 + 메타 앱 심사 필요, 예약은 우리 서버가 시간 맞춰 올림</span><span class="chip y">2단계 준비 중</span></div>
+    <div class="slot"><span class="nm">N 네이버 블로그</span><span class="tm">네이버가 2020년에 글쓰기 API를 닫아 자동 업로드 불가 → 서식 복사 + 네이버 자체 <b>예약 발행</b> 사용</span><span class="chip k">도우미 방식</span></div>
+    <div class="slot"><span class="nm">T 티스토리</span><span class="tm">카카오가 2024년에 오픈 API를 닫아 자동 업로드 불가 → 서식 복사 + 티스토리 <b>예약 발행</b> 사용</span><span class="chip k">도우미 방식</span></div>
+  </div>
+  <p class="hint">네이버·티스토리·유튜브 스튜디오·인스타 앱 모두 자체 "예약 게시"가 있어서, 도우미로 미리 붙여넣고 시간만 지정해 두면 그 시간에 자동으로 공개됩니다.</p>
+</section>
+
+<div class="foot hint" style="text-align:center;margin-top:16px">자료는 이 기기 안에만 저장됩니다(서버로 보내지 않음). 거래완료된 매물은 예약표에서 "광고 내리기"로 표시됩니다.</div>
+</div>
+
+<div id="workArea" class="hide"><div class="cap" id="workCap">쇼츠 영상 만드는 중 — 이 창을 닫거나 화면을 끄지 마세요</div><iframe id="fShorts" title="쇼츠 만들기"></iframe></div>
+<iframe id="fBlog" title="블로그 만들기" style="position:absolute;width:10px;height:10px;left:-9999px;top:0;border:0"></iframe>
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+"use strict";
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const LS={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){toast('저장 공간이 부족해요');return false}}};
+let toastT;function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('on'),2600)}
+const FONT='-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif';
+
+/* ---------- 저장소 ---------- */
+let dbP=null;
+function db(){if(dbP)return dbP;dbP=new Promise(res=>{try{const r=indexedDB.open('pub',1);r.onupgradeneeded=()=>r.result.createObjectStore('files');r.onsuccess=()=>res(r.result);r.onerror=()=>res(null)}catch(e){res(null)}});return dbP}
+async function op(name,mode,fn){let d;if(name==='pub')d=await db();else d=await new Promise(res=>{try{const r=indexedDB.open(name,1);r.onupgradeneeded=()=>{if(!r.result.objectStoreNames.contains('photos'))r.result.createObjectStore('photos')};r.onsuccess=()=>res(r.result);r.onerror=()=>res(null)}catch(e){res(null)}});
+  if(!d)return null;const st=name==='pub'?'files':'photos';return new Promise(r=>{try{const t=d.transaction(st,mode);const q=fn(t.objectStore(st));t.oncomplete=()=>r(q&&q.result);t.onerror=()=>r(null)}catch(e){r(null)}})}
+const fPut=(k,v)=>op('pub','readwrite',s=>s.put(v,k)),fGet=k=>op('pub','readonly',s=>s.get(k)),fDel=k=>op('pub','readwrite',s=>s.delete(k));
+const photosOf=id=>op('d1c','readonly',s=>s.get(id));
+
+let office=LS.get('d1c.office',{});
+let cfg=LS.get('pub.cfg',{});
+let jobs=LS.get('pub.jobs',[]);
+const saveJobs=()=>LS.set('pub.jobs',jobs),saveCfg=()=>LS.set('pub.cfg',cfg);
+const listings=()=>LS.get('d1c.listings',[]);
+
+/* ---------- 채널 ---------- */
+const CH={
+  naver:{nm:'네이버 블로그',ic:'N',sub:'서식 복사',grp:'blog',off:0},
+  tistory:{nm:'티스토리',ic:'T',sub:'서식 복사',grp:'blog',off:0},
+  ig:{nm:'인스타 피드',ic:'◎',sub:'카드뉴스',grp:'ig',off:2},
+  reels:{nm:'인스타 릴스',ic:'🎞',sub:'세로 영상',grp:'video',off:2},
+  yt:{nm:'유튜브 쇼츠',ic:'▶',sub:'세로 영상',grp:'video',off:4}};
+let sel=LS.get('pub.sel',{ch:{naver:true,tistory:true,ig:true,reels:true,yt:true},each:false,times:{},all:''});
+const saveSel=()=>LS.set('pub.sel',sel);
+
+/* ---------- 매물 정보 ---------- */
+const num=v=>{if(v==null||v==='')return null;const n=parseFloat(String(v).replace(/,/g,''));return isNaN(n)?null:n};
+function man(v){const n=num(v);if(n==null)return'';if(n>=10000){const e=Math.floor(n/10000),r=Math.round(n%10000);return e+'억'+(r?' '+r.toLocaleString()+'만':'')}return(Math.round(n*10)/10).toLocaleString()+'만'}
+const DET=['단독주택','다가구주택'];
+function info(x){const d=x.data||{};const w=(d.addr||'').split(/\s+/);
+  const dong=w.find(t=>/[동읍면리가]$/.test(t)&&!/^[0-9]/.test(t))||'',gu=w.find(t=>/[구군시]$/.test(t)&&t!==w[0])||'';
+  const price=d.deal==='매매'?man(d.price):d.deal==='전세'?man(d.deposit):(man(d.deposit)+(d.rent?'/'+man(d.rent):''));
+  const priceL=d.deal?d.deal+' '+price:price;
+  const fl=d.floorMode==='lmh'?(d.lmh||''):(d.floor?(/^\d+$/.test(d.floor)?d.floor+'층':d.floor):'');
+  const land=d.type==='토지';
+  const loc=land||DET.includes(d.use)?(d.addr||''):[d.addr,!d.dongNone&&d.dong?d.dong:'',fl].filter(Boolean).join(', ');
+  const ar=num(d.area);const area=ar?(land?'':'전용 ')+ar+'㎡('+(Math.round(ar/3.3058*10)/10)+'평)':'';
+  const move=d.moveMode==='now'?'즉시입주':d.moveMode==='date'?(d.moveDate||'').replace(/-/g,'.'):d.moveMode==='nego'?((d.moveMonth||'')+' '+(d.movePart||'')+' 협의'):'';
+  const points=String(d.memo||'').split(/[,\n]/).map(s=>s.trim()).filter(Boolean).slice(0,5);
+  const spec=[d.rooms?'방'+d.rooms:'',d.baths?'욕실'+d.baths:'',fl?fl+(d.totalFloor?'/'+d.totalFloor+'층':''):'',d.dir||''].filter(Boolean).join(' · ');
+  return{d,dong,gu,type:d.type||'',deal:d.deal||'',use:d.use||d.type||'',price,priceL,loc,area,move,points,spec,fl,land,
+    mgmt:num(d.mgmtTotal)!=null?'월 '+d.mgmtTotal+'만원':'',approve:(d.approve||'').replace(/-/g,'.'),opts:(d.options||[]).join(', '),
+    label:[dong,d.type,priceL].filter(Boolean).join(' · ')}}
+
+/* ---------- 1. 매물 ---------- */
+let pick=LS.get('pub.pick',null);
+function renderList(){const q=($('#lsQ').value||'').trim().split(/\s+/).filter(Boolean);
+  const L=listings().filter(x=>x.status!=='거래완료');const F=L.filter(x=>{const t=[x.data.addr,x.data.type,x.data.deal,x.data.bldgName].join(' ');return q.every(w=>t.includes(w))});
+  $('#lsCnt').textContent=L.length?'광고 중·보류 '+L.length+'건':'';
+  if(!L.length){$('#lsBox').innerHTML='<div class="note y">매물장에 매물이 없어요. ② 다방광고 원클릭에서 매물을 저장하거나, 매물장의 <b>🧪 샘플 매물 50개</b>로 테스트하세요.</div>';return}
+  const pub=new Set(jobs.map(j=>j.listingId));
+  $('#lsBox').innerHTML=F.slice(0,80).map(x=>{const i=info(x);return'<button class="lst'+(x.id===pick?' on':'')+'" data-id="'+x.id+'"><div class="th" style="'+(x.thumb?'background-image:url('+x.thumb+')':'')+'"></div><div><div class="t1">'+esc(i.label)+'</div><div class="t2">'+esc(i.loc)+'</div><div>'+(x.status==='보류'?'<span class="chip k">보류</span> ':'')+(pub.has(x.id)?'<span class="chip g">예약 있음</span>':'')+'</div></div></button>'}).join('')||'<div class="hint">찾는 매물이 없어요</div>';
+  $$('#lsBox .lst').forEach(b=>b.onclick=()=>{pick=b.dataset.id;LS.set('pub.pick',pick);renderList()})}
+$('#lsQ').oninput=renderList;
+
+/* ---------- 2. 채널·시각 ---------- */
+const pad=n=>String(n).padStart(2,'0');
+const dtv=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())+'T'+pad(d.getHours())+':'+pad(d.getMinutes());
+function nextHour(){const d=new Date();d.setMinutes(0,0,0);d.setHours(d.getHours()+1);return d}
+function renderCh(){$('#chs').innerHTML=Object.entries(CH).map(([k,c])=>'<button class="ch'+(sel.ch[k]?' on':'')+'" data-c="'+k+'"><span class="ic">'+c.ic+'</span><b>'+c.nm+'</b><small>'+c.sub+'</small></button>').join('');
+  $$('#chs .ch').forEach(b=>b.onclick=()=>{sel.ch[b.dataset.c]=!sel.ch[b.dataset.c];saveSel();renderCh()});
+  if(!sel.all||new Date(sel.all)<new Date(Date.now()-6e4))sel.all=dtv(nextHour());$('#tAll').value=sel.all;$('#tEach').checked=!!sel.each;
+  $('#tBox').classList.toggle('hide',!sel.each);
+  $('#tBox').innerHTML=Object.entries(CH).filter(([k])=>sel.ch[k]).map(([k,c])=>'<label class="f">'+c.ic+' '+c.nm+'<input type="datetime-local" data-tc="'+k+'" value="'+(sel.times[k]||sel.all)+'"></label>').join('');
+  $$('[data-tc]').forEach(i=>i.onchange=()=>{sel.times[i.dataset.tc]=i.value;saveSel()})}
+$('#tAll').onchange=()=>{sel.all=$('#tAll').value;if(!sel.each)sel.times={};saveSel();renderCh()};
+$('#tEach').onchange=()=>{sel.each=$('#tEach').checked;if(sel.each)Object.keys(CH).forEach(k=>{if(!sel.times[k])sel.times[k]=sel.all});saveSel();renderCh()};
+$$('[data-q]').forEach(b=>b.onclick=()=>{const q=b.dataset.q;let d=new Date();
+  if(q==='0'){d.setSeconds(0,0)}else if(q==='1'){d=new Date(Date.now()+36e5);d.setSeconds(0,0)}else if(q==='t9'||q==='t19'){d.setDate(d.getDate()+1);d.setHours(q==='t9'?9:19,0,0,0)}
+  else if(q==='spread'){const base=new Date(sel.all||dtv(nextHour()));sel.each=true;Object.entries(CH).forEach(([k,c])=>{sel.times[k]=dtv(new Date(base.getTime()+c.off*36e5))});saveSel();renderCh();toast('블로그 → 인스타(+2시간) → 유튜브(+4시간)로 나눴어요');return}
+  sel.all=dtv(d);sel.each=false;sel.times={};saveSel();renderCh()});
+const timeOf=k=>sel.each?(sel.times[k]||sel.all):sel.all;
+
+/* ---------- 사무소 ---------- */
+const offOk=()=>['name','ceo','regno','tel','addr'].every(k=>(office[k]||'').trim());
+function renderOff(){$('#offBox').classList.toggle('hide',offOk());$$('[data-o]').forEach(el=>{if(document.activeElement!==el)el.value=office[el.dataset.o]||''})}
+$$('[data-o]').forEach(el=>el.oninput=()=>{office=LS.get('d1c.office',{});office[el.dataset.o]=el.value.trim();LS.set('d1c.office',office)});
+
+/* ---------- 인스타 카드뉴스 (1080×1350) ---------- */
+const W=1080,H=1350,OR='#F77235',CHAR='#23292B';
+function loadImg(b){return new Promise(res=>{const u=URL.createObjectURL(b);const im=new Image();im.onload=()=>res(im);im.onerror=()=>res(null);im.src=u})}
+function cover(g,im,x,y,w,h){const k=Math.max(w/im.naturalWidth,h/im.naturalHeight);const sw=w/k,sh=h/k;g.drawImage(im,(im.naturalWidth-sw)/2,(im.naturalHeight-sh)/2,sw,sh,x,y,w,h)}
+function wrapT(g,t,maxW){const out=[];let line='';String(t||'').split('').forEach(ch=>{const tt=line+ch;if(g.measureText(tt).width>maxW&&line){out.push(line);line=ch.trim()?ch:''}else line=tt});if(line)out.push(line);return out}
+function txt(g,t,x,y,size,weight,color,maxW,maxL,lh){g.font=weight+' '+size+'px '+FONT;g.fillStyle=color;g.textBaseline='top';let L=wrapT(g,t,maxW);if(maxL&&L.length>maxL){L=L.slice(0,maxL);L[maxL-1]=L[maxL-1].slice(0,-1)+'…'}L.forEach((l,k)=>g.fillText(l,x,y+k*size*(lh||1.3)));return y+L.length*size*(lh||1.3)}
+function rr(g,x,y,w,h,r){g.beginPath();g.moveTo(x+r,y);g.arcTo(x+w,y,x+w,y+h,r);g.arcTo(x+w,y+h,x,y+h,r);g.arcTo(x,y+h,x,y,r);g.arcTo(x,y,x+w,y,r);g.closePath()}
+function brand(g,dark){const o=office;g.fillStyle=dark?CHAR:'#fff';g.fillRect(0,H-110,W,110);g.fillStyle=OR;g.fillRect(0,H-110,W,6);
+  txt(g,o.name||'중개사무소',60,H-82,34,'800',dark?'#fff':CHAR,640,1);txt(g,'☎ '+(o.tel||''),W-60-360,H-80,34,'800',OR,360,1)}
+const blobOf=c=>new Promise(r=>c.toBlob(r,'image/jpeg',.9));
+async function igCards(x,i,pics){const out=[];const mk=()=>{const c=document.createElement('canvas');c.width=W;c.height=H;return[c,c.getContext('2d')]};
+  const ims=[];for(const b of pics.slice(0,6)){const im=await loadImg(b);if(im)ims.push(im)}
+  // 1 표지
+  {const[c,g]=mk();if(ims[0])cover(g,ims[0],0,0,W,H);else{const gr=g.createLinearGradient(0,0,W,H);gr.addColorStop(0,OR);gr.addColorStop(1,'#C9531B');g.fillStyle=gr;g.fillRect(0,0,W,H)}
+    const gr=g.createLinearGradient(0,H*.35,0,H);gr.addColorStop(0,'rgba(0,0,0,0)');gr.addColorStop(1,'rgba(0,0,0,.78)');g.fillStyle=gr;g.fillRect(0,0,W,H);
+    g.font='800 34px '+FONT;const tag=[i.dong,i.type].filter(Boolean).join(' · ')||'매물';const tw=g.measureText(tag).width;rr(g,60,64,tw+48,64,32);g.fillStyle=OR;g.fill();txt(g,tag,84,78,34,'800','#fff',900,1);
+    let y=H-520;y=txt(g,i.deal||'',60,y,46,'700','#FFD9C4',960,1);y=txt(g,i.price||'',60,y+6,108,'900','#fff',960,2,1.1);
+    y=txt(g,[i.area,i.spec].filter(Boolean).join(' · '),60,y+16,36,'600','#fff',960,2);if(i.points[0])txt(g,'“'+i.points[0]+'”',60,y+14,38,'700','#FFE7DA',960,2);
+    brand(g,true);out.push(await blobOf(c))}
+  // 2~ 사진 + 장점
+  for(let k=1;k<ims.length;k++){const[c,g]=mk();cover(g,ims[k],0,0,W,H-300);g.fillStyle='#fff';g.fillRect(0,H-300,W,190);
+    const p=i.points[(k-1)%Math.max(1,i.points.length)]||[i.area,i.spec][k%2]||i.label;
+    txt(g,String(k+1).padStart(2,'0'),60,H-280,30,'900',OR,200,1);txt(g,p,60,H-238,46,'800',CHAR,960,2);brand(g,false);out.push(await blobOf(c))}
+  // 한눈에 보기
+  {const[c,g]=mk();g.fillStyle='#FFF7F2';g.fillRect(0,0,W,H);txt(g,'한눈에 보기',60,70,40,'800',OR,900,1);txt(g,i.label,60,124,52,'900',CHAR,960,2);
+    const rows=[['소재지',i.loc],['종류·거래',[i.use,i.deal].filter(Boolean).join(' / ')],['가격',i.priceL],['면적',i.area],['층·방향',[i.fl&&i.d.totalFloor?i.fl+'/'+i.d.totalFloor+'층':i.fl,i.d.dir].filter(Boolean).join(' · ')],['방·욕실',[i.d.rooms?'방 '+i.d.rooms:'',i.d.baths?'욕실 '+i.d.baths:''].filter(Boolean).join(' · ')],['관리비',i.mgmt],['입주',i.move],['사용승인',i.approve],['옵션',i.opts]].filter(r=>r[1]);
+    let y=270;rows.slice(0,9).forEach(([k,v],n)=>{g.fillStyle=n%2?'#fff':'#FDEEE5';g.fillRect(60,y-14,W-120,92);txt(g,k,90,y+8,32,'800','#8A4A2A',220,1);txt(g,v,320,y+8,32,'600',CHAR,W-420,2,1.15);y+=96});
+    brand(g,false);out.push(await blobOf(c))}
+  // 상담 안내
+  {const[c,g]=mk();g.fillStyle=CHAR;g.fillRect(0,0,W,H);g.fillStyle=OR;g.fillRect(60,120,120,10);txt(g,'상담 문의',60,160,48,'800','#FFD9C4',900,1);
+    let y=txt(g,office.name||'중개사무소',60,240,76,'900','#fff',960,2,1.15);y+=30;
+    [['대표 공인중개사',office.ceo],['등록번호',office.regno],['소재지',office.addr]].forEach(([k,v])=>{if(!v)return;txt(g,k,60,y,30,'700','#A9B0B3',300,1);y=txt(g,v,60,y+40,38,'700','#fff',960,2)+22});
+    rr(g,60,y+20,W-120,140,24);g.fillStyle=OR;g.fill();txt(g,'☎ '+(office.tel||''),100,y+58,64,'900','#fff',W-200,1);
+    txt(g,'게시일 기준 정보이며, 거래가 끝나면 게시물을 내립니다.',60,H-120,30,'600','#A9B0B3',960,2);out.push(await blobOf(c))}
+  return out}
+function tags(i){const t=[i.dong+i.type,i.dong+i.deal,i.gu+i.type,i.dong+'부동산',i.gu+'부동산',i.dong+'매물',i.type,i.type+i.deal,'부동산','공인중개사','부동산매물',(office.name||'').replace(/\s/g,'')];
+  const seen=new Set();return t.map(s=>String(s||'').replace(/[^0-9A-Za-z가-힣]/g,'')).filter(s=>s.length>1&&!seen.has(s)&&seen.add(s)).slice(0,20).map(s=>'#'+s)}
+function disclosure(i){return['[중개대상물 표시사항]','· 소재지: '+i.loc,'· 종류/거래: '+[i.use,i.deal].filter(Boolean).join(' / '),'· 가격: '+i.priceL,i.area?'· 면적: '+i.area:'',i.fl?'· 층: '+i.fl+(i.d.totalFloor?'/'+i.d.totalFloor+'층':''):'',i.d.dir?'· 방향: '+i.d.dir+'(거실 기준)':'',i.mgmt?'· 관리비: '+i.mgmt:'',i.move?'· 입주가능일: '+i.move:'',i.approve?'· 사용승인일: '+i.approve:'',
+  '[중개사무소] '+[office.name,'대표 '+(office.ceo||''),'등록번호 '+(office.regno||''),office.addr,'☎ '+(office.tel||'')].filter(Boolean).join(' · ')].filter(Boolean).join('\n')}
+function igCaption(i){return[(i.points[0]?'“'+i.points[0]+'” ':'')+'📍'+[i.dong,i.type,i.priceL].filter(Boolean).join(' '),'',
+  ...i.points.slice(0,4).map(p=>'✔ '+p),i.area||i.spec?'✔ '+[i.area,i.spec].filter(Boolean).join(' · '):'','','👉 사진 넘겨서 자세히 보기 · 문의는 DM 또는 전화','','━━━━━━━━━━',disclosure(i),'※ 게시일 기준 정보이며, 거래 완료 시 게시물을 내립니다.','━━━━━━━━━━','',tags(i).join(' ')].filter((l,k,a)=>!(l===''&&a[k-1]==='')).join('\n').slice(0,2200)}
+function reelsCaption(i){return['🎬 '+[i.dong,i.type,i.priceL].filter(Boolean).join(' ')+(i.points[0]?' | '+i.points[0]:''),'',disclosure(i),'※ 촬영일 기준 정보, 거래 완료 시 내립니다.','',tags(i).slice(0,12).join(' ')+' #릴스 #부동산릴스'].join('\n').slice(0,2200)}
+
+/* ---------- 3. 한 번에 만들기 ---------- */
+let draft=null;
+function step(k,state,msg){const li=$('#st-'+k);if(!li)return;li.querySelector('i').innerHTML=state==='run'?'<span class="spin"></span>':state==='ok'?'✅':state==='err'?'⚠️':state==='skip'?'➖':'⬜';if(msg!=null)li.querySelector('em').textContent=msg}
+function frame(el,src){return new Promise((res,rej)=>{el.onload=null;el.src=src+(src.includes('?')?'&':'?')+'embed=1&from=publish&v='+Date.now();const t0=Date.now();
+  const poll=()=>{let api=null;try{api=el.contentWindow&&el.contentWindow.__api}catch(e){}if(api){setTimeout(()=>res(api),400);return}if(Date.now()-t0>20000){rej(new Error(src+'를 열지 못했어요'));return}setTimeout(poll,250)};setTimeout(poll,300)})}
+$('#btnMake').onclick=async()=>{
+  office=LS.get('d1c.office',{});
+  const x=listings().find(l=>l.id===pick);if(!x){toast('1번에서 매물을 고르세요');return}
+  if(x.status==='거래완료'){toast('거래완료 매물은 광고할 수 없어요');return}
+  if(!offOk()){renderOff();$('#offBox').scrollIntoView({behavior:'smooth',block:'center'});toast('사무소 정보(표시·광고 필수)를 먼저 채워 주세요');return}
+  const want=Object.keys(CH).filter(k=>sel.ch[k]);if(!want.length){toast('2번에서 올릴 곳을 하나 이상 고르세요');return}
+  const needBlog=want.some(k=>CH[k].grp==='blog'),needIg=want.includes('ig'),needVid=want.some(k=>CH[k].grp==='video');
+  const i=info(x);const btn=$('#btnMake');btn.disabled=true;$('#makeMsg').innerHTML='';$('#outCard').classList.add('hide');
+  $('#steps').innerHTML=[['blog','블로그 글 + 카드 이미지 + 사진'],['ig','인스타 카드뉴스 + 캡션'],['video','쇼츠·릴스 세로 영상 (약 30초 녹화)']].map(([k,t])=>'<li id="st-'+k+'"><i>⬜</i><span>'+t+'</span><em></em></li>').join('');
+  draft={listingId:x.id,label:i.label,thumb:x.thumb||null,made:new Date().toISOString(),blog:null,ig:null,video:null,errs:[]};
+  const pics=(await photosOf(x.id))||[];
+  // 블로그
+  if(needBlog){step('blog','run','만드는 중…');try{const api=await frame($('#fBlog'),'blog.html');const b=await api.forListing(x.id);draft.blog=b;step('blog','ok',b.title.slice(0,24)+'… · 사진·카드 '+b.files.length+'장'+(b.red?' · ⚠ 검사 확인 필요':''))}catch(e){draft.errs.push(e.message);step('blog','err',e.message)}}else step('blog','skip','선택 안 함');
+  // 인스타
+  if(needIg){step('ig','run','그리는 중…');try{const cards=await igCards(x,i,pics);draft.ig={cards,caption:igCaption(i)};step('ig','ok','카드 '+cards.length+'장')}catch(e){draft.errs.push('인스타: '+e.message);step('ig','err',e.message)}}else step('ig','skip','선택 안 함');
+  // 영상
+  if(needVid){step('video','run','준비 중…');$('#workArea').classList.remove('hide');let tm=null;
+    try{const api=await frame($('#fShorts'),'shorts.html');tm=setInterval(()=>{try{step('video','run',api.progress()||'만드는 중…')}catch(e){}},700);
+      const v=await api.forListing(x.id);draft.video={blob:v.blob,ext:v.ext,mime:v.mime,sec:v.sec,ytTitle:v.title,ytDesc:v.desc,ytTags:v.tags,reels:reelsCaption(i)};step('video','ok',v.sec+'초 · '+(v.blob.size/1048576).toFixed(1)+'MB · '+v.ext.toUpperCase())}
+    catch(e){draft.errs.push(e.message);step('video','err',e.message)}finally{clearInterval(tm);$('#workArea').classList.add('hide');$('#fShorts').src='about:blank'}}else step('video','skip','선택 안 함');
+  btn.disabled=false;
+  if(!draft.blog&&!draft.ig&&!draft.video){$('#makeMsg').innerHTML='<div class="note r">만들어진 자료가 없어요. 위의 ⚠️ 내용을 확인해 주세요.</div>';return}
+  showDraft();$('#outCard').scrollIntoView({behavior:'smooth',block:'start'});toast('다 만들었어요 — 확인하고 예약표에 저장하세요')};
+
+/* ---------- 4. 결과 ---------- */
+let urls=[];const ou=b=>{const u=URL.createObjectURL(b);urls.push(u);return u};
+function showDraft(){urls.forEach(u=>URL.revokeObjectURL(u));urls=[];const d=draft;$('#outCard').classList.remove('hide');
+  $$('#outTabs button').forEach(b=>{const t=b.dataset.t;b.classList.toggle('hide',!(t==='blog'?d.blog:t==='ig'?d.ig:d.video))});
+  const first=['blog','ig','video'].find(t=>t==='blog'?d.blog:t==='ig'?d.ig:d.video);tab(first);
+  if(d.blog){$('#oTitle').innerHTML=d.blog.titles.map((t,k)=>'<option value="'+k+'"'+(t===d.blog.title?' selected':'')+'>'+esc(t)+'</option>').join('');$('#oBlog').innerHTML='<h3 style="margin:0 0 8px">'+esc(d.blog.title)+'</h3>'+d.blog.html;
+    $('#oBlogInfo').textContent='본문 '+d.blog.plain.replace(/\s/g,'').length.toLocaleString()+'자 · 태그 '+d.blog.tags.length+'개 · 사진·카드 '+d.blog.files.length+'장 (네이버·티스토리 같은 글, 자세한 수정은 ⑧ 블로그 탭에서)'}
+  if(d.ig){$('#oCards').innerHTML=d.ig.cards.map(b=>'<img src="'+ou(b)+'" alt="">').join('');$('#oIg').value=d.ig.caption;igLen()}
+  if(d.video){$('#oVid').src=ou(d.video.blob);$('#oYtT').value=d.video.ytTitle;$('#oYtD').value=d.video.ytDesc;$('#oReels').value=d.video.reels;$('#oVidInfo').textContent=d.video.sec+'초 · '+d.video.ext.toUpperCase()+' — 영상을 끝까지 보고 내용(가격·표시사항)이 맞는지 확인하세요.'}
+  const w=[];if(d.errs.length)w.push('일부를 못 만들었어요: '+d.errs.join(' / '));if(d.blog&&d.blog.red)w.push('블로그 검사에서 빨간 항목이 있어요 — ⑧ 블로그 탭에서 확인하세요.');
+  $('#oWarn').style.display=w.length?'block':'none';$('#oWarn').innerHTML=w.map(esc).join('<br>')}
+function tab(t){$$('#outTabs button').forEach(b=>b.classList.toggle('on',b.dataset.t===t));$$('[data-p]').forEach(p=>p.classList.toggle('hide',p.dataset.p!==t))}
+$$('#outTabs button').forEach(b=>b.onclick=()=>tab(b.dataset.t));
+$('#oTitle').onchange=()=>{draft.blog.title=draft.blog.titles[+$('#oTitle').value];$('#oBlog').querySelector('h3').textContent=draft.blog.title};
+function igLen(){const t=$('#oIg').value;const h=(t.match(/#[^\s#]+/g)||[]).length;$('#igLen').textContent=t.length+' / 2,200자 · 해시태그 '+h+'/30';$('#igLen').style.color=t.length>2200||h>30?'var(--red)':''}
+$('#oIg').oninput=()=>{if(draft&&draft.ig)draft.ig.caption=$('#oIg').value;igLen()};
+$('#oYtT').oninput=()=>{if(draft&&draft.video)draft.video.ytTitle=$('#oYtT').value};
+$('#oYtD').oninput=()=>{if(draft&&draft.video)draft.video.ytDesc=$('#oYtD').value};
+$('#oReels').oninput=()=>{if(draft&&draft.video)draft.video.reels=$('#oReels').value};
+
+$('#btnSave').onclick=async()=>{const d=draft;if(!d)return;
+  const slots={};Object.keys(CH).forEach(k=>{if(!sel.ch[k])return;const g=CH[k].grp;if((g==='blog'&&!d.blog)||(g==='ig'&&!d.ig)||(g==='video'&&!d.video))return;slots[k]={at:timeOf(k),done:false,url:'',noti:false}});
+  if(!Object.keys(slots).length){toast('예약할 자료가 없어요');return}
+  const id='P'+Date.now().toString(36);
+  const ok=await fPut(id,{blog:d.blog,ig:d.ig,video:d.video});if(ok===null&&!(await fGet(id))){toast('이 기기 저장 공간이 부족해요');return}
+  jobs.unshift({id,listingId:d.listingId,label:d.label,thumb:d.thumb,made:d.made,blogTitle:d.blog?d.blog.title:'',slots});saveJobs();
+  draft=null;$('#outCard').classList.add('hide');$('#steps').innerHTML='';renderJobs();renderList();
+  $('#jobs').scrollIntoView({behavior:'smooth',block:'start'});toast('예약표에 저장했어요 — '+Object.keys(slots).length+'개 채널')};
+
+/* ---------- 예약표 ---------- */
+let jf='todo';
+const fmt=v=>{const d=new Date(v);if(isNaN(d))return'-';const t=new Date();t.setHours(0,0,0,0);const dd=Math.round((new Date(d.getFullYear(),d.getMonth(),d.getDate())-t)/864e5);
+  return(dd===0?'오늘':dd===1?'내일':dd===-1?'어제':(d.getMonth()+1)+'/'+d.getDate()+'('+'일월화수목금토'[d.getDay()]+')')+' '+pad(d.getHours())+':'+pad(d.getMinutes())};
+function slotState(s){if(s.done)return['g','완료'];const t=new Date(s.at).getTime(),n=Date.now();if(t<=n)return n-t>36e5*3?['r','지남']:['r','지금 올릴 차례'];if(t-n<36e5)return['y','1시간 안'];return['k','예정']}
+function dueList(){const out=[];jobs.forEach(j=>Object.entries(j.slots).forEach(([k,s])=>{if(!s.done&&new Date(s.at).getTime()<=Date.now())out.push([j,k,s])}));return out}
+function renderJobs(){const L=listings();const due=dueList().length;$('#dueChip').style.display=due?'inline-block':'none';$('#dueChip').textContent='지금 올릴 것 '+due+'건';
+  $$('#jf button').forEach(b=>b.classList.toggle('dark',b.dataset.f===jf));
+  const J=jobs.filter(j=>{const all=Object.values(j.slots).every(s=>s.done);return jf==='all'||(jf==='done'?all:!all)});
+  if(!J.length){$('#jobs').innerHTML='<div class="hint" style="padding:8px 0">'+(jf==='done'?'완료된 예약이 없어요.':'예약이 없어요. 위에서 매물을 고르고 [한 번에 만들기]를 누르세요.')+'</div>';return}
+  $('#jobs').innerHTML=J.map(j=>{const x=L.find(l=>l.id===j.listingId);const gone=!x||x.status==='거래완료';
+    const rows=Object.entries(j.slots).sort((a,b)=>new Date(a[1].at)-new Date(b[1].at)).map(([k,s])=>{const[c,t]=slotState(s);
+      return'<div class="slot'+(c==='r'&&!s.done?' due':'')+'"><span class="nm">'+CH[k].ic+' '+CH[k].nm+'</span><span class="tm">'+fmt(s.at)+(s.url?' · <a href="'+esc(s.url)+'" target="_blank" rel="noopener">글 보기</a>':'')+'</span><span class="chip '+c+'">'+t+'</span>'+
+        (s.done?'<button class="btn sm" data-a="undo" data-j="'+j.id+'" data-k="'+k+'">되돌리기</button>':'<button class="btn sm '+(c==='r'?'pri':'')+'" data-a="go" data-j="'+j.id+'" data-k="'+k+'">올리기</button><button class="btn sm" data-a="time" data-j="'+j.id+'" data-k="'+k+'">시간</button>')+'</div>'}).join('');
+    return'<div class="job"><div class="hd"><div class="th" style="'+(j.thumb?'background-image:url('+j.thumb+')':'')+'"></div><div style="flex:1"><b>'+esc(j.label)+'</b><small>'+(gone?'<span class="chip r">'+(x?'거래완료 — 올린 글·영상을 내리세요':'매물장에서 지워진 매물')+'</span> ':'')+esc(j.blogTitle||'')+'</small></div></div>'+rows+
+      '<div class="row" style="margin-top:8px"><button class="btn sm" data-a="ics" data-j="'+j.id+'">📆 캘린더에 넣기</button><a class="btn sm" target="_blank" rel="noopener" href="'+gcal(j)+'">구글 캘린더</a><button class="btn sm" data-a="del" data-j="'+j.id+'">삭제</button></div></div>'}).join('');
+  $$('#jobs [data-a]').forEach(b=>b.onclick=()=>act(b.dataset.a,b.dataset.j,b.dataset.k))}
+$$('#jf button').forEach(b=>b.onclick=()=>{jf=b.dataset.f;renderJobs()});
+function act(a,jid,k){const j=jobs.find(x=>x.id===jid);if(!j)return;
+  if(a==='go')helper(j,k);
+  if(a==='undo'){j.slots[k].done=false;saveJobs();renderJobs()}
+  if(a==='time'){modal('⏰ '+CH[k].nm+' 시간 바꾸기','<label class="f">올릴 시각<input type="datetime-local" id="mT" value="'+esc(j.slots[k].at)+'"></label>',[['취소'],['저장','pri',()=>{const v=$('#mT').value;if(v){j.slots[k].at=v;j.slots[k].noti=false;saveJobs();renderJobs()}}]])}
+  if(a==='del')modal('예약 삭제','<p>「'+esc(j.label)+'」 예약과 만들어 둔 자료(글·카드·영상)를 지웁니다.</p>',[['취소'],['삭제','dark',async()=>{await fDel(j.id);jobs=jobs.filter(x=>x.id!==jid);saveJobs();renderJobs();renderList()}]]);
+  if(a==='ics')download(new Blob([ics(j)],{type:'text/calendar'}),'발행예약_'+(j.label.split(' · ')[0]||'매물')+'.ics')}
+
+/* ---------- 캘린더 ---------- */
+const icsT=v=>{const d=new Date(v);return d.getUTCFullYear()+pad(d.getUTCMonth()+1)+pad(d.getUTCDate())+'T'+pad(d.getUTCHours())+pad(d.getUTCMinutes())+'00Z'};
+function ics(j){const L=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//land3lab//junggae-app//KO','CALSCALE:GREGORIAN'];
+  Object.entries(j.slots).forEach(([k,s])=>{if(s.done)return;const e=new Date(new Date(s.at).getTime()+15*6e4);
+    L.push('BEGIN:VEVENT','UID:'+j.id+'-'+k+'@junggae-app','DTSTAMP:'+icsT(new Date()),'DTSTART:'+icsT(s.at),'DTEND:'+icsT(e),'SUMMARY:[발행] '+CH[k].nm+' — '+j.label.replace(/[,;]/g,' '),'DESCRIPTION:중개사무소 앱 ⑪ 통합 발행에서 [올리기]를 누르세요\\nhttps://junggae-app.vercel.app/#publish','BEGIN:VALARM','TRIGGER:-PT10M','ACTION:DISPLAY','DESCRIPTION:곧 발행 시간','END:VALARM','END:VEVENT')});
+  L.push('END:VCALENDAR');return L.join('\r\n')}
+function gcal(j){const s=Object.values(j.slots).filter(x=>!x.done).map(x=>x.at).sort()[0]||Object.values(j.slots)[0].at;const e=new Date(new Date(s).getTime()+30*6e4);
+  const det=Object.entries(j.slots).map(([k,x])=>CH[k].nm+': '+fmt(x.at)).join('\n')+'\n\nhttps://junggae-app.vercel.app/#publish';
+  return'https://calendar.google.com/calendar/render?action=TEMPLATE&text='+encodeURIComponent('[발행] '+j.label)+'&dates='+icsT(s)+'/'+icsT(e)+'&details='+encodeURIComponent(det)}
+
+/* ---------- 올리기 도우미 ---------- */
+function modal(title,html,btns){const m=document.createElement('div');m.className='mb';m.innerHTML='<div><h3>'+esc(title)+'</h3>'+html+'<div class="row" style="margin-top:14px;justify-content:flex-end" id="mBtns"></div></div>';document.body.appendChild(m);
+  const close=()=>m.remove();m.onclick=e=>{if(e.target===m)close()};
+  (btns||[['닫기']]).forEach(([t,c,fn])=>{const b=document.createElement('button');b.className='btn '+(c||'');b.textContent=t;b.onclick=async()=>{if(fn&&(await fn())===false)return;close()};m.querySelector('#mBtns').appendChild(b)});return m}
+async function copyText(t,msg){try{await navigator.clipboard.writeText(t);toast(msg||'복사했어요')}catch(e){const a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();try{document.execCommand('copy');toast(msg||'복사했어요')}catch(_){toast('복사가 막혔어요')}a.remove()}}
+async function copyRich(html,txt){try{if(window.ClipboardItem&&navigator.clipboard&&navigator.clipboard.write){await navigator.clipboard.write([new ClipboardItem({'text/html':new Blob([html],{type:'text/html'}),'text/plain':new Blob([txt],{type:'text/plain'})})]);toast('서식 포함 본문을 복사했어요 — 글쓰기 본문에 붙여넣으세요');return}}catch(e){}
+  const d=document.createElement('div');d.style.cssText='position:fixed;left:-9999px';d.innerHTML=html;document.body.appendChild(d);const r=document.createRange();r.selectNodeContents(d);const s=getSelection();s.removeAllRanges();s.addRange(r);let ok=false;try{ok=document.execCommand('copy')}catch(e){}s.removeAllRanges();d.remove();
+  if(ok)toast('서식 포함 본문을 복사했어요');else copyText(txt,'서식 복사가 막혀 글자만 복사했어요')}
+function download(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},2000)}
+const CRC=(()=>{const t=new Uint32Array(256);for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;t[n]=c>>>0}return t})();
+function crc32(u){let c=0xFFFFFFFF;for(let i=0;i<u.length;i++)c=CRC[(c^u[i])&255]^(c>>>8);return(c^0xFFFFFFFF)>>>0}
+async function zip(files){const enc=new TextEncoder();const parts=[],cen=[];let off=0;
+  for(const f of files){const data=new Uint8Array(await f.blob.arrayBuffer());const nm=enc.encode(f.name);const crc=crc32(data);
+    const h=new DataView(new ArrayBuffer(30));h.setUint32(0,0x04034b50,true);h.setUint16(4,20,true);h.setUint16(6,0x0800,true);h.setUint32(14,crc,true);h.setUint32(18,data.length,true);h.setUint32(22,data.length,true);h.setUint16(26,nm.length,true);
+    parts.push(h.buffer,nm,data);const c=new DataView(new ArrayBuffer(46));c.setUint32(0,0x02014b50,true);c.setUint16(4,20,true);c.setUint16(6,20,true);c.setUint16(8,0x0800,true);c.setUint32(16,crc,true);c.setUint32(20,data.length,true);c.setUint32(24,data.length,true);c.setUint16(28,nm.length,true);c.setUint32(42,off,true);
+    cen.push(c.buffer,nm);off+=30+nm.length+data.length}
+  const cs=cen.reduce((a,b)=>a+(b.byteLength||b.length),0);const e=new DataView(new ArrayBuffer(22));e.setUint32(0,0x06054b50,true);e.setUint16(8,files.length,true);e.setUint16(10,files.length,true);e.setUint32(12,cs,true);e.setUint32(16,off,true);
+  return new Blob([...parts,...cen,e.buffer],{type:'application/zip'})}
+async function shareOrSave(files,title){const fs=files.map(f=>new File([f.blob],f.name,{type:f.blob.type||'application/octet-stream'}));
+  try{if(navigator.canShare&&navigator.canShare({files:fs})){await navigator.share({files:fs,title});return}}catch(e){if(e&&e.name==='AbortError')return}
+  if(files.length===1)download(files[0].blob,files[0].name);else download(await zip(files),(title||'자료')+'.zip');toast('내려받았어요')}
+const canShareFiles=(()=>{try{return!!(navigator.canShare&&navigator.canShare({files:[new File([new Blob(['x'])],'a.jpg',{type:'image/jpeg'})]}))}catch(e){return false}})();
+async function helper(j,k){const F=await fGet(j.id);if(!F){toast('자료를 찾지 못했어요(이 기기에서 만든 예약만 열립니다)');return}
+  const s=j.slots[k];const base=(j.label.split(' · ').slice(0,2).join('_')||'매물').replace(/[^\w가-힣]+/g,'_');const L=[];let n=0;const D=(html)=>L.push('<div class="do"><span class="k">'+(++n)+'</span><div class="v">'+html+'</div></div>');
+  const B=F.blog,G=F.ig,V=F.video;const title=(B&&B.title)||j.blogTitle||'';
+  if(k==='naver'||k==='tistory'){const isN=k==='naver';const id=isN?(cfg.naver||(LS.get('bl.cfg',{}).blogId)||''):(cfg.tistory||'');
+    const url=isN?(id?'https://blog.naver.com/'+encodeURIComponent(id)+'/postwrite':'https://blog.naver.com/GoBlogWrite.naver'):(id?'https://'+id.replace(/\.tistory\.com.*$/,'').replace(/^https?:\/\//,'')+'.tistory.com/manage/newpost':'https://www.tistory.com/');
+    D('<p><b>사진·카드 '+B.files.length+'장</b>을 먼저 받아 두세요.</p><button class="btn sm" id="hPh">'+(canShareFiles?'📲 사진 저장/공유':'⬇ 사진 ZIP 받기')+'</button>');
+    D('<p>제목 복사</p><button class="btn sm" id="hTi">제목 복사</button> <span class="hint">'+esc(title)+'</span>');
+    D('<p><b>서식 포함 본문 복사</b> → 글쓰기 본문에 붙여넣고, <code>[사진 n]</code>·<code>[카드 n]</code> 자리에 받은 사진을 넣으세요.</p><button class="btn sm pri" id="hRich">본문 복사</button> <button class="btn sm" id="hPlain">글자만</button>');
+    D('<p>태그 '+B.tags.length+'개</p><button class="btn sm" id="hTag">태그 복사</button>');
+    D('<a class="btn sm dark" href="'+url+'" target="_blank" rel="noopener">✍ '+(isN?'네이버':'티스토리')+' 글쓰기 열기</a>'+(id?'':' <span class="hint">아래 5번에 '+(isN?'블로그 아이디':'티스토리 주소')+'를 넣으면 내 글쓰기로 바로 열려요</span>')+'<p class="hint" style="margin-top:6px">⏰ 미리 올려둘 때: '+(isN?'[발행] → 발행 시간 <b>예약</b>':'[완료] → 공개 설정 <b>예약</b>')+'에서 '+fmt(s.at)+'으로 지정</p>');
+    modal(CH[k].ic+' '+CH[k].nm+' 올리기',L.join('')+doneBox(s),[['닫기'],['올림 완료','pri',()=>markDone(j,k)]]);
+    $('#hPh').onclick=()=>shareOrSave(B.files,base+'_블로그사진');$('#hTi').onclick=()=>copyText(title,'제목을 복사했어요');
+    $('#hRich').onclick=()=>copyRich('<h2>'+esc(title)+'</h2>'+B.html,title+'\n\n'+B.plain);$('#hPlain').onclick=()=>copyText(B.plain,'본문(글자만)을 복사했어요');
+    $('#hTag').onclick=()=>copyText(isN?B.tags.join(','):B.tags.join(','),'태그를 복사했어요(쉼표로 구분)')}
+  if(k==='ig'){const files=G.cards.map((b,x)=>({name:base+'_insta_'+pad(x+1)+'.jpg',blob:b}));
+    D('<p><b>카드뉴스 '+files.length+'장</b> — 순서대로 올리세요.</p><button class="btn sm pri" id="hCards">'+(canShareFiles?'📲 인스타로 공유/저장':'⬇ 카드 ZIP 받기')+'</button>');
+    D('<p>캡션 복사 ('+G.caption.length+'자)</p><button class="btn sm" id="hCap">캡션 복사</button>');
+    D('<a class="btn sm dark" href="https://www.instagram.com/" target="_blank" rel="noopener">인스타그램 열기</a><p class="hint" style="margin-top:6px">휴대폰 인스타 앱: ＋ → 게시물 → 사진 여러 장 선택 → 캡션 붙여넣기. 미리 올려둘 때는 <b>고급 설정 → 이 게시물 예약</b>에서 '+fmt(s.at)+'.</p>');
+    modal('◎ 인스타 피드 올리기',L.join('')+doneBox(s),[['닫기'],['올림 완료','pri',()=>markDone(j,k)]]);
+    $('#hCards').onclick=async()=>{await copyText(G.caption,'캡션도 복사해 뒀어요');shareOrSave(files,base+'_인스타카드')};$('#hCap').onclick=()=>copyText(G.caption,'캡션을 복사했어요')}
+  if(k==='reels'||k==='yt'){const vf=[{name:base+(k==='yt'?'_shorts.':'_reels.')+V.ext,blob:V.blob}];
+    D('<p><b>세로 영상 '+V.sec+'초</b> ('+V.ext.toUpperCase()+')</p><button class="btn sm pri" id="hVid">'+(canShareFiles?'📲 '+(k==='yt'?'유튜브':'인스타')+'로 공유/저장':'⬇ 영상 받기')+'</button>'+(V.ext==='webm'?'<p class="hint">WEBM 파일입니다. 유튜브는 그대로 올라가고, 인스타는 MP4만 받으니 아이폰·안드로이드 크롬에서 만든 MP4를 쓰세요.</p>':''));
+    if(k==='yt'){D('<p>제목</p><button class="btn sm" id="hYt">제목 복사</button> <span class="hint">'+esc(V.ytTitle)+'</span>');D('<p>설명(표시사항 포함)</p><button class="btn sm" id="hYd">설명 복사</button>');D('<p>태그</p><button class="btn sm" id="hYg">태그 복사</button>');
+      D('<a class="btn sm dark" href="https://studio.youtube.com/" target="_blank" rel="noopener">YouTube 스튜디오 열기</a><p class="hint" style="margin-top:6px">미리 올려둘 때: 공개 상태 → <b>예약</b> → '+fmt(s.at)+'.</p>')}
+    else{D('<p>릴스 캡션</p><button class="btn sm" id="hRc">캡션 복사</button>');D('<a class="btn sm dark" href="https://www.instagram.com/" target="_blank" rel="noopener">인스타그램 열기</a><p class="hint" style="margin-top:6px">인스타 앱: ＋ → 릴스 → 영상 선택 → 캡션 붙여넣기. 미리 올려둘 때 <b>고급 설정 → 예약</b>.</p>')}
+    modal(CH[k].ic+' '+CH[k].nm+' 올리기',L.join('')+doneBox(s),[['닫기'],['올림 완료','pri',()=>markDone(j,k)]]);
+    $('#hVid').onclick=async()=>{await copyText(k==='yt'?V.ytTitle:V.reels,k==='yt'?'제목도 복사해 뒀어요':'캡션도 복사해 뒀어요');shareOrSave(vf,base+'_영상')};
+    if(k==='yt'){$('#hYt').onclick=()=>copyText(V.ytTitle,'제목을 복사했어요');$('#hYd').onclick=()=>copyText(V.ytDesc,'설명을 복사했어요');$('#hYg').onclick=()=>copyText(V.ytTags,'태그를 복사했어요')}else $('#hRc').onclick=()=>copyText(V.reels,'캡션을 복사했어요')}
+}
+function doneBox(s){return'<label class="f" style="margin-top:12px">올린 글·영상 주소 (선택 — 나중에 거래완료 때 찾아 내리기 쉬움)<input type="url" id="hUrl" value="'+esc(s.url||'')+'" placeholder="https://"></label>'}
+function markDone(j,k){const s=j.slots[k];s.done=true;s.url=(($('#hUrl')||{}).value||'').trim();s.doneAt=new Date().toISOString();saveJobs();renderJobs();
+  const today=new Date().toISOString().slice(0,10);
+  if(k==='naver'||k==='tistory'){const H=LS.get('bl.history',[]);H.unshift({id:'B'+Date.now().toString(36),date:today,kind:'listing',title:(j.blogTitle||j.label)+(k==='tistory'?' (티스토리)':''),kw:'',url:s.url,listingId:j.listingId,by:'publish'});LS.set('bl.history',H)}
+  if(k==='yt'){const H=LS.get('sh.history',[]);H.unshift({id:'S'+Date.now().toString(36),at:new Date().toISOString(),listingId:j.listingId,title:j.label,url:s.url,down:false,thumb:null});LS.set('sh.history',H.slice(0,100))}
+  toast(CH[k].nm+' 올림 완료로 표시했어요')}
+
+/* ---------- 알림 ---------- */
+function renderNoti(){const p=window.Notification?Notification.permission:'none';$('#btnNoti').classList.toggle('hide',p==='granted'||p==='none');$('#notiMsg').textContent=p==='granted'?'🔔 알림 켜짐 — 예약 시간이 되면 알려드려요':p==='denied'?'브라우저 설정에서 알림이 막혀 있어요':p==='none'?'이 브라우저는 알림을 지원하지 않아요':''}
+$('#btnNoti').onclick=async()=>{try{await Notification.requestPermission()}catch(e){}renderNoti()};
+function tick(){let ch=false;dueList().forEach(([j,k,s])=>{if(s.noti)return;s.noti=true;ch=true;
+  try{if(window.Notification&&Notification.permission==='granted'){const n=new Notification('지금 올릴 차례: '+CH[k].nm,{body:j.label,icon:'img/icon-192.png',tag:j.id+k});n.onclick=()=>{focus();helper(j,k)}}}catch(e){}});
+  if(ch)saveJobs();renderJobs()}
+
+/* ---------- 설정 ---------- */
+$('#cNaver').value=cfg.naver||(LS.get('bl.cfg',{}).blogId)||'';$('#cTistory').value=cfg.tistory||'';
+$('#cNaver').oninput=()=>{cfg.naver=$('#cNaver').value.trim();saveCfg()};$('#cTistory').oninput=()=>{cfg.tistory=$('#cTistory').value.trim();saveCfg()};
+
+addEventListener('storage',e=>{if(e.key==='d1c.listings'){renderList();renderJobs()}if(e.key==='d1c.office'){office=LS.get('d1c.office',{});renderOff()}if(e.key==='pub.jobs'){jobs=LS.get('pub.jobs',[]);renderJobs()}});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden){jobs=LS.get('pub.jobs',jobs);tick()}});
+renderOff();renderList();renderCh();renderJobs();renderNoti();tick();setInterval(tick,30000);
+window.__pub={get draft(){return draft},get jobs(){return jobs}};
+})();
+</script>
+</body>
+</html>

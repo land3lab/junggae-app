@@ -990,6 +990,15 @@ addEventListener('storage',e=>{if(e.key==='d1c.listings'){renderDbList();renderH
   const sc=await blGet('cards');if(sc&&sc.length){cards=sc.map(c=>Object.assign({},c,{url:URL.createObjectURL(c.blob)}));renderCards()}
   const saved=await blGet('photos');if(saved&&saved.length)await setPhotos(saved);else if(st.kind==='listing'&&st.listingId)await loadListingPhotos(st.listingId);
   if(st.out&&st.out.kind===st.kind)showOut()})();
+/* ⑨ 통합 발행에서 부르는 연결 — 매물 1건으로 글·카드·사진을 한 번에 만듦 */
+window.__api={async forListing(id){
+  st.kind='listing';st.src='dabang';st.points='';$('#lPoints').value='';renderKind();renderSrc();
+  await pickListing(id);if(st.listingId!==id)throw new Error('블로그: 매물을 불러오지 못했어요');
+  const ac=cfg.autoCards;cfg.autoCards=false;try{generate(false)}finally{cfg.autoCards=ac}
+  const o=st.out;if(!o||o.listingId!==id)throw new Error('블로그: '+($('#genMsg').textContent||'글을 만들지 못했어요'));
+  await makeCards();const files=await finalPhotos();const chk=runChecks()||{};
+  return{title:st.out.title,titles:st.out.titles,html:toHtml(st.out,true),plain:plainText(st.out),tags:st.out.tags.slice(),files,red:!!chk.red,blogId:cfg.blogId||''}},
+  record(r){hist.unshift({id:'B'+Date.now().toString(36),date:r.date||todayS(),kind:'listing',title:r.title,kw:r.kw||'',url:r.url||'',listingId:r.listingId||null,by:'publish'});saveHist();renderHist()}};
 })();
 </script>
 </body>

@@ -102,7 +102,8 @@ const TOOLS=[
   {id:'bid',num:'⑦',short:'입찰서류',name:'경매 입찰서류 자동작성',desc:'사건번호·입찰가 → 새 기일입찰표·위임장·준비물 체크리스트 PDF, "0 하나 더" 실수 방지',page:'bid.html',state:'on'},
   {id:'blog',num:'⑧',short:'블로그',name:'블로그 자동생성',desc:'매물·동네·상식·상담사례 → 검색용 제목 5안·본문·태그 + 표시사항 자동 첨부 → 서식 복사·사진 내보내기·발행 기록',page:'blog.html',state:'new'},
   {id:'listings',num:'⑨',short:'매물장',name:'매물장',desc:'나만 보는 매물 장부 — 상태·광고 만료·14일 확인, 지도, 엑셀 가져오기 → ②광고·⑥공실클럽·⑩손님 매칭으로 바로 넘기기',page:'maemul.html',state:'new'},
-  {id:'customers',num:'⑩',short:'고객관리',name:'고객관리',desc:'손님·의뢰인 온도·상담 일지·다음 연락일 → 매물장 자동 매칭·추천 문자, 계약·잔금·만기 알림',page:'crm.html',state:'new'}
+  {id:'customers',num:'⑩',short:'고객관리',name:'고객관리',desc:'손님·의뢰인 온도·상담 일지·다음 연락일 → 매물장 자동 매칭·추천 문자, 계약·잔금·만기 알림',page:'crm.html',state:'new'},
+  {id:'publish',num:'⑪',short:'통합 발행',name:'통합 발행 (블로그·인스타·유튜브)',desc:'매물 1건 → 네이버·티스토리 글, 인스타 카드뉴스·캡션, 쇼츠·릴스 영상을 한 번에 → 채널별 예약 → 시간 되면 알림·올리기 도우미',page:'publish.html',state:'new'}
 ];
 const BADGE={on:'<span class="badge b-on">사용 가능</span>',new:'<span class="badge b-new">새로 나옴</span>',soon:'<span class="badge b-soon">준비 중</span>'};
 let me=null,cur='home';const built={};
@@ -154,9 +155,10 @@ function renderHome(){
     ${jgHtml()}
     ${bidsUp.length?`<h2 class="sec">다가오는 입찰기일</h2><div class="card"><ul class="recent">${bidsUp.slice(0,5).map(b=>`<li><span>${esc(b.court)} ${esc(b.case)} · ${esc(b.name||'')}${b.type==='agent'?'(대리)':''}</span><span>${b.dd===0?'오늘':'D-'+b.dd}${b.price?' · '+wonShort(b.price):''}</span></li>`).join('')}</ul></div>`:''}
     ${gsInfo&&gsInfo.ok&&(gsInfo.unread||gsInfo.stale)?`<h2 class="sec">⑥ 공실클럽</h2><div class="card"><ul class="recent">${gsInfo.unread?`<li><span>새 공동중개 문의</span><span><a href="#vacancy">${gsInfo.unread}건 보기</a></span></li>`:''}${gsInfo.stale?`<li><span>"아직 공실인가요?" 확인할 내 공실</span><span><a href="#vacancy">${gsInfo.stale}건</a></span></li>`:''}</ul></div>`:''}
+    ${pubHtml()}
     ${blogHtml()}
     ${hist.length?`<h2 class="sec">최근 토지 시세 상담</h2><div class="card"><ul class="recent">${hist.slice(0,5).map(h=>`<li><span>${esc(h.address)}</span><span>${wonShort(h.lo)}~${wonShort(h.hi)}</span></li>`).join('')}</ul></div>`:''}
-    <h2 class="sec">도구 10종</h2>
+    <h2 class="sec">도구 11종</h2>
     <div class="grid">${TOOLS.map(t=>`<button class="tool ${t.state==='soon'?'dim':''}" data-go="${t.id}">${BADGE[t.state]}<span class="num">${t.num}</span><h3>${esc(t.name)}</h3><p>${esc(t.desc)}</p></button>`).join('')}</div>
     <div class="foot">랜드3 연구소 · 모든 결과는 참고용 사전 점검이며 최종 판단은 관계기관·전문가 확인이 필요합니다.<br>② 다방광고 자료는 이 기기에만 저장됩니다.</div>
   </div>`;
@@ -167,6 +169,10 @@ function renderHome(){
       localStorage.setItem(TK,j.token);me=j.member;reloadFrames();renderAll();loadLh()}catch(e){$('#lmsg').className='msg r';$('#lmsg').textContent=e.message}};
     lg.onclick=f;$('#pin').addEventListener('keydown',e=>{if(e.key==='Enter')f()})}
 }
+function pubHtml(){const J=LSget('pub.jobs',[]);const now=Date.now();let due=0,today=0;const e=new Date();e.setHours(23,59,59,999);
+  J.forEach(j=>Object.values(j.slots||{}).forEach(x=>{if(x.done)return;const t=new Date(x.at).getTime();if(t<=now)due++;else if(t<=e.getTime())today++}));
+  if(!due&&!today)return'';
+  return `<h2 class="sec">⑪ 통합 발행</h2><div class="card"><ul class="recent">${due?`<li><span style="color:var(--red)">지금 올릴 차례</span><span><a href="#publish">${due}건 올리기</a></span></li>`:''}${today?`<li><span>오늘 남은 예약</span><span><a href="#publish">${today}건</a></span></li>`:''}</ul></div>`}
 function blogHtml(){const bh=LSget('bl.history',[]),cfg=LSget('bl.cfg',{goal:3}),dl=LSget('d1c.listings',[]);
   const d=new Date();d.setHours(0,0,0,0);const mon=new Date(d);mon.setDate(d.getDate()-((d.getDay()+6)%7));const ms=mon.getFullYear()+'-'+String(mon.getMonth()+1).padStart(2,'0')+'-'+String(mon.getDate()).padStart(2,'0');
   const wk=bh.filter(h=>h.date>=ms).length,goal=cfg.goal||3;

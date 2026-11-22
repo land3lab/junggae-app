@@ -495,6 +495,14 @@ async function init(){
   if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>drawStill());
 }
 addEventListener('storage',e=>{if(e.key==='d1c.listings'){if(st.src==='dabang')renderDbList();renderHistory()}if(e.key==='d1c.office'){office=LS.get('d1c.office',{});fillOffice();drawStill()}});
+/* ⑨ 통합 발행에서 부르는 연결 — 매물 1건으로 쇼츠 영상을 만듦(실제 길이만큼 걸림) */
+window.__api={async forListing(id){
+  st.src='dabang';renderSrc();await pickListing(id,false);if(st.listingId!==id)throw new Error('쇼츠: 매물을 불러오지 못했어요');
+  if(!st.scenes.length)throw new Error('쇼츠: 대본을 만들지 못했어요');
+  const prev=made;await run(true);if(!made||made===prev)throw new Error('쇼츠: '+($('#makeMsg').textContent||'영상을 만들지 못했어요').replace(/^⚠\s*/,''));
+  return Object.assign({blob:made.blob,ext:made.ext,mime:made.mime,sec:Math.round(total())},pkg())},
+  progress(){return $('#makeMsg').textContent||''},
+  record(r){const H0=LS.get('sh.history',[]);H0.unshift({id:'S'+Date.now().toString(36),at:new Date().toISOString(),listingId:r.listingId,title:r.title,url:r.url||'',down:false,thumb:null});LS.set('sh.history',H0.slice(0,100));renderHistory()}};
 init();
 })();
 </script>
