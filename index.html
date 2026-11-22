@@ -92,15 +92,15 @@ async function rpc(fn,args){const r=await fetch(SB_URL+'/rest/v1/rpc/'+fn,{metho
 
 /* 도구 목록 — 완성되면 page를 채우고 state를 'on'으로 */
 const TOOLS=[
-  {id:'lh',num:'⑤',short:'LH 신호등',name:'LH 전세임대 사전점검 신호등',desc:'등기부 PDF·사진 판독 → 공시가격 자동 조회 → LH 통과 가능성 신호등',page:'lh.html',state:'on'},
-  {id:'dabang',num:'②',short:'다방광고',name:'다방광고 원클릭',desc:'1회 입력 → 표시광고 검사 → 다방·네이버·블로그·당근·밴드 원고 + 다방 자동입력',page:'dabang.html',state:'on'},
-  {id:'land',num:'④',short:'토지 시세',name:'토지 얼마나 해요?',desc:'주소 1개 → 실거래·공시지가 근거 시세 범위 → 고객용 상담 리포트 PDF',page:'land.html',state:'on'},
-  {id:'bid',num:'⑦',short:'입찰서류',name:'경매 입찰서류 자동작성',desc:'사건번호·입찰가 → 새 기일입찰표·위임장·준비물 체크리스트 PDF, "0 하나 더" 실수 방지',page:'bid.html',state:'on'},
-  {id:'vacancy',num:'⑥',short:'공실클럽',name:'공실클럽 (RSA 동문 전용)',desc:'수수료·이용료 0원 동문 공동중개 — 공실 30초 등록·지도 검색·14일 신선도 확인·문의 일지',page:'gongsil.html',state:'new'},
-  {id:'shorts',num:'③',short:'AI쇼츠',name:'AI쇼츠 만들기',desc:'② 매물·사진 → 훅·본문·마무리 대본 + 내 목소리 → 표시사항 고정 30초 세로영상 → 확인 후 유튜브 업로드',page:'shorts.html',state:'new'},
-  {id:'blog',num:'⑧',short:'블로그',name:'블로그 자동생성',desc:'매물·동네·상식·상담사례 → 검색용 제목 5안·본문·태그 + 표시사항 자동 첨부 → 서식 복사·사진 내보내기·발행 기록',page:'blog.html',state:'new'},
   {id:'pc',num:'①',short:'똥컴 PC',name:'똥컴 업그레이드',desc:'오래된 사무실 PC 진단 → 처방 → 실행(윈도우 프로그램)',state:'soon',
-    plan:['사양 자동 진단(CPU·RAM·HDD/SSD·부팅시간)','용도·예산 질문 3개','처방전: 0원 청소 / SSD·RAM / ChromeOS Flex','전후 비교 카드']}
+    plan:['사양 자동 진단(CPU·RAM·HDD/SSD·부팅시간)','용도·예산 질문 3개','처방전: 0원 청소 / SSD·RAM / ChromeOS Flex','전후 비교 카드']},
+  {id:'dabang',num:'②',short:'다방광고',name:'다방광고 원클릭',desc:'1회 입력 → 표시광고 검사 → 다방·네이버·블로그·당근·밴드 원고 + 다방 자동입력',page:'dabang.html',state:'on'},
+  {id:'shorts',num:'③',short:'AI쇼츠',name:'AI쇼츠 만들기',desc:'② 매물·사진 → 훅·본문·마무리 대본 + 내 목소리 → 표시사항 고정 30초 세로영상 → 확인 후 유튜브 업로드',page:'shorts.html',state:'new'},
+  {id:'land',num:'④',short:'토지 시세',name:'토지 얼마나 해요?',desc:'주소 1개 → 실거래·공시지가 근거 시세 범위 → 고객용 상담 리포트 PDF',page:'land.html',state:'on'},
+  {id:'lh',num:'⑤',short:'LH 신호등',name:'LH 전세임대 사전점검 신호등',desc:'등기부 PDF·사진 판독 → 공시가격 자동 조회 → LH 통과 가능성 신호등',page:'lh.html',state:'on'},
+  {id:'vacancy',num:'⑥',short:'공실클럽',name:'공실클럽 (RSA 동문 전용)',desc:'수수료·이용료 0원 동문 공동중개 — 공실 30초 등록·지도 검색·14일 신선도 확인·문의 일지',page:'gongsil.html',state:'new'},
+  {id:'bid',num:'⑦',short:'입찰서류',name:'경매 입찰서류 자동작성',desc:'사건번호·입찰가 → 새 기일입찰표·위임장·준비물 체크리스트 PDF, "0 하나 더" 실수 방지',page:'bid.html',state:'on'},
+  {id:'blog',num:'⑧',short:'블로그',name:'블로그 자동생성',desc:'매물·동네·상식·상담사례 → 검색용 제목 5안·본문·태그 + 표시사항 자동 첨부 → 서식 복사·사진 내보내기·발행 기록',page:'blog.html',state:'new'}
 ];
 const BADGE={on:'<span class="badge b-on">사용 가능</span>',new:'<span class="badge b-new">새로 나옴</span>',soon:'<span class="badge b-soon">준비 중</span>'};
 let me=null,cur='home';const built={};
