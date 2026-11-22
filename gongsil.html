@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>공실클럽 — RSA 동문 공동중개 · 중개사무소 앱 ⑥</title>
+<script>if(/[?&]embed=1/.test(location.search))document.documentElement.classList.add("embed")</script>
+<meta name="theme-color" content="#1f4d3f">
+<link rel="icon" href="icon.svg">
+<style>
+:root{--bg:#f6f5f1;--card:#fff;--ink:#1d2321;--sub:#56605b;--line:#e1dfd7;--brand:#1f4d3f;--brand-soft:#e5efea;
+  --red:#b42318;--red-soft:#fdecea;--yel:#7a5400;--yel-soft:#fff4d6;--grn:#17733f;--grn-soft:#e4f4ea;--r:14px}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;font-size:16px;line-height:1.55;-webkit-text-size-adjust:100%}
+header{background:var(--brand);color:#fff;padding:16px}
+header h1{margin:0;font-size:19px;letter-spacing:-.3px}
+header p{margin:2px 0 0;font-size:13px;opacity:.85}
+.embed header{display:none}
+.wrap{max-width:960px;margin:0 auto;padding:12px 12px 60px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px;margin:0 0 12px}
+.card h2{font-size:16.5px;margin:0 0 10px}
+label.f{display:block;font-size:13.5px;color:var(--sub);font-weight:600}
+input[type=text],input[type=tel],input[type=search],select,textarea{width:100%;min-height:46px;border:1px solid #cfccc2;border-radius:10px;padding:10px 12px;font:inherit;color:var(--ink);background:#fff;margin-top:4px}
+textarea{min-height:90px;resize:vertical}
+input:focus,select:focus,textarea:focus{outline:2px solid #8fb5a6;border-color:var(--brand)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.full{grid-column:1/-1}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.btn{min-height:46px;border:1px solid #cfccc2;background:#fff;border-radius:10px;padding:10px 16px;font:inherit;font-weight:700;color:var(--ink);cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.btn.pri{background:var(--brand);border-color:var(--brand);color:#fff}
+.btn.sm{min-height:44px;padding:8px 12px;font-size:14px}
+.btn.red{color:var(--red);border-color:#f0c4bf}
+.btn:disabled{opacity:.5;cursor:default}
+.seg{display:flex;border:1px solid #cfccc2;border-radius:10px;overflow:hidden;margin-top:4px;flex-wrap:nowrap}
+.seg button{flex:1;min-height:44px;border:0;background:#fff;font:inherit;font-weight:700;color:var(--sub);cursor:pointer;padding:0 6px;white-space:nowrap}
+.seg button+button{border-left:1px solid #cfccc2}
+.seg button.on{background:var(--brand);color:#fff}
+.hint{font-size:13px;color:var(--sub);margin:4px 0 0}
+.note{padding:11px 14px;border-radius:12px;font-size:14px;margin:10px 0 0}
+.note.y{background:var(--yel-soft);color:var(--yel)} .note.r{background:var(--red-soft);color:var(--red)} .note.g{background:var(--grn-soft);color:var(--grn)} .note.b{background:var(--brand-soft);color:var(--brand)}
+.hide{display:none!important}
+nav.sub{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin:0 0 12px;position:sticky;top:0;z-index:20;background:var(--bg);padding:4px 0 8px}
+nav.sub::-webkit-scrollbar{display:none}
+nav.sub button{flex:none;min-height:44px;border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 15px;font:inherit;font-size:14.5px;font-weight:700;color:var(--sub);cursor:pointer;position:relative}
+nav.sub button.on{background:var(--brand);border-color:var(--brand);color:#fff}
+nav.sub .bd{display:inline-block;min-width:19px;height:19px;border-radius:99px;background:var(--red);color:#fff;font-size:11.5px;line-height:19px;text-align:center;margin-left:5px;padding:0 5px}
+.filters{display:grid;grid-template-columns:1.1fr 1fr 1fr;gap:8px}
+.filters .q{grid-column:1/-1}
+.res-head{display:flex;justify-content:space-between;align-items:center;margin:4px 2px 8px;gap:8px}
+.res-head b{font-size:15px}
+.list{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:10px}
+.it{background:#fff;border:1px solid var(--line);border-radius:14px;padding:13px 14px;cursor:pointer;text-align:left;font:inherit;color:inherit;display:block;width:100%}
+.it:hover{border-color:#9fbcb1;box-shadow:0 4px 14px rgba(0,0,0,.05)}
+.it .top{display:flex;gap:6px;align-items:center;flex-wrap:wrap;font-size:13px;color:var(--sub)}
+.tag{display:inline-block;font-size:12px;font-weight:800;border-radius:6px;padding:2px 7px;background:var(--brand-soft);color:var(--brand)}
+.tag.m{background:#eef0ef;color:#4b5450}
+.tag.y{background:var(--yel-soft);color:var(--yel)} .tag.r{background:var(--red-soft);color:var(--red)} .tag.g{background:var(--grn-soft);color:var(--grn)}
+.it .pr{font-size:20px;font-weight:800;letter-spacing:-.4px;margin:5px 0 1px}
+.it .pr small{font-size:13px;font-weight:600;color:var(--sub);margin-left:4px}
+.it .ad{font-size:14.5px;font-weight:600}
+.it .sp{font-size:13.5px;color:var(--sub)}
+.it .ow{display:flex;justify-content:space-between;gap:6px;border-top:1px dashed var(--line);margin-top:8px;padding-top:7px;font-size:13px;color:var(--sub)}
+#map{height:62vh;min-height:360px;border-radius:14px;border:1px solid var(--line);background:#e8e6df}
+.empty{text-align:center;color:var(--sub);padding:34px 10px;font-size:14.5px}
+/* 모달 */
+.modal{position:fixed;inset:0;background:rgba(20,24,22,.55);z-index:70;display:flex;align-items:flex-end;justify-content:center}
+.modal .box{background:#fff;width:100%;max-width:640px;max-height:92vh;overflow:auto;border-radius:18px 18px 0 0;padding:16px 16px 24px}
+@media (min-width:700px){.modal{align-items:center}.modal .box{border-radius:18px}}
+.mh{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:8px}
+.mh h3{margin:0;font-size:18px}
+.x{min-width:44px;min-height:44px;border:0;background:#f1f0eb;border-radius:10px;font-size:20px;cursor:pointer}
+.photos{display:flex;gap:6px;overflow-x:auto;scroll-snap-type:x mandatory;margin:6px 0 10px}
+.photos img{height:220px;max-width:88%;object-fit:cover;border-radius:10px;scroll-snap-align:start;flex:none;background:#eee}
+.kv{display:grid;grid-template-columns:96px 1fr;gap:4px 10px;font-size:14.5px;margin:8px 0}
+.kv dt{color:var(--sub)} .kv dd{margin:0;font-weight:600}
+.contact{background:var(--grn-soft);border-radius:12px;padding:12px 14px;margin-top:10px}
+.contact b{font-size:17px}
+.inq{border-top:1px solid var(--line);padding:9px 0;font-size:14px}
+.inq:first-child{border-top:0}
+.thumbs{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.thumbs div{position:relative}
+.thumbs img{width:84px;height:84px;object-fit:cover;border-radius:8px;display:block}
+.thumbs button{position:absolute;right:-6px;top:-6px;width:28px;height:28px;border-radius:50%;border:0;background:#1d2321;color:#fff;cursor:pointer;font-size:15px;line-height:1}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#1d2321;color:#fff;padding:10px 16px;border-radius:10px;font-size:14px;opacity:0;pointer-events:none;transition:.2s;z-index:90;max-width:90vw}
+.toast.show{opacity:1}
+.stale{background:var(--yel-soft);border-radius:10px;padding:10px 12px;margin-top:8px;font-size:14px;color:var(--yel)}
+.stale.r{background:var(--red-soft);color:var(--red)}
+.mine .it{cursor:default}
+.leaflet-popup-content{font-family:inherit;font-size:13.5px;line-height:1.45;margin:10px 12px}
+.leaflet-popup-content .btn{min-height:36px;padding:4px 10px;font-size:13px;margin-top:6px}
+@media (max-width:620px){.grid,.grid3{grid-template-columns:1fr 1fr}.filters{grid-template-columns:1fr 1fr}.filters .rg{grid-column:1/-1}}
+</style>
+</head>
+<body>
+<header><h1>공실클럽</h1><p>중개사무소 앱 ⑥ · RSA 총동문회 동문 전용 · 수수료·이용료 0원 공동중개</p></header>
+<div class="wrap" id="app"><div class="empty">불러오는 중…</div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+"use strict";
+const SB_URL="https://dwtylilyvmvbpsryvlcg.supabase.co", SB_KEY="sb_publishable_Vht7Hh-4GF-mpbnprPp3FQ_AgGPTKTH", TK="junggae-token";
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const LS={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.remove('show'),2400)}
+const token=()=>{try{return localStorage.getItem(TK)||''}catch(e){return''}};
+async function rpc(fn,args){
+  let r;try{r=await fetch(SB_URL+'/rest/v1/rpc/'+fn,{method:'POST',headers:{apikey:SB_KEY,'Content-Type':'application/json'},body:JSON.stringify(Object.assign({p_token:token()},args||{}))})}catch(e){throw new Error('인터넷 연결을 확인하세요')}
+  const t=await r.text();let j=null;try{j=t?JSON.parse(t):null}catch(e){}
+  if(!r.ok){const m=(j&&j.message)||('서버 오류 '+r.status);if(m==='AUTH_REQUIRED'){try{localStorage.removeItem(TK)}catch(e){}S.me=null;render()}throw new Error(m==='GS_NOT_MEMBER'?'동문 확인이 필요합니다':m)}
+  return j}
+
+const REGIONS=['서울남부','서울동부','서울북부','서울서부','경기남부','경기북부','경기서부','인천','강원','충청','대구경북','부산경남','전라'];
+const DEALS=['월세','전세','매매','단기'];
+const KINDS=['원룸','투룸','쓰리룸+','오피스텔','아파트','빌라','단독·다가구','상가','사무실','지식산업센터','공장·창고','토지','기타'];
+const FEES=['각자 받기(일반 공동중개)','수수료 반반','협의','기타(메모 참고)'];
+const PY=0.3025;
+
+const S={me:null,tab:'find',f:LS.get('gs.filter',{region:'',deal:'',kind:'',maxDeposit:'',maxRent:'',maxPrice:'',q:''}),view:LS.get('gs.view','list'),list:[],mine:[],busy:false,edit:null,photos:null,photosDirty:false};
+
+/* ---------- 표시 ---------- */
+function man(won){if(won==null||won==='')return'';const m=Math.round(won/1e4);if(m>=1e4){const e=Math.floor(m/1e4),r=m%1e4;return e+'억'+(r?' '+r.toLocaleString():'')}return m.toLocaleString()}
+function priceText(l){if(l.deal==='매매')return['매매 '+man(l.price),''];if(l.deal==='전세')return['전세 '+man(l.deposit),''];
+  return[(man(l.deposit)||'0')+' / '+(man(l.rent)||'0'),l.deal==='단기'?'단기 · 만원':'만원']}
+function ago(ts){const d=Math.floor((Date.now()-new Date(ts))/864e5);return d<=0?'오늘':d===1?'어제':d+'일 전'}
+function fresh(l){const d=Math.floor((Date.now()-new Date(l.confirmed_at))/864e5);return d>21?['r','숨김('+d+'일 미확인)']:d>14?['y',d+'일 전 확인']:['g',ago(l.confirmed_at)+' 확인']}
+function area(l){return l.area?`${(+l.area).toLocaleString()}㎡(${(l.area*PY).toFixed(1)}평)`:''}
+function card(l,mine){const[p,u]=priceText(l);const[fc,ft]=fresh(l);
+  return `<button class="it" data-id="${l.id}">
+    <div class="top"><span class="tag">${esc(l.deal)}</span><span class="tag m">${esc(l.kind)}</span>${l.status!=='공실'?`<span class="tag ${l.status==='완료'?'m':'y'}">${esc(l.status)}</span>`:''}<span>${esc(l.region)}</span>${l.photo_n?`<span>📷${l.photo_n}</span>`:''}<span style="margin-left:auto" class="tag ${fc}">${ft}</span></div>
+    <div class="pr">${esc(p)}${u?`<small>${u}</small>`:''}${l.mgmt?`<small>관리비 ${man(l.mgmt)}만</small>`:''}</div>
+    <div class="ad">${esc(l.addr)} ${esc(l.addr_detail||'')}</div>
+    <div class="sp">${[area(l),l.floor,l.rooms,l.move_in&&'입주 '+l.move_in].filter(Boolean).map(esc).join(' · ')}</div>
+    <div class="ow"><span>💰 ${esc(l.fee||'협의')}</span><span>${mine?`문의 ${l.inq_n}건`:`${esc(l.owner?.office||'')} ${esc(l.owner?.name||'')}${l.owner?.cohort?' · '+l.owner.cohort+'기':''}`}</span></div>
+  </button>`}
+
+/* ---------- 화면 ---------- */
+function render(){
+  const A=$('#app');
+  if(!token()||!S.me){A.innerHTML=`<div class="card"><h2>로그인이 필요해요</h2><p class="hint" style="font-size:14.5px">공실클럽은 중개사무소 앱 공용 계정으로 들어옵니다. 홈 탭에서 로그인하거나 ⑤ LH 탭에서 가입한 뒤 다시 열어 주세요.</p>
+    <div class="row" style="margin-top:10px"><a class="btn pri" href="index.html#home" target="_top">홈으로 가서 로그인</a><button class="btn" id="retry">다시 확인</button></div></div>`;
+    $('#retry').onclick=boot;return}
+  const me=S.me;
+  if(!me.ok){A.innerHTML=`<div class="card"><h2>RSA 총동문회 동문 전용입니다</h2>
+    <p style="margin:0 0 8px">가입한 휴대폰 번호(${esc(me.name)} 님)가 동문 명단에서 확인되지 않았어요. 명단 번호가 다르거나 새 기수라면 확인 요청을 남겨 주세요 — 동문회 관리자가 승인합니다.</p>
+    ${me.pending?`<div class="note y">확인 요청을 보냈어요. 승인되면 바로 쓸 수 있습니다.</div>`:''}
+    <label class="f" style="margin-top:10px">기수·권역·명단상 연락처 등 확인용 메모<input type="text" id="reqNote" placeholder="예: 11기, 서울남부, 명단엔 010-xxxx 번호로 등록"></label>
+    <div class="row" style="margin-top:10px"><button class="btn pri" id="reqBtn">${me.pending?'요청 다시 보내기':'동문 확인 요청'}</button><button class="btn" id="retry">명단 다시 확인</button></div>
+    <p class="hint">명단 확인은 휴대폰 번호를 암호화한 값으로만 대조합니다.</p></div>`;
+    $('#reqBtn').onclick=async()=>{try{const j=await rpc('gs_request',{p_note:$('#reqNote').value});if(j.matched){toast('동문으로 확인됐어요');await boot()}else{toast('요청을 보냈어요');S.me.pending=true;render()}}catch(e){toast(e.message)}};
+    $('#retry').onclick=boot;return}
+  const tabs=[['find','🔎 찾기'],['new',S.edit?'✏️ 수정':'➕ 공실 등록'],['mine','📋 내 공실',me.stale],['inbox','💬 문의',me.unread]];
+  if(me.admin)tabs.push(['admin','⚙ 관리',me.pending_n]);
+  A.innerHTML=`<nav class="sub">${tabs.map(([k,t,b])=>`<button data-tab="${k}" class="${S.tab===k?'on':''}">${t}${b?`<span class="bd">${b}</span>`:''}</button>`).join('')}</nav><div id="pane"></div>`;
+  $$('nav.sub button').forEach(b=>b.onclick=()=>{if(b.dataset.tab!=='new')S.edit=null;S.tab=b.dataset.tab;if(S.tab==='new'&&!S.edit){S.photos=[];S.photosDirty=false}render()});
+  ({find:paneFind,new:paneNew,mine:paneMine,inbox:paneInbox,admin:paneAdmin})[S.tab]();
+}
+
+/* ---------- 찾기 ---------- */
+function paneFind(){const f=S.f;
+  $('#pane').innerHTML=`<div class="card" style="padding:12px">
+    <div class="filters">
+      <label class="f rg">권역<select id="fRegion"><option value="">전체 권역</option>${REGIONS.map(r=>`<option ${f.region===r?'selected':''}>${r}</option>`).join('')}</select></label>
+      <label class="f">거래<select id="fDeal"><option value="">전체</option>${DEALS.map(r=>`<option ${f.deal===r?'selected':''}>${r}</option>`).join('')}</select></label>
+      <label class="f">유형<select id="fKind"><option value="">전체</option>${KINDS.map(r=>`<option ${f.kind===r?'selected':''}>${r}</option>`).join('')}</select></label>
+      <label class="f">보증금 이하(만원)<input type="text" id="fDep" inputmode="numeric" value="${f.maxDeposit?f.maxDeposit/1e4:''}" placeholder="제한 없음"></label>
+      <label class="f">월세 이하(만원)<input type="text" id="fRent" inputmode="numeric" value="${f.maxRent?f.maxRent/1e4:''}" placeholder="제한 없음"></label>
+      <label class="f">매매가 이하(만원)<input type="text" id="fPrice" inputmode="numeric" value="${f.maxPrice?f.maxPrice/1e4:''}" placeholder="제한 없음"></label>
+      <label class="f q">검색<input type="search" id="fQ" value="${esc(f.q)}" placeholder="동네·건물명·메모 (예: 봉천동, 역세권)"></label>
+    </div></div>
+  <div class="res-head"><b id="cnt">찾는 중…</b><div class="seg" style="margin:0;width:170px"><button data-v="list" class="${S.view==='list'?'on':''}">목록</button><button data-v="map" class="${S.view==='map'?'on':''}">지도</button></div></div>
+  <div id="res"></div>`;
+  const num=v=>{const n=String(v).replace(/\D/g,'');return n?String(+n*1e4):''};
+  let t=null;const go=()=>{clearTimeout(t);t=setTimeout(()=>{Object.assign(S.f,{region:$('#fRegion').value,deal:$('#fDeal').value,kind:$('#fKind').value,maxDeposit:num($('#fDep').value),maxRent:num($('#fRent').value),maxPrice:num($('#fPrice').value),q:$('#fQ').value.trim()});LS.set('gs.filter',S.f);load()},300)};
+  ['#fRegion','#fDeal','#fKind'].forEach(s=>$(s).onchange=go);['#fDep','#fRent','#fPrice','#fQ'].forEach(s=>$(s).oninput=go);
+  $$('.res-head .seg button').forEach(b=>b.onclick=()=>{S.view=b.dataset.v;LS.set('gs.view',S.view);$$('.res-head .seg button').forEach(x=>x.classList.toggle('on',x===b));showRes()});
+  load()}
+async function load(){try{S.list=await rpc('gs_list',{p_f:S.f})||[];showRes()}catch(e){const r=$('#res');if(r)r.innerHTML=`<div class="note r">${esc(e.message)}</div>`}}
+function showRes(){const r=$('#res');if(!r)return;const L=S.list;
+  $('#cnt').textContent=`공실 ${L.length}건${S.f.region?' · '+S.f.region:''}`;
+  if(!L.length){r.innerHTML=`<div class="empty">조건에 맞는 공실이 아직 없어요.<br>내 공실을 먼저 올려 보세요 — 동문 누군가는 손님이 있습니다.<br><button class="btn pri" style="margin-top:12px" id="goNew">➕ 공실 등록</button></div>`;$('#goNew').onclick=()=>{S.tab='new';S.edit=null;S.photos=[];render()};return}
+  if(S.view==='map'){r.innerHTML='<div id="map"></div><p class="hint" id="nomap"></p>';drawMap(L)}
+  else{r.innerHTML=`<div class="list">${L.map(l=>card(l,false)).join('')}</div>`;r.querySelectorAll('.it').forEach(b=>b.onclick=()=>openDetail(b.dataset.id))}}
+let leafletP=null;
+function leaflet(){if(window.L)return Promise.resolve();if(leafletP)return leafletP;
+  leafletP=new Promise((ok,no)=>{const c=document.createElement('link');c.rel='stylesheet';c.href='vendor/leaflet/leaflet.css';document.head.appendChild(c);
+    const s=document.createElement('script');s.src='vendor/leaflet/leaflet.js';s.onload=ok;s.onerror=()=>{leafletP=null;no(new Error('지도를 불러오지 못했어요'))};document.head.appendChild(s)});return leafletP}
+async function drawMap(L){try{await leaflet()}catch(e){$('#map').outerHTML=`<div class="note r">${esc(e.message)} — 목록으로 보세요.</div>`;return}
+  const el=$('#map');if(!el)return;const m=window.L.map(el,{scrollWheelZoom:true});
+  window.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'}).addTo(m);
+  const pts=L.filter(l=>l.lat&&l.lng);const groups={};pts.forEach(l=>{const k=l.lat.toFixed(5)+','+l.lng.toFixed(5);(groups[k]=groups[k]||[]).push(l)});
+  const bounds=[];Object.values(groups).forEach(g=>{const ll=[g[0].lat,g[0].lng];bounds.push(ll);
+    const mk=window.L.marker(ll).addTo(m);
+    mk.bindPopup(g.map(l=>{const[p,u]=priceText(l);return `<div style="margin-bottom:6px"><b>${esc(l.deal)} ${esc(p)}${u?' '+u:''}</b><br>${esc(l.kind)} · ${esc(l.addr_detail||'')}<br><span style="color:#56605b">${esc(l.owner?.office||'')}</span><br><button class="btn" data-pid="${l.id}">자세히</button></div>`}).join(''))});
+  m.on('popupopen',e=>e.popup.getElement().querySelectorAll('[data-pid]').forEach(b=>b.onclick=()=>openDetail(b.dataset.pid)));
+  if(bounds.length)m.fitBounds(bounds,{padding:[30,30],maxZoom:16});else m.setView([37.5665,126.978],11);
+  const miss=L.length-pts.length;if(miss)$('#nomap').textContent=`주소 위치를 못 찾은 ${miss}건은 목록에서 보세요.`;
+  setTimeout(()=>m.invalidateSize(),100)}
+
+/* ---------- 상세 ---------- */
+function modal(html){const d=document.createElement('div');d.className='modal';d.innerHTML=`<div class="box">${html}</div>`;document.body.appendChild(d);
+  d.onclick=e=>{if(e.target===d)close()};const close=()=>{d.remove();removeEventListener('keydown',k)};const k=e=>{if(e.key==='Escape')close()};addEventListener('keydown',k);d.close=close;return d}
+async function openDetail(id){let l;try{l=await rpc('gs_get',{p_id:id})}catch(e){toast(e.message);return}
+  const[p,u]=priceText(l);const[fc,ft]=fresh(l);
+  const tel=x=>String(x||'').replace(/\D/g,''),fmtTel=x=>{const d=tel(x);return d.length===11?d.replace(/(\d{3})(\d{4})(\d{4})/,'$1-$2-$3'):d};
+  const contactHtml=c=>`<div class="contact">📞 <b>${esc(l.owner?.office||'')} ${esc(l.owner?.name||'')}</b> ${l.owner?.cohort?'('+l.owner.cohort+'기)':''}<br><span style="font-size:18px;font-weight:800">${fmtTel(c.phone)}</span>
+    <div class="row" style="margin-top:8px"><a class="btn pri sm" href="tel:${tel(c.phone)}">전화</a><a class="btn sm" href="sms:${tel(c.phone)}?body=${encodeURIComponent('[공실클럽] '+l.addr+' '+(l.addr_detail||'')+' '+l.deal+' 공동중개 문의드립니다.')}">문자</a></div></div>`;
+  const d=modal(`<div class="mh"><div><div class="top" style="display:flex;gap:6px;flex-wrap:wrap"><span class="tag">${esc(l.deal)}</span><span class="tag m">${esc(l.kind)}</span>${l.status!=='공실'?`<span class="tag y">${esc(l.status)}</span>`:''}<span class="tag ${fc}">${ft}</span></div>
+      <h3 style="margin-top:6px">${esc(p)} ${u?`<small style="font-size:13px;color:var(--sub)">${u}</small>`:''}</h3></div><button class="x" aria-label="닫기">×</button></div>
+    ${l.photos&&l.photos.length?`<div class="photos">${l.photos.map(s=>`<img src="${s}" alt="공실 사진">`).join('')}</div>`:''}
+    <dl class="kv">
+      <dt>주소</dt><dd>${esc(l.addr)} ${esc(l.addr_detail||'')}</dd>
+      <dt>권역</dt><dd>${esc(l.region)}</dd>
+      ${l.mgmt?`<dt>관리비</dt><dd>${man(l.mgmt)}만원</dd>`:''}
+      ${l.area?`<dt>면적</dt><dd>${area(l)}</dd>`:''}
+      ${l.floor?`<dt>층</dt><dd>${esc(l.floor)}</dd>`:''}
+      ${l.rooms?`<dt>구조</dt><dd>${esc(l.rooms)}</dd>`:''}
+      ${l.move_in?`<dt>입주</dt><dd>${esc(l.move_in)}</dd>`:''}
+      <dt>수수료</dt><dd>${esc(l.fee||'협의')}</dd>
+      <dt>등록</dt><dd>${esc(l.owner?.office||'')} ${esc(l.owner?.name||'')} ${l.owner?.cohort?'· '+l.owner.cohort+'기':''} · ${ago(l.created_at)}</dd>
+    </dl>
+    ${l.memo?`<div class="note b" style="white-space:pre-wrap">${esc(l.memo)}</div>`:''}
+    <div id="dAct"></div>`);
+  d.querySelector('.x').onclick=d.close;
+  const act=d.querySelector('#dAct');
+  if(l.mine){act.innerHTML=`<h3 style="font-size:15px;margin:14px 0 4px">공동중개 문의 ${l.inquiries.length}건</h3>
+    ${l.inquiries.length?l.inquiries.map(q=>`<div class="inq"><b>${esc(q.from.office)} ${esc(q.from.name)}</b>${q.from.cohort?' ('+q.from.cohort+'기)':''} · ${ago(q.at)}<br>${q.msg?esc(q.msg)+'<br>':''}<a href="tel:${tel(q.from.phone)}">${fmtTel(q.from.phone)}</a></div>`).join(''):'<p class="hint">아직 문의가 없어요.</p>'}
+    <div class="row" style="margin-top:12px"><button class="btn sm" id="dEdit">✏️ 수정</button><button class="btn sm" id="dOk">✅ 아직 공실</button><button class="btn sm" id="dIng">계약중</button><button class="btn sm" id="dDone">거래완료</button></div>`;
+    act.querySelector('#dEdit').onclick=()=>{d.close();startEdit(l)};
+    [['#dOk','확인'],['#dIng','계약중'],['#dDone','완료']].forEach(([s,v])=>act.querySelector(s).onclick=async()=>{try{await rpc('gs_status',{p_id:l.id,p_status:v});toast(v==='확인'?'공실 확인 완료 — 14일 더 노출됩니다':v==='완료'?'거래완료 처리했어요(목록에서 내려감)':'계약중으로 바꿨어요');d.close();await refreshMe();render()}catch(e){toast(e.message)}});
+    S.me.unread=0;
+  }else if(l.contact){act.innerHTML=contactHtml(l.contact)+'<p class="hint">이미 문의를 남긴 공실입니다.</p>'}
+  else{act.innerHTML=`<label class="f" style="margin-top:12px">문의 메모(선택)<input type="text" id="dMsg" maxlength="300" placeholder="예: 12/5 입주 원하는 직장인 손님 있습니다"></label>
+    <button class="btn pri" style="width:100%;margin-top:8px" id="dAsk">문의 남기고 연락처 보기</button>
+    <p class="hint">문의 기록은 공동중개 일지로 등록 중개사에게도 남습니다. 임대인 연락은 등록 중개사를 통해서만 해 주세요.</p>`;
+    act.querySelector('#dAsk').onclick=async()=>{try{const j=await rpc('gs_inquire',{p_id:l.id,p_msg:act.querySelector('#dMsg').value});act.innerHTML=contactHtml(j.contact)}catch(e){toast(e.message)}}}
+}
+
+/* ---------- 등록·수정 ---------- */
+function startEdit(l){S.edit=l;S.tab='new';S.photos=(l.photos||[]).slice();S.photosDirty=false;render()}
+function paneNew(){const e=S.edit||{},me=S.me;const v=k=>esc(e[k]??'');const mv=k=>e[k]!=null&&e[k]!==''?e[k]/1e4:'';
+  const deal=e.deal||'월세';
+  $('#pane').innerHTML=`<div class="card">
+    <h2>${S.edit?'공실 수정':'공실 30초 등록'}</h2>
+    <label class="f">거래</label><div class="seg" id="nDeal">${DEALS.map(d=>`<button type="button" data-d="${d}" class="${deal===d?'on':''}">${d}</button>`).join('')}</div>
+    <div class="grid" style="margin-top:10px">
+      <label class="f">유형<select id="nKind">${KINDS.map(k=>`<option ${e.kind===k?'selected':''}>${k}</option>`).join('')}</select></label>
+      <label class="f">권역<select id="nRegion">${REGIONS.map(r=>`<option ${(e.region||me.region)===r?'selected':''}>${r}</option>`).join('')}</select></label>
+      <label class="f full">주소(도로명 또는 지번)<input type="text" id="nAddr" value="${v('addr')}" placeholder="예: 관악구 관악로6길 99 / 봉천동 1598-1"></label>
+      <label class="f full">동·호수·층 등 상세<input type="text" id="nDetail" value="${v('addr_detail')}" placeholder="예: 301호 (공개 범위는 동문만)"></label>
+      <label class="f dep">보증금(만원)<input type="text" id="nDep" inputmode="numeric" value="${mv('deposit')}"></label>
+      <label class="f rent">월세(만원)<input type="text" id="nRent" inputmode="numeric" value="${mv('rent')}"></label>
+      <label class="f price">매매가(만원)<input type="text" id="nPrice" inputmode="numeric" value="${mv('price')}"></label>
+      <label class="f">관리비(만원)<input type="text" id="nMgmt" inputmode="decimal" value="${mv('mgmt')}"></label>
+      <label class="f">전용면적(㎡) <span id="py" style="font-weight:400"></span><input type="text" id="nArea" inputmode="decimal" value="${v('area')}"></label>
+      <label class="f">층<input type="text" id="nFloor" value="${v('floor')}" placeholder="예: 3층/5층"></label>
+      <label class="f">구조<input type="text" id="nRooms" value="${v('rooms')}" placeholder="예: 방2·욕실1, 분리형"></label>
+      <label class="f">입주 가능일<input type="text" id="nMove" value="${v('move_in')}" placeholder="예: 즉시, 12월 초, 협의"></label>
+      <label class="f full">수수료 분배 조건<select id="nFee">${FEES.map(x=>`<option ${e.fee===x?'selected':''}>${x}</option>`).join('')}</select></label>
+      <label class="f full">메모(장점·조건)<textarea id="nMemo" maxlength="1000" placeholder="예: 역 5분, 반려동물 협의, 주차 1대">${v('memo')}</textarea></label>
+    </div>
+    <div id="memoWarn" class="note r hide">메모에 전화번호처럼 보이는 숫자가 있어요. 임대인 연락처·인적사항은 적지 마세요(개인정보·매물 빼가기 방지).</div>
+    <label class="f" style="margin-top:10px">사진(최대 5장 · 자동 압축)</label>
+    <input type="file" id="nFile" accept="image/*" multiple style="margin-top:6px">
+    <div class="thumbs" id="thumbs"></div>
+    <p class="hint">문패·얼굴·차량번호가 보이는 사진은 빼 주세요. 거래완료로 바꾸면 사진은 자동 삭제됩니다.</p>
+    <div class="row" style="margin-top:14px"><button class="btn pri" id="nSave" style="flex:1">${S.edit?'수정 저장':'등록하기'}</button>${S.edit?'<button class="btn red" id="nDel">삭제</button><button class="btn" id="nCancel">취소</button>':''}</div>
+  </div>`;
+  let d=deal;const vis=()=>{$('.dep').classList.toggle('hide',d==='매매');$('.rent').classList.toggle('hide',d!=='월세'&&d!=='단기');$('.price').classList.toggle('hide',d!=='매매')};vis();
+  $$('#nDeal button').forEach(b=>b.onclick=()=>{d=b.dataset.d;$$('#nDeal button').forEach(x=>x.classList.toggle('on',x===b));vis()});
+  const py=()=>{const a=parseFloat($('#nArea').value);$('#py').textContent=a?`= ${(a*PY).toFixed(1)}평`:''};$('#nArea').oninput=py;py();
+  $('#nMemo').oninput=()=>$('#memoWarn').classList.toggle('hide',!/01[016789][-\s.]?\d{3,4}[-\s.]?\d{4}|0\d{1,2}[-\s.]\d{3,4}[-\s.]\d{4}/.test($('#nMemo').value));
+  drawThumbs();
+  $('#nFile').onchange=async ev=>{const fs=[...ev.target.files];ev.target.value='';for(const f of fs){if(S.photos.length>=5){toast('사진은 5장까지예요');break}try{S.photos.push(await shrink(f));S.photosDirty=true}catch(e){toast('사진을 읽지 못했어요')}}drawThumbs()};
+  if(S.edit){$('#nCancel').onclick=()=>{S.edit=null;S.tab='mine';render()};
+    $('#nDel').onclick=async()=>{if(!confirm('이 공실을 삭제할까요? 문의 기록도 함께 지워집니다.'))return;try{await rpc('gs_delete',{p_id:S.edit.id});toast('삭제했어요');S.edit=null;S.tab='mine';await refreshMe();render()}catch(e){toast(e.message)}}}
+  $('#nSave').onclick=async()=>{const n=s=>{const x=String($(s).value).replace(/[^\d.]/g,'');return x?String(Math.round(parseFloat(x)*1e4)):''};
+    const data={deal:d,kind:$('#nKind').value,region:$('#nRegion').value,addr:$('#nAddr').value.trim(),addr_detail:$('#nDetail').value.trim(),
+      deposit:d==='매매'?'':n('#nDep'),rent:(d==='월세'||d==='단기')?n('#nRent'):'',price:d==='매매'?n('#nPrice'):'',mgmt:n('#nMgmt'),
+      area:$('#nArea').value.replace(/[^\d.]/g,''),floor:$('#nFloor').value.trim(),rooms:$('#nRooms').value.trim(),move_in:$('#nMove').value.trim(),fee:$('#nFee').value,memo:$('#nMemo').value.trim()};
+    if(!data.addr){toast('주소를 입력하세요');$('#nAddr').focus();return}
+    if(d==='매매'?!data.price:!data.deposit&&d!=='단기'){toast(d==='매매'?'매매가를 입력하세요':'보증금을 입력하세요');return}
+    const b=$('#nSave');b.disabled=true;b.textContent='저장 중…';
+    try{const j=await rpc('gs_save',{p_id:S.edit?S.edit.id:null,p_d:data});
+      if(S.photosDirty){b.textContent='사진 올리는 중…';await rpc('gs_photos_set',{p_id:j.id,p_photos:S.photos})}
+      toast((S.edit?'수정했어요':'등록했어요 — 동문들에게 바로 보입니다')+(j.geo?'':' (지도 위치는 못 찾음)'));
+      S.edit=null;S.photos=[];S.photosDirty=false;S.tab='mine';await refreshMe();render()}
+    catch(e){toast(e.message);b.disabled=false;b.textContent=S.edit?'수정 저장':'등록하기'}};
+}
+function drawThumbs(){const t=$('#thumbs');if(!t)return;t.innerHTML=S.photos.map((s,i)=>`<div><img src="${s}" alt=""><button data-i="${i}" aria-label="사진 빼기">×</button></div>`).join('');
+  t.querySelectorAll('button').forEach(b=>b.onclick=()=>{S.photos.splice(+b.dataset.i,1);S.photosDirty=true;drawThumbs()})}
+function shrink(file){return new Promise((ok,no)=>{const fr=new FileReader();fr.onerror=no;fr.onload=()=>{const im=new Image();im.onerror=no;im.onload=()=>{
+  let q=.72,max=1280,out='';for(let i=0;i<5;i++){const s=Math.min(1,max/Math.max(im.width,im.height));const c=document.createElement('canvas');c.width=Math.round(im.width*s);c.height=Math.round(im.height*s);
+    c.getContext('2d').drawImage(im,0,0,c.width,c.height);out=c.toDataURL('image/jpeg',q);if(out.length<280000)break;q-=.1;max=Math.round(max*.85)}ok(out)};im.src=fr.result};fr.readAsDataURL(file)})}
+
+/* ---------- 내 공실 ---------- */
+async function paneMine(){$('#pane').innerHTML='<div class="empty">불러오는 중…</div>';
+  try{S.mine=await rpc('gs_list',{p_f:{mine:true}})||[]}catch(e){$('#pane').innerHTML=`<div class="note r">${esc(e.message)}</div>`;return}
+  const L=S.mine;if(!L.length){$('#pane').innerHTML=`<div class="empty">아직 올린 공실이 없어요.<br><button class="btn pri" style="margin-top:12px" id="goNew">➕ 공실 등록</button></div>`;$('#goNew').onclick=()=>{S.tab='new';S.photos=[];render()};return}
+  const act=L.filter(l=>l.status!=='완료'),done=L.filter(l=>l.status==='완료');
+  $('#pane').innerHTML=`<div class="note b" style="margin:0 0 10px">14일마다 "아직 공실인가요?"를 확인해 주세요. 21일 넘게 확인이 없으면 다른 동문에게 자동으로 숨겨집니다(허위·지난 매물 방지).</div>
+    <div class="list mine">${act.map(l=>{const dd=Math.floor((Date.now()-new Date(l.confirmed_at))/864e5);
+      return `<div>${card(l,true)}${dd>14?`<div class="stale ${dd>21?'r':''}">${dd>21?'다른 동문에게 숨겨진 상태예요.':'아직 공실인가요?'} (${dd}일째 미확인)<div class="row" style="margin-top:6px"><button class="btn sm" data-s="확인" data-id="${l.id}">✅ 아직 공실</button><button class="btn sm" data-s="계약중" data-id="${l.id}">계약중</button><button class="btn sm" data-s="완료" data-id="${l.id}">거래완료</button></div></div>`:''}</div>`}).join('')}</div>
+    ${done.length?`<h3 style="font-size:15px;color:var(--sub);margin:18px 2px 8px">거래완료 ${done.length}건</h3><div class="list mine">${done.map(l=>card(l,true)).join('')}</div>`:''}`;
+  $$('#pane .it').forEach(b=>b.onclick=()=>openDetail(b.dataset.id));
+  $$('#pane [data-s]').forEach(b=>b.onclick=async()=>{try{await rpc('gs_status',{p_id:b.dataset.id,p_status:b.dataset.s});toast('반영했어요');await refreshMe();render()}catch(e){toast(e.message)}})}
+
+/* ---------- 문의함 ---------- */
+async function paneInbox(){$('#pane').innerHTML='<div class="empty">불러오는 중…</div>';let j;
+  try{j=await rpc('gs_inbox')}catch(e){$('#pane').innerHTML=`<div class="note r">${esc(e.message)}</div>`;return}
+  const tel=x=>String(x||'').replace(/\D/g,'');S.me.unread=0;
+  const row=(q,who,unread)=>`<div class="inq">${unread?'<span class="tag r">새 문의</span> ':''}<b>${esc(who.office)} ${esc(who.name)}</b>${who.cohort?' ('+who.cohort+'기)':''} · ${ago(q.at)}
+    <br><a href="#" data-id="${q.listing.id}">${esc(q.listing.deal)} ${esc(q.listing.kind)} · ${esc(q.listing.addr)} ${esc(q.listing.addr_detail||'')}</a>${q.listing.status&&q.listing.status!=='공실'?' <span class="tag y">'+esc(q.listing.status)+'</span>':''}
+    ${q.msg?'<br>“'+esc(q.msg)+'”':''}<br><a class="btn sm" style="margin-top:6px" href="tel:${tel(who.phone)}">📞 ${esc(who.phone)}</a></div>`;
+  $('#pane').innerHTML=`<div class="card"><h2>받은 문의 (공동중개 일지)</h2>${j.received.length?j.received.map(q=>row(q,q.from,!q.read)).join(''):'<p class="hint">아직 받은 문의가 없어요.</p>'}</div>
+    <div class="card"><h2>내가 한 문의</h2>${j.sent.length?j.sent.map(q=>row(q,q.to,false)).join(''):'<p class="hint">아직 문의한 공실이 없어요.</p>'}</div>
+    <p class="hint">최근 180일 기록입니다. 누가 언제 문의했는지 남아 공동중개 분쟁 예방에 쓰입니다.</p>`;
+  $$('#pane a[data-id]').forEach(a=>a.onclick=e=>{e.preventDefault();openDetail(a.dataset.id)});
+  $$('nav.sub button[data-tab=inbox] .bd').forEach(x=>x.remove())}
+
+/* ---------- 관리 ---------- */
+async function paneAdmin(){$('#pane').innerHTML='<div class="empty">불러오는 중…</div>';let L;
+  try{L=await rpc('gs_admin_list')}catch(e){$('#pane').innerHTML=`<div class="note r">${esc(e.message)}</div>`;return}
+  $('#pane').innerHTML=`<div class="card"><h2>동문 확인 요청 ${L.length}건</h2>
+    <p class="hint" style="margin:0 0 8px">동문 명단(동문이 앱 기준 503명, 2026-11-22 반영)에 휴대폰 번호가 없는 가입자입니다. 동문이 맞으면 승인하세요.</p>
+    ${L.length?L.map(m=>`<div class="inq"><b>${esc(m.name)}</b> · ${esc(m.office)} · 등록번호 ${esc(m.reg_no)}<br>${esc(m.phone)} · ${ago(m.at)}${m.note?'<br>메모: '+esc(m.note):''}
+      <div class="row" style="margin-top:6px"><button class="btn pri sm" data-ok="1" data-id="${m.id}">승인</button><button class="btn sm red" data-ok="0" data-id="${m.id}">거절</button></div></div>`).join(''):'<p class="hint">대기 중인 요청이 없어요.</p>'}</div>`;
+  $$('#pane [data-ok]').forEach(b=>b.onclick=async()=>{try{await rpc('gs_admin_set',{p_member:b.dataset.id,p_ok:b.dataset.ok==='1'});toast(b.dataset.ok==='1'?'승인했어요':'거절했어요');await refreshMe();render()}catch(e){toast(e.message)}})}
+
+/* ---------- 시작 ---------- */
+async function refreshMe(){try{S.me=await rpc('gs_me')}catch(e){if(e.message!=='인터넷 연결을 확인하세요')S.me=null;else throw e}}
+async function boot(){if(!token()){S.me=null;render();return}
+  try{await refreshMe()}catch(e){$('#app').innerHTML=`<div class="note r">${esc(e.message)}</div>`;return}
+  if(S.me&&S.me.ok&&!S.f.region&&S.me.region&&!LS.get('gs.filter',null)){S.f.region=REGIONS.includes(S.me.region)?S.me.region:''}
+  render()}
+addEventListener('storage',e=>{if(e.key===TK)boot()});
+boot();
+})();
+</script>
+</body>
+</html>
