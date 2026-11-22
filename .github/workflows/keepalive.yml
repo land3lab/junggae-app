@@ -1,0 +1,19 @@
+# Supabase 무료 플랜은 7일간 요청이 없으면 프로젝트를 일시정지합니다.
+# 매일 한 번 가벼운 조회를 보내 서버가 잠들지 않게 합니다.
+name: keep-supabase-awake
+on:
+  schedule:
+    - cron: "17 0 * * *"   # 매일 오전 9시 17분(한국시간)
+  workflow_dispatch:
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Supabase RPC
+        run: |
+          code=$(curl -s -o /dev/null -w "%{http_code}" -X POST \
+            "https://dwtylilyvmvbpsryvlcg.supabase.co/rest/v1/rpc/lh_share_get" \
+            -H "apikey: sb_publishable_Vht7Hh-4GF-mpbnprPp3FQ_AgGPTKTH" \
+            -H "Content-Type: application/json" -d '{"p_id":"keepalive"}')
+          echo "HTTP $code"
+          test "$code" = "200" -o "$code" = "204"
