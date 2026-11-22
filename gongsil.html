@@ -105,6 +105,7 @@ nav.sub .bd{display:inline-block;min-width:19px;height:19px;border-radius:99px;b
 <script>
 (function(){
 "use strict";
+const VW_KEY="072D9167-7EB4-4FFE-9765-0EFA6F25F41B";
 const SB_URL="https://dwtylilyvmvbpsryvlcg.supabase.co", SB_KEY="sb_publishable_Vht7Hh-4GF-mpbnprPp3FQ_AgGPTKTH", TK="junggae-token";
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -201,7 +202,12 @@ function leaflet(){if(window.L)return Promise.resolve();if(leafletP)return leafl
     const s=document.createElement('script');s.src='vendor/leaflet/leaflet.js';s.onload=ok;s.onerror=()=>{leafletP=null;no(new Error('지도를 불러오지 못했어요'))};document.head.appendChild(s)});return leafletP}
 async function drawMap(L){try{await leaflet()}catch(e){$('#map').outerHTML=`<div class="note r">${esc(e.message)} — 목록으로 보세요.</div>`;return}
   const el=$('#map');if(!el)return;if(S.map){try{S.map.remove()}catch(e){}}const m=window.L.map(el,{scrollWheelZoom:true});S.map=m;S.marks={};
-  window.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'}).addTo(m);
+  // 바탕지도: VWorld(국토부) 우선, 타일 오류가 이어지면 OpenStreetMap으로 자동 전환
+  const osm=()=>window.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'});
+  if(/junggae-app\.vercel\.app$/.test(location.hostname)){let bad=0,ok=0;
+    const vw=window.L.tileLayer('https://api.vworld.kr/req/wmts/1.0.0/'+VW_KEY+'/Base/{z}/{y}/{x}.png',{minZoom:6,maxZoom:19,attribution:'© VWorld 국토교통부'});
+    vw.on('tileload',()=>ok++);vw.on('tileerror',()=>{if(++bad>=3&&!ok&&m.hasLayer(vw)){m.removeLayer(vw);osm().addTo(m)}});vw.addTo(m)}
+  else osm().addTo(m);
   const pts=L.filter(l=>l.lat&&l.lng);const groups={};pts.forEach(l=>{const k=l.lat.toFixed(5)+','+l.lng.toFixed(5);(groups[k]=groups[k]||[]).push(l)});
   const bounds=[];Object.values(groups).forEach(g=>{const ll=[g[0].lat,g[0].lng];bounds.push(ll);
     const mk=window.L.marker(ll).addTo(m);g.forEach(l=>S.marks[l.id]=mk);
