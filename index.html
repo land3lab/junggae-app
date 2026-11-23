@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>중개사무소 앱 — 중개사 실전 도구 10종</title>
+<title>중개사무소 앱 — 중개사 실전 도구 11종</title>
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#ffffff">
 <link rel="icon" href="img/icon-192.png">
@@ -71,7 +71,7 @@ input{width:100%;min-height:46px;border:1px solid #D6D6D6;border-radius:10px;pad
 <body>
 <div class="top">
   <div class="in">
-    <h1><img src="img/land3-logo.png" alt="랜드3 연구소"><span class="bar"></span><span>중개사무소 앱<small>중개사 실전 도구 10종</small></span></h1>
+    <h1><img src="img/land3-logo.png" alt="랜드3 연구소"><span class="bar"></span><span>중개사무소 앱<small>중개사 실전 도구 11종</small></span></h1>
     <div class="who" id="who"></div>
     <button class="ibtn" id="installBtn" style="display:none">설치</button>
   </div>
@@ -92,8 +92,7 @@ async function rpc(fn,args){const r=await fetch(SB_URL+'/rest/v1/rpc/'+fn,{metho
 
 /* 도구 목록 — 완성되면 page를 채우고 state를 'on'으로 */
 const TOOLS=[
-  {id:'pc',num:'①',short:'똥컴 PC',name:'똥컴 업그레이드',desc:'오래된 사무실 PC 진단 → 처방 → 실행(윈도우 프로그램)',state:'soon',
-    plan:['사양 자동 진단(CPU·RAM·HDD/SSD·부팅시간)','용도·예산 질문 3개','처방전: 0원 청소 / SSD·RAM / ChromeOS Flex','전후 비교 카드']},
+  {id:'pc',num:'①',short:'똥컴 PC',name:'똥컴 업그레이드 (똥컴닥터)',desc:'느린 윈도우 PC 자동 진단 → 질문 3개 → 처방전(0원 청소·SSD/RAM·ChromeOS Flex) → 복원지점 후 실행 → 전후 비교·처방 리포트',page:'pc.html',state:'new'},
   {id:'dabang',num:'②',short:'다방광고',name:'다방광고 원클릭',desc:'1회 입력 → 표시광고 검사 → 다방·네이버·블로그·당근·밴드 원고 + 다방 자동입력',page:'dabang.html',state:'on'},
   {id:'shorts',num:'③',short:'AI쇼츠',name:'AI쇼츠 만들기',desc:'② 매물·사진 → 훅·본문·마무리 대본 + 내 목소리 → 표시사항 고정 30초 세로영상 → 확인 후 유튜브 업로드',page:'shorts.html',state:'new'},
   {id:'land',num:'④',short:'토지 시세',name:'토지 얼마나 해요?',desc:'주소 1개 → 실거래·공시지가 근거 시세 범위 → 고객용 상담 리포트 PDF',page:'land.html',state:'on'},

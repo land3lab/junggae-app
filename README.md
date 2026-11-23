@@ -1,8 +1,9 @@
 # 중개사무소 앱
 
-중개사가 공짜로, 한 화면에서 쓰는 실전 도구 10종 (랜드3 연구소).
+중개사가 공짜로, 한 화면에서 쓰는 실전 도구 11종 (랜드3 연구소).
 
 - `index.html` — 탭형 대시보드(홈 요약 + 도구 탭, 각 도구는 `?embed=1`로 iframe에 표시). 새 도구는 `TOOLS` 배열에 page·state만 추가
+- `pc.html` — ① 똥컴 업그레이드: 윈도우 프로그램 똥컴닥터(`download/ddongcom-doctor-v1.0.zip` = 실행.bat + DdongcomDoctor.ps1 + 사용설명.txt, PowerShell 5.1 WinForms) 내려받기·실행 안내, 브라우저 간이 확인(CPU 스레드·deviceMemory·윈도우 10/11), 처방 기준표, 처방 기록 `pc.history`(기기 저장). 프로그램: 진단→질문 3개→처방전 A/B/C→복원지점 후 처방 A 실행·되돌리기→전후 비교→HTML 처방 리포트
 - `lh.html` — ⑤ LH 전세임대 사전점검 신호등
 - `dabang.html` — ② 다방광고 원클릭 (기기 저장, 주소→건축물대장 자동조회 `junggae_building`)
 - `land.html` — ④ 토지 얼마나 해요? (토지특성·공시지가 `sise_land`, 토지 실거래 `sise_trades`, 키 미등록 시 국토부 CSV 업로드)
