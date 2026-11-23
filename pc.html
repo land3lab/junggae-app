@@ -58,8 +58,19 @@ input[type=text],input[type=number]{width:100%;min-height:46px;border:1px solid 
 .hist .m{font-size:12.5px;color:var(--sub)}
 .hist .up{font-weight:800;color:var(--grn);white-space:nowrap}
 .x{border:0;background:transparent;color:#9aa0a2;font-size:18px;cursor:pointer;min-width:36px;min-height:36px}
+.prog{height:10px;background:#EEE;border-radius:99px;overflow:hidden;margin:2px 0 4px}.prog i{display:block;height:100%;background:var(--brand);transition:width .3s}
+.fx{margin:8px 0 0;padding:0;list-style:none}
+.fx>li{border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin:0 0 8px;display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:start;background:#fff}
+.fx>li.done{background:#F6FBF8;border-color:#CDE8D6}
+.fx .ck{width:24px;height:24px;margin-top:2px;accent-color:var(--grn);cursor:pointer}
+.fx h3{margin:0;font-size:15.5px}.fx h3 small{font-weight:600;color:var(--sub);font-size:12px;margin-left:6px}
+.fx p{margin:2px 0 0;font-size:13.5px;color:var(--sub)}
+.fx ol{margin:6px 0 0;padding-left:18px;font-size:14px}.fx ol li{margin:2px 0}
+.fx>li.done ol{display:none}
+.fx .go{white-space:nowrap}
+.row2{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:4px}
 .foot{margin-top:18px;font-size:12.5px;color:var(--sub);text-align:center}
-@media (max-width:640px){.hero{grid-template-columns:1fr}.flow,.quick{grid-template-columns:1fr 1fr}.grid{grid-template-columns:1fr 1fr}.grid .w{grid-column:1/-1}}
+@media (max-width:640px){.fx>li{grid-template-columns:auto 1fr}.fx .go{grid-column:2;justify-self:start}.hero{grid-template-columns:1fr}.flow,.quick{grid-template-columns:1fr 1fr}.grid{grid-template-columns:1fr 1fr}.grid .w{grid-column:1/-1}}
 </style>
 <link rel="stylesheet" href="land3.css">
 </head>
@@ -70,10 +81,13 @@ input[type=text],input[type=number]{width:100%;min-height:46px;border:1px solid 
   <div class="card hero">
     <div>
       <h2>똥컴닥터 v1.0 <span class="tag t-a" style="vertical-align:middle">무료</span></h2>
-      <p>사무실·상담실의 느린 윈도우 PC를 자동으로 진단하고, 0원 청소부터 SSD·메모리 교체, ChromeOS Flex 전환까지 처방전을 만들어 줍니다. 설치 없이 실행되는 윈도우 프로그램입니다.</p>
-      <p class="hint">Windows 10 / 11 · 24KB · 설치 불필요 (PowerShell 기본 기능만 사용)</p>
+      <p>느린 윈도우 PC, 두 가지로 고칩니다. <b>① 바로 고치기</b> — 다운로드 없이 버튼을 눌러 윈도우 설정 화면을 열고 스위치만 끄기. <b>② 정밀 진단 프로그램</b> — HDD/SSD·부팅시간까지 진단하고 처방전·자동 실행·전후 비교.</p>
+      <p class="hint">Windows 10 / 11 · 프로그램 24KB · 설치 불필요</p>
     </div>
-    <a class="btn pri big" id="dl" href="download/ddongcom-doctor-v1.0.zip" download="똥컴닥터_v1.0.zip">⬇ 프로그램 받기</a>
+    <div style="display:grid;gap:8px">
+      <a class="btn pri big" href="#fix" id="goFix">⚡ 바로 고치기</a>
+      <a class="btn" id="dl" href="download/ddongcom-doctor-v1.0.zip" download="똥컴닥터_v1.0.zip">⬇ 정밀 진단 프로그램 받기</a>
+    </div>
   </div>
 
   <div class="card">
@@ -82,8 +96,16 @@ input[type=text],input[type=number]{width:100%;min-height:46px;border:1px solid 
     <p class="hint">브라우저로는 CPU 개수·메모리(대략)·윈도우 버전까지만 보입니다. 저장장치(HDD/SSD)·부팅시간·시작프로그램은 프로그램에서 정확히 진단합니다.</p>
   </div>
 
+  <div class="card" id="fix">
+    <h2><span class="n">2</span>바로 고치기</h2>
+    <p class="hint" style="margin:-6px 0 8px">다운로드 없이 — 버튼 → 윈도우 설정 화면 → 스위치 끄기</p>
+    <div id="fixTop"></div>
+    <ul class="fx" id="fxList"></ul>
+    <div class="row2"><button class="btn sm" id="fxReset">처음부터 다시</button><span class="hint" style="margin:0">처음 누를 때 브라우저가 "설정을 여시겠습니까?" 물으면 [열기]를 누르세요. ('항상 허용' 체크하면 다음부터 안 물어요)</span></div>
+  </div>
+
   <div class="card">
-    <h2><span class="n">2</span>실행 방법 (1분)</h2>
+    <h2><span class="n">3</span>정밀 진단 프로그램 실행 방법 (1분)</h2>
     <ol class="steps">
       <li>[프로그램 받기] → 받은 파일을 오른쪽 클릭 → <b>압축 풀기</b> (압축 안에서 바로 실행하면 안 됩니다)</li>
       <li><b>실행.bat</b> 더블클릭</li>
@@ -95,7 +117,7 @@ input[type=text],input[type=number]{width:100%;min-height:46px;border:1px solid 
   </div>
 
   <div class="card">
-    <h2><span class="n">3</span>프로그램이 하는 일</h2>
+    <h2><span class="n">4</span>프로그램이 하는 일</h2>
     <div class="flow">
       <div><b>① 진단</b><span>CPU·메모리 규격·빈 슬롯·HDD/SSD·C드라이브 여유·부팅시간·시작프로그램·임시파일 → 건강점수</span></div>
       <div><b>② 질문 3개</b><span>주 용도(웹/한글·엑셀/등기소·은행) · 예산 0·5·10만원 · 자료 백업 여부</span></div>
@@ -107,7 +129,7 @@ input[type=text],input[type=number]{width:100%;min-height:46px;border:1px solid 
   </div>
 
   <div class="card">
-    <h2><span class="n">4</span>처방 기준 한눈에</h2>
+    <h2><span class="n">5</span>처방 기준 한눈에</h2>
     <table class="rx">
       <tr><th>시작프로그램 많음·임시파일 쌓임</th><td><span class="tag t-a">A</span>0원 청소 — 시작프로그램 끄기, 임시파일·휴지통, 기본 앱 제거, 전원·시각효과</td></tr>
       <tr><th>하드디스크(HDD) 사용</th><td><span class="tag t-b">B</span>SSD 교체 1순위 — 체감 효과가 가장 큼 (노트북은 2.5인치 SATA 그대로 교체)</td></tr>
@@ -119,7 +141,7 @@ input[type=text],input[type=number]{width:100%;min-height:46px;border:1px solid 
   </div>
 
   <div class="card">
-    <h2><span class="n">5</span>안전장치</h2>
+    <h2><span class="n">6</span>안전장치</h2>
     <ol class="steps">
       <li>설정을 바꾸기 직전 <b>윈도우 복원지점</b>을 자동으로 만듭니다. 못 만들면 설정 변경은 건너뛰고 파일 청소만 합니다.</li>
       <li>시작프로그램은 삭제가 아니라 작업관리자와 같은 방식의 <b>끄기</b>입니다. 보안프로그램(TouchEn·Veraport 등)·드라이버는 '유지 권장'으로 표시합니다.</li>
@@ -129,7 +151,7 @@ input[type=text],input[type=number]{width:100%;min-height:46px;border:1px solid 
   </div>
 
   <div class="card">
-    <h2><span class="n">6</span>처방 기록 <span class="hint" style="margin:0;font-weight:400">— 사무실·고객 PC별로 전후 점수를 남겨 두세요 (이 기기에만 저장)</span></h2>
+    <h2><span class="n">7</span>처방 기록 <span class="hint" style="margin:0;font-weight:400">— 사무실·고객 PC별로 전후 점수를 남겨 두세요 (이 기기에만 저장)</span></h2>
     <div class="grid">
       <label class="f w">PC 이름<input type="text" id="hName" placeholder="예: 상담실 PC, 김사장님 노트북"></label>
       <label class="f">처음 점수<input type="number" id="hBefore" min="0" max="100" inputmode="numeric" placeholder="42"></label>
@@ -167,6 +189,7 @@ async function quick(){
   let winVer=isWin?'Windows':'-';
   if(isWin&&uad&&uad.getHighEntropyValues){try{const h=await uad.getHighEntropyValues(['platformVersion']);const mj=parseInt(String(h.platformVersion||'0').split('.')[0],10);winVer=mj>=13?'Windows 11':(mj>0?'Windows 10':'Windows (구버전)')}catch(e){}}
   const cores=navigator.hardwareConcurrency||0;const mem=navigator.deviceMemory||0;
+  window.__win={isWin,isMobile,winVer};renderFix();
   const box=$('#quick');
   if(!isWin){
     box.innerHTML=`<div class="note ${isMobile?'b':'y'}">${isMobile?'지금은 휴대폰·태블릿으로 보고 계십니다. 느린 <b>윈도우 PC</b>에서 이 화면을 열고 [프로그램 받기]를 누르세요. 주소: <b>junggae-app.vercel.app/#pc</b>':'윈도우가 아닌 컴퓨터입니다. 똥컴닥터는 윈도우 10·11 전용입니다.'}</div>`;return}
@@ -181,6 +204,55 @@ async function quick(){
     <div><b>메모리(브라우저 추정)</b><div class="v">${esc(memTxt)}</div></div></div>
     <div class="note ${cls}">${esc(verdict)}${winVer==='Windows 10'?' · Windows 10은 보안 업데이트가 끊긴 상태라 처방 C(웹 전용일 때)도 검토하세요.':''}</div>`;
 }
+
+/* ---------- 바로 고치기 (ms-settings 바로가기) ---------- */
+const FX=[
+ {id:'about',t:'내 PC 사양 보기',tag:'확인',uri:'ms-settings:about',why:'메모리(RAM)가 몇 GB인지, 윈도우 10인지 11인지 먼저 확인합니다.',
+  w10:['"설치된 RAM" 숫자를 확인 — 8GB 미만이면 메모리 증설 효과가 큽니다','"Windows 사양 → 에디션"에서 10/11 확인'],
+  w11:['"설치된 RAM" 숫자를 확인 — 8GB 미만이면 메모리 증설 효과가 큽니다','"Windows 사양 → 에디션"에서 10/11 확인']},
+ {id:'startup',t:'시작 앱 끄기',tag:'효과 큼',uri:'ms-settings:startupapps',why:'켤 때 저절로 뜨는 프로그램이 많을수록 부팅이 느려집니다.',
+  w10:['"영향: 높음"인 앱부터 스위치를 끔으로','메신저·게임·업데이트 도우미(Steam, Discord, Adobe 등)는 꺼도 됩니다','보안프로그램(AhnLab, TouchEn, Veraport 등)·소리/터치패드 드라이버는 켜두세요'],
+  w11:['정렬 기준을 "시작 영향"으로 바꾸고 "높음"부터 끔으로','메신저·게임·업데이트 도우미(Steam, Discord, Adobe 등)는 꺼도 됩니다','보안프로그램(AhnLab, TouchEn, Veraport 등)·소리/터치패드 드라이버는 켜두세요']},
+ {id:'storage',t:'임시 파일 지우기',tag:'공간 확보',uri:'ms-settings:storagesense',why:'쌓인 임시 파일·휴지통·업데이트 찌꺼기를 지워 C드라이브 공간을 늘립니다.',
+  w10:['"임시 파일" 누르기 (안 보이면 위쪽 "지금 공간 확보")','"임시 파일·휴지통·Windows 업데이트 정리" 체크 — "다운로드" 폴더는 체크하지 마세요','"파일 제거" 누르기','위쪽 "저장소 센스"를 켜두면 앞으로 자동 정리'],
+  w11:['"임시 파일" 누르기','"임시 파일·휴지통·Windows 업데이트 정리" 체크 — "다운로드" 폴더는 체크하지 마세요','"파일 제거" 누르기','"저장소 센스"를 켜두면 앞으로 자동 정리']},
+ {id:'apps',t:'안 쓰는 앱 제거',tag:'정리',uri:'ms-settings:appsfeatures',why:'미리 깔려 나온 게임·체험판·안 쓰는 프로그램을 지웁니다.',
+  w10:['"정렬 기준: 크기"로 바꿔 큰 것부터 확인','캔디크러시·체험판 백신·쓰지 않는 게임 → 누르고 "제거"','모르는 이름(드라이버·Microsoft Visual C++ 등)은 지우지 마세요'],
+  w11:['"정렬 기준: 크기"로 바꿔 큰 것부터 확인','캔디크러시·체험판 백신·쓰지 않는 게임 → 오른쪽 ⋯ → "제거"','모르는 이름(드라이버·Microsoft Visual C++ 등)은 지우지 마세요']},
+ {id:'anim',t:'애니메이션 효과 끄기',tag:'체감 빠름',uri:'ms-settings:easeofaccess-visualeffects',why:'창이 열리고 닫힐 때 움직이는 효과를 끄면 오래된 PC가 덜 버벅입니다.',
+  w10:['"Windows에서 애니메이션 표시" 끔','"Windows에서 투명도 표시" 끔'],
+  w11:['"애니메이션 효과" 끔','"투명도 효과" 끔']},
+ {id:'power',t:'전원 모드 성능 위주로',tag:'데스크톱',uri:'ms-settings:powersleep',why:'절전 위주 설정이면 CPU가 제 속도를 내지 못합니다. (노트북은 전원 연결 시에만)',
+  w10:['오른쪽(또는 아래) "추가 전원 설정" 누르기','"고성능" 선택 (안 보이면 "추가 계획 표시" 펼치기)','노트북은 작업 표시줄 배터리 아이콘 → 슬라이더를 "최고 성능" 쪽으로'],
+  w11:['"전원 모드"를 "최고 성능"으로','노트북은 "전원 연결 시"만 최고 성능, 배터리일 땐 그대로']},
+ {id:'update',t:'윈도우 업데이트 확인',tag:'보안',uri:'ms-settings:windowsupdate',why:'밀린 업데이트가 뒤에서 계속 돌면 느려집니다. 한 번에 끝내 두세요.',
+  w10:['"업데이트 확인" → 다 받을 때까지 기다린 뒤 "지금 다시 시작"','Windows 10은 2025년 10월 일반 지원이 끝나 보안 업데이트가 끊겼을 수 있습니다 — 웹만 쓰면 ChromeOS Flex 전환(프로그램 처방 C)도 검토'],
+  w11:['"업데이트 확인" → 다 받을 때까지 기다린 뒤 "지금 다시 시작"','"선택적 업데이트"는 건너뛰어도 됩니다']},
+ {id:'bg',t:'백그라운드 앱 끄기',tag:'Win10',uri:'ms-settings:privacy-backgroundapps',only:'w10',why:'안 쓰는 동안에도 뒤에서 도는 기본 앱을 멈춥니다.',
+  w10:['"앱이 백그라운드에서 실행되도록 허용"을 끔 (또는 아래 목록에서 날씨·뉴스·Xbox 등만 끔)']}
+];
+const FKEY='pc.fix';
+const fxLoad=()=>{try{return JSON.parse(localStorage.getItem(FKEY)||'{}')}catch(e){return{}}};
+const fxSave=v=>{try{localStorage.setItem(FKEY,JSON.stringify(v))}catch(e){}};
+function renderFix(){
+  const w=window.__win||{};const top=$('#fixTop'),ul=$('#fxList');
+  const ver=w.winVer==='Windows 11'?'w11':'w10';
+  const list=FX.filter(x=>!x.only||x.only===ver);
+  const st=fxLoad();const done=list.filter(x=>st[x.id]).length;
+  if(!w.isWin){
+    top.innerHTML=`<div class="note y">${w.isMobile?'휴대폰에서는 열 수 없습니다. 고칠 <b>윈도우 PC</b>에서 이 화면(junggae-app.vercel.app/#pc)을 열어 주세요. 아래 순서는 미리 볼 수 있습니다.':'이 버튼들은 윈도우 PC에서만 작동합니다. 아래 순서는 미리 볼 수 있습니다.'}</div>`;
+  } else {
+    top.innerHTML=`<div class="row2" style="justify-content:space-between"><b>${done} / ${list.length} 완료</b><span class="hint" style="margin:0">${esc(w.winVer||'Windows')} 기준 안내 · 위에서부터 차례로</span></div><div class="prog"><i style="width:${Math.round(done/list.length*100)}%"></i></div>${done===list.length?'<div class="note g">다 했습니다! 컴퓨터를 한 번 <b>다시 시작</b>하면 효과가 납니다. 그래도 느리면 정밀 진단 프로그램으로 HDD 여부를 확인하세요.</div>':''}`;
+  }
+  ul.innerHTML=list.map((x,i)=>`<li class="${st[x.id]?'done':''}">
+    <input type="checkbox" class="ck" data-id="${x.id}" ${st[x.id]?'checked':''} title="했어요" aria-label="${esc(x.t)} 완료">
+    <div><h3>${i+1}. ${esc(x.t)}<small>${esc(x.tag)}</small></h3><p>${esc(x.why)}</p><ol>${(x[ver]||x.w10).map(s=>'<li>'+esc(s)+'</li>').join('')}</ol></div>
+    <a class="btn ${st[x.id]?'sm':'pri sm'} go" href="${x.uri}" data-id="${x.id}" ${w.isWin?'':'aria-disabled="true" style="opacity:.45;pointer-events:none"'}>설정 열기 ↗</a></li>`).join('');
+  ul.querySelectorAll('.ck').forEach(c=>c.onchange=()=>{const v=fxLoad();if(c.checked)v[c.dataset.id]=1;else delete v[c.dataset.id];fxSave(v);renderFix()});
+}
+$('#fxReset').onclick=()=>{if(confirm('체크 표시를 모두 지울까요?')){fxSave({});renderFix()}};
+$('#goFix').onclick=e=>{e.preventDefault();$('#fix').scrollIntoView({behavior:'smooth'})};
+renderFix();
 quick();
 
 /* ---------- 처방 기록 ---------- */
