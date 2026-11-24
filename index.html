@@ -57,6 +57,11 @@ a{color:var(--deep)}
 .hvbar button{font:inherit;font-size:14px;font-weight:700;border:1px solid var(--line);background:#fff;color:#23292B;border-radius:99px;padding:7px 14px;cursor:pointer;min-height:38px}
 .hvbar button.on{background:#23292B;color:#fff;border-color:#23292B}
 .hvwrap{display:flex;flex-direction:column;height:100%}
+.xbar{display:flex;align-items:center;gap:10px;padding:8px 14px;background:#fff;border-bottom:1px solid var(--line);font-size:14px;flex-wrap:wrap}
+.xbar span{color:#5C6366;font-size:13px}
+.xbar a{margin-left:auto;background:#EE6A2C;color:#fff;border-radius:8px;padding:6px 12px;font-weight:800;text-decoration:none;white-space:nowrap}
+.pane .xfr{height:calc(100% - 46px)}
+.xhint{position:absolute;left:0;right:0;bottom:0;padding:6px 14px;font-size:12px;color:#5C6366;background:rgba(255,255,255,.92);border-top:1px solid var(--line)}
 .hvwrap .hvbar{margin:10px 0 8px;max-width:none}
 .hvwrap iframe{flex:1;border:0;width:100%;min-height:0;display:block}
 .card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px}
@@ -210,7 +215,7 @@ label.f{display:block;font-size:13px;color:var(--sub);font-weight:600}
 </head>
 <body>
 <aside id="side">
-  <div class="logo"><img src="img/land3-logo.png" alt="랜드3 연구소"><span>중개사무소 앱<br>실전 도구 11종</span></div>
+  <div class="logo"><img src="img/land3-logo.png" alt="랜드3 연구소"><span>중개사무소 앱<br>실전 도구 + 연구소 앱</span></div>
   <nav id="snav"></nav>
   <div class="me" id="who"></div>
 </aside>
@@ -266,9 +271,15 @@ const TOOLS=[
   {id:'lh',num:'⑤',short:'LH 신호등',name:'LH 전세임대 사전점검',g:'an',desc:'등기부 판독 → 공시가격 자동 조회 → LH 통과 가능성 신호등',page:'lh.html'},
   {id:'bid',num:'⑦',short:'입찰서류',name:'경매 입찰서류 자동작성',g:'an',desc:'사건번호·입찰가 → 기일입찰표·위임장·준비물 체크리스트',page:'bid.html'},
   {id:'pc',num:'①',short:'똥컴 PC',name:'똥컴 업그레이드',g:'pc',desc:'느린 사무실 PC 진단 → 처방전 → 바로 고치기 · 전후 비교',page:'pc.html'},
+  {id:'jaegeon',num:'🏗',short:'재건둥이',name:'재건둥이 — 재건축 고시·공고 추적',g:'lab',desc:'재건축 고시·공고·뉴스를 추적하는 보조 도구',url:'https://rsar-land3-jaeturi.ktma9028.workers.dev/'},
+  {id:'balchuk',num:'🗺',short:'발축이',name:'발축이 — 서울 재개발·재건축 3D 지도',g:'lab',desc:'서울 정비구역 지도·3D·가능성 판단·수익률 분석',url:'https://balchuk.land3lab.com/'},
+  {id:'yangseongi',num:'🏚',short:'양성이',name:'양성이 — 위반건축물 양성화 시뮬레이터',g:'lab',desc:'주소 → 위반 여부·양성화 가능·전후 3D·이행강제금',url:'https://yangseongi.land3lab.com/'},
+  {id:'gyeongturi',num:'⚖',short:'경투리',name:'경투리 — 경매 투자 도우미',g:'lab',desc:'경매 물건 분석·투자 판단 도우미',url:'https://gyeongturi-rsar-land3.kilmoonsoo.chatgpt.site/'},
+  {id:'maejjigi',num:'📍',short:'매찍이',name:'매찍이 — 현장 매물 기록',g:'lab',desc:'현장에서 매물 정보를 빠르게 찍고 기록·정리',url:'https://maejjigi-field.kilmoonsoo.chatgpt.site/'},
+  {id:'maetong',num:'📞',short:'매통이',name:'매통이 — 매물·통화 자동정리',g:'lab',desc:'통화·매물 정보를 한 화면에서 수집·정리',url:'https://land3lab.github.io/mrhomesga/callnote/'},
   {id:'office',num:'🏢',short:'랜드3 사무실',name:'랜드3 사무실 (캐릭터 대시보드)',g:'pc',desc:'기능별 직원 14명이 일하는 모습 · 1:1 면담 · 팀 현황',page:'office.html'}
 ];
-const GROUPS=[['mm','매물 · 고객'],['ad','광고 · 콘텐츠'],['an','분석 · 서류'],['pc','사무실 PC']];
+const GROUPS=[['mm','매물 · 고객'],['ad','광고 · 콘텐츠'],['an','분석 · 서류'],['lab','랜드3 연구소 앱'],['pc','사무실 PC']];
 const T=id=>TOOLS.find(t=>t.id===id);
 
 let me=null,cur='home';const built={};
@@ -406,6 +417,7 @@ function go(id){
   const p=pane(id);p.classList.add('on');
   const t=T(id);$('#ttl').innerHTML=t?`${t.num} ${esc(t.name)}`:'비서 데스크<small>오늘 할 일을 비서가 정리했어요</small>';
   if(id==='home')renderHome();
+  else if(!built[id]&&t.url){built[id]=true;p.innerHTML=`<div class="xbar"><b>${t.num} ${esc(t.short)}</b><span>${esc(t.desc)}</span><a href="${t.url}" target="_blank" rel="noopener">새 창으로 열기 ↗</a></div><iframe class="xfr" src="${t.url}" title="${esc(t.name)}" allow="clipboard-read; clipboard-write; camera; microphone; geolocation"></iframe><div class="xhint">화면이 비어 있으면 그 앱이 다른 사이트 안에서 열리는 걸 막아 둔 것이에요 → 위 <b>새 창으로 열기</b>를 눌러 주세요.</div>`}
   else if(!built[id]){built[id]=true;p.innerHTML=`<iframe src="${t.page}?embed=1" title="${esc(t.name)}" allow="clipboard-read; clipboard-write; camera; microphone"></iframe>`}
   renderNav();
 }
