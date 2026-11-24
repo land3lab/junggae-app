@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>콘텐츠 자동화 — 중개사무소 앱 ⑫</title>
+<script>if(/[?&]embed=1/.test(location.search))document.documentElement.classList.add("embed")</script>
+<meta name="theme-color" content="#ffffff">
+<link rel="icon" href="img/icon-192.png">
+<style>
+:root{--bg:#F7F7F7;--card:#fff;--ink:#23292B;--sub:#5C6366;--line:#E6E6E6;--brand:#EE6A2C;--brand-soft:#FDEEE5;
+  --red:#b42318;--red-soft:#fdecea;--yel:#7a5400;--yel-soft:#fff4d6;--grn:#17733f;--grn-soft:#e4f4ea;--blu:#3557c7;--blu-soft:#eaf0ff;--r:14px}
+*{box-sizing:border-box;min-width:0}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;font-size:16px;line-height:1.55}
+header{background:var(--brand);color:#fff;padding:16px}
+header h1{margin:0;font-size:19px}
+header p{margin:2px 0 0;font-size:13px;opacity:.85}
+.embed header{display:none}
+.wrap{max-width:900px;margin:0 auto;padding:12px 12px 40px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px;margin:0 0 12px}
+.card h2{font-size:16.5px;margin:0 0 10px;display:flex;align-items:center;gap:8px}
+.card h2 .r{margin-left:auto;font-size:13px;font-weight:500;color:var(--sub)}
+.n{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--brand);color:#fff;font-size:13px;flex:none}
+label.f{display:block;font-size:13.5px;color:var(--sub);font-weight:600;margin-top:10px}
+input[type=text],input[type=password],select,textarea{width:100%;min-height:46px;border:1px solid #D6D6D6;border-radius:10px;padding:10px 12px;font:inherit;color:var(--ink);background:#fff;margin-top:4px}
+.seg{display:flex;gap:4px;flex-wrap:wrap;margin-top:4px}
+.seg button{min-height:40px;border:1px solid #D6D6D6;background:#fff;border-radius:99px;padding:6px 14px;font:inherit;font-size:14.5px;cursor:pointer;color:var(--ink)}
+.seg button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.btn{min-height:44px;border:1px solid #D6D6D6;background:#fff;border-radius:10px;padding:9px 15px;font:inherit;font-weight:700;cursor:pointer;color:var(--ink);text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+.btn.pri{background:var(--brand);border-color:var(--brand);color:#fff}
+.btn.sm{min-height:34px;padding:5px 10px;font-size:13.5px}
+.btn:disabled{opacity:.45;cursor:default}
+.note{font-size:13.5px;color:var(--sub);margin:8px 0 0}
+.warn{background:var(--yel-soft);color:var(--yel);border-radius:10px;padding:10px 12px;font-size:14px;margin-top:10px}
+.err{background:var(--red-soft);color:var(--red);border-radius:10px;padding:10px 12px;font-size:14px;margin-top:10px}
+.ok{background:var(--grn-soft);color:var(--grn);border-radius:10px;padding:10px 12px;font-size:14px;margin-top:10px}
+.hero{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.hero div{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px;text-align:center}
+.hero b{display:block;font-size:21px}
+.hero span{font-size:12.5px;color:var(--sub)}
+.run{display:flex;gap:10px;align-items:center;padding:8px 0;border-bottom:1px dashed var(--line);font-size:14px}
+.run:last-child{border-bottom:0}
+.pill{font-size:12px;font-weight:800;border-radius:99px;padding:2px 9px;white-space:nowrap}
+.p-run{background:var(--blu-soft);color:var(--blu)}.p-ok{background:var(--grn-soft);color:var(--grn)}.p-bad{background:var(--red-soft);color:var(--red)}.p-wait{background:#eee;color:#555}
+.spin{display:inline-block;width:10px;height:10px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:sp .8s linear infinite;vertical-align:-1px;margin-right:4px}
+@keyframes sp{to{transform:rotate(360deg)}}
+.draft{display:grid;grid-template-columns:110px minmax(0,1fr);gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
+.draft:last-child{border-bottom:0}
+.draft img{width:110px;height:138px;object-fit:cover;border-radius:10px;background:#eee}
+.draft h3{margin:2px 0 4px;font-size:15.5px;line-height:1.4}
+.meta{font-size:12.5px;color:var(--sub)}
+.tag{display:inline-block;font-size:11.5px;font-weight:800;border-radius:6px;padding:1px 7px;margin-right:4px}
+.t-초안{background:#EEF1F6;color:#1B2A4A}.t-보류{background:var(--red-soft);color:var(--red)}.t-발행됨{background:var(--grn-soft);color:var(--grn)}.t-발행{background:var(--yel-soft);color:var(--yel)}
+.t-social{background:#FFF0E6;color:#B4501E}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.chip{border:1px solid var(--ink);background:#fff;color:var(--ink);border-radius:99px;padding:5px 11px;font:inherit;font-size:13px;cursor:pointer;min-height:34px;text-decoration:none;display:inline-flex;align-items:center}
+.chip.done{background:var(--grn-soft);border-color:var(--grn);color:var(--grn)}
+.chip:disabled{opacity:.4;cursor:default}
+.ch{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px dashed var(--line);font-size:14px}
+.miss{color:var(--red);font-weight:700}
+details summary{cursor:pointer;font-weight:700}
+ol.how{padding-left:20px;font-size:14px;margin:8px 0}
+ol.how li{margin:4px 0}
+code{background:#f1f1f1;border-radius:4px;padding:1px 5px;font-size:13px}
+.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 16px;border-radius:10px;font-size:14px;display:none;z-index:9;max-width:92vw}
+@media (max-width:600px){.hero{grid-template-columns:repeat(2,1fr)}.draft{grid-template-columns:84px minmax(0,1fr)}.draft img{width:84px;height:105px}}
+</style>
+<link rel="stylesheet" href="land3.css">
+</head>
+<body>
+<header><h1>⑫ 콘텐츠 자동화</h1><p>주제·매물 1건 → 블로그·카드뉴스·릴스·스레드·쇼츠를 AI가 만들고, 버튼으로 바로 올립니다</p></header>
+<div class="wrap" id="app"><div class="card">불러오는 중…</div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+{
+const SB_URL = "https://dwtylilyvmvbpsryvlcg.supabase.co", SB_KEY = "sb_publishable_Vht7Hh-4GF-mpbnprPp3FQ_AgGPTKTH", TK = "junggae-token";
+const FN = SB_URL + "/functions/v1/autopost";
+const $ = (s) => document.querySelector(s);
+const esc = (t) => String(t ?? "").replace(/[&<>"']/g, (c) => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const safeUrl = (u) => /^https:\/\//.test(String(u || "")) ? String(u) : "";
+const token = () => { try { return localStorage.getItem(TK) || ""; } catch (e) { return ""; } };
+const toast = (m, ms = 3200) => { const t = $("#toast"); t.textContent = m; t.style.display = "block"; clearTimeout(t._h); t._h = setTimeout(() => t.style.display = "none", ms); };
+
+async function call(action, extra = {}) {
+  const r = await fetch(FN, { method: "POST", headers: { "Content-Type": "application/json", apikey: SB_KEY },
+    body: JSON.stringify({ token: token(), action, ...extra }) });
+  const j = await r.json().catch(() => ({ error: "서버 응답을 읽지 못했습니다" }));
+  if (j.error) { const e = new Error(j.error); e.status = r.status; throw e; }
+  return j;
+}
+async function rpc(fn, args) {
+  const r = await fetch(SB_URL + "/rest/v1/rpc/" + fn, { method: "POST", headers: { apikey: SB_KEY, "Content-Type": "application/json" }, body: JSON.stringify(args || {}) });
+  if (!r.ok) throw new Error((await r.json().catch(() => ({}))).message || "조회 실패");
+  return r.json();
+}
+
+/* ── 상태 ── */
+let S = null, listings = [], src = "topic", set = "full", style = "", busyUntil = 0, timer = null;
+const CH = [["instagram_carousel","📸 인스타 카드뉴스","instagram"],["instagram_reel","🎬 인스타 릴스","instagram"],["threads","🧵 스레드","threads"],
+            ["youtube_shorts","▶️ 유튜브 쇼츠","youtube_shorts"],["blogger","📝 구글 블로거","blogger"]];
+const SOCIAL_CH = ["instagram_reel","threads","youtube_shorts"];
+
+/* ── 매물장 → autopost 매물 형식 ── */
+function man(won){ const v = Math.round((+won || 0) / 10000); if (!v) return ""; const e = Math.floor(v / 10000), m = v % 10000;
+  return (e ? e + "억" : "") + (m ? (e ? " " : "") + m.toLocaleString("ko-KR") + "만" : "") + "원"; }
+function toListing(l){
+  const deal = l.deal || "";
+  const price = /매매/.test(deal) ? (l.price ? "매매가 " + man(l.price) : "")
+    : /전세/.test(deal) ? (l.deposit ? "전세 " + man(l.deposit) : "")
+    : (l.deposit || l.rent) ? `보증금 ${man(l.deposit) || "0원"} / 월 ${man(l.rent) || "0원"}` : "";
+  const dong = (String(l.addr || "").match(/[가-힣0-9]+(동|읍|면|리|가)(?=\s|$)/) || [""])[0];
+  const memo = [l.options && "옵션: " + l.options, l.elevator ? "엘리베이터 있음" : "", l.memo].filter(Boolean).join(" · ");
+  return {
+    headline: [dong || l.region, l.bldg, l.kind, deal].filter(Boolean).join(" "),
+    location: l.addr || "", type: l.kind || "", deal_type: deal, price,
+    area_m2: l.area ? `전용 ${l.area}㎡` + (l.supply ? ` (공급 ${l.supply}㎡)` : "") : "",
+    total_floors: l.total_floor ? String(l.total_floor).replace(/층$/, "") + "층" : "",
+    floor: l.floor ? String(l.floor).replace(/층$/, "") + "층" : "",
+    approval_date: l.approve || "", move_in_date: l.move_in || "",
+    rooms: l.rooms != null ? String(l.rooms) : "", bathrooms: l.baths != null ? String(l.baths) : "",
+    parking: l.park || "", maintenance_fee: l.mgmt ? "월 " + man(l.mgmt) : (l.mgmt === 0 ? "없음" : ""),
+    direction: l.dir || "", memo,
+  };
+}
+const NEED = { location:"소재지", area_m2:"전용면적", price:"가격", type:"종류", deal_type:"거래 형태", total_floors:"총 층수", floor:"해당 층",
+  approval_date:"사용승인일", move_in_date:"입주 가능일", rooms:"방 수", bathrooms:"욕실 수", parking:"주차", maintenance_fee:"관리비", direction:"방향" };
+const missing = (x) => Object.entries(NEED).filter(([k]) => !x[k]).map(([, v]) => v);
+
+/* ── 그리기 ── */
+function render(){
+  const app = $("#app");
+  if (!token()) { app.innerHTML = `<div class="card"><h2>로그인이 필요해요</h2><p>허브 왼쪽 아래 <b>로그인</b>을 누른 뒤 다시 열어 주세요. 이 기능은 대표(관리자) 계정에서만 쓸 수 있어요.</p></div>`; return; }
+  if (!S) return;
+  if (S.forbidden) { app.innerHTML = `<div class="card"><h2>대표 계정 전용</h2><p>${esc(S.forbidden)}</p><p class="note">콘텐츠 자동화는 랜드3 연구소 공식 채널(인스타 land3lab·스레드·유튜브)에 올리기 때문에 대표 계정에서만 열려요.</p></div>`; return; }
+  if (S.need_token) { app.innerHTML = setupCard(true); bindSetup(); return; }
+
+  const d = S.drafts || [], runs = S.runs || [];
+  const active = runs.filter((r) => r.status !== "completed");
+  const today = new Date().toLocaleDateString("sv-SE");
+  const pubN = d.filter((x) => x.status === "발행됨").length, waitN = d.filter((x) => x.status === "초안").length, holdN = d.filter((x) => x.status === "보류").length;
+  app.innerHTML = `
+  <div class="hero">
+    <div><b>${active.length}</b><span>지금 만드는 중</span></div>
+    <div><b>${waitN}</b><span>발행 기다리는 원고</span></div>
+    <div><b>${pubN}</b><span>발행 완료</span></div>
+    <div><b style="color:${holdN ? "var(--red)" : "inherit"}">${holdN}</b><span>보류(확인 필요)</span></div>
+  </div>
+  <div class="card" style="margin-top:12px">
+    <h2><span class="n">1</span>지금 만들기</h2>
+    <label class="f">무엇으로 만들까요?</label>
+    <div class="seg" id="seg-src">${[["topic","✏️ 주제 입력"],["listing","🏠 매물장 매물"],["plan","📅 오늘 연재 계획대로"]].map(([k,l]) => `<button type="button" data-src="${k}" class="${src===k?"on":""}">${l}</button>`).join("")}</div>
+    <div id="src-box"></div>
+    <label class="f">만들 묶음</label>
+    <div class="seg" id="seg-set">${[["full","전체 — 블로그·카드뉴스·쇼츠·릴스·스레드"],["social","🎬 릴스·스레드만 (빠르고 저렴)"]].map(([k,l]) => `<button type="button" data-set="${k}" class="${set===k?"on":""}">${l}</button>`).join("")}</div>
+    <div id="style-box" ${set==="social" ? "" : "hidden"}>
+      <label class="f">스레드 형식</label>
+      <select id="style"><option value="">설정값 그대로</option><option value="series">연속 글 (첫 글 + 답글로 하나씩)</option><option value="single">한 글로 끝내기</option><option value="question">질문형 (질문 → 답글로 정답)</option></select>
+    </div>
+    <label class="f">만든 뒤</label>
+    <select id="mode"><option value="draft">원고함에 보관 (확인 후 버튼으로 올리기) — 추천</option><option value="auto">검사 통과하면 바로 올리기</option></select>
+    <div class="row" style="margin-top:12px"><button class="btn pri" id="go">✨ 만들기 시작</button><span class="note" style="margin:0">3~8분 걸려요. 완료되면 아래 원고함에 나타나요.</span></div>
+    <div id="go-msg"></div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">2</span>진행 상황 <span class="r">${active.length ? '<span class="spin"></span>자동 새로고침 중' : `<button class="btn sm" id="refresh">새로고침</button>`}</span></h2>
+    ${runs.length ? runs.slice(0, 6).map(runRow).join("") : `<p class="note">아직 실행 기록이 없어요.</p>`}
+    <p class="note">자동 실행: 매일 <b>07:07</b> 본편(블로그·카드뉴스·쇼츠·스레드) · <b>19:07</b> 릴스·스레드</p>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">3</span>원고함 <span class="r">최근 ${d.length}건</span></h2>
+    ${d.length ? d.slice(0, 15).map(draftRow).join("") : `<p class="note">원고가 아직 없어요. 위에서 하나 만들어 보세요.</p>`}
+  </div>
+
+  <div class="card">
+    <h2><span class="n">4</span>채널 연결 <span class="r">${esc(S.status?.checked || "")}</span></h2>
+    ${S.status?.channels ? Object.entries({instagram:"인스타그램",threads:"스레드",youtube_shorts:"유튜브",blogger:"구글 블로거",media:"사진·영상 보관(R2)"}).map(([k,l]) => {
+      const c = S.status.channels[k] || {}; return `<div class="ch"><span>${c.ok ? "🟢" : "🔴"} ${l}</span><span class="meta">${esc(c.msg || "확인 안 됨")}</span></div>`; }).join("") : `<p class="note">아직 확인 기록이 없어요.</p>`}
+    <div class="row" style="margin-top:10px"><button class="btn sm" id="check">연결 다시 확인</button><span class="note" style="margin:0">게시 없이 토큰만 확인해요 (1~2분)</span></div>
+  </div>
+
+  ${setupCard(false)}`;
+  bind(); renderSrc(); bindSetup();
+}
+function runRow(r){
+  const t = new Date(r.created_at), ago = Math.max(0, Math.round((Date.now() - t) / 60000));
+  const st = r.status !== "completed" ? `<span class="pill p-run"><span class="spin"></span>${r.status === "queued" ? "대기 중" : "만드는 중"}</span>`
+    : r.conclusion === "success" ? `<span class="pill p-ok">완료</span>` : r.conclusion === "cancelled" ? `<span class="pill p-wait">취소</span>` : `<span class="pill p-bad">실패</span>`;
+  const what = r.event === "schedule" ? "자동 실행" : "직접 실행";
+  return `<div class="run">${st}<span>${what} · ${ago < 60 ? ago + "분 전" : t.toLocaleString("ko-KR", {month:"numeric",day:"numeric",hour:"2-digit",minute:"2-digit"})}</span>
+    ${safeUrl(r.url) ? `<a class="meta" style="margin-left:auto" href="${esc(safeUrl(r.url))}" target="_blank" rel="noopener">기록 보기 ↗</a>` : ""}</div>`;
+}
+function draftRow(x){
+  const social = x.set === "social", pub = x.published || {}, ch = S.status?.channels || {};
+  const can = x.storable && x.status !== "보류";
+  const list = CH.filter(([k]) => !social || SOCIAL_CH.includes(k));
+  const chips = can ? list.map(([k, l, sk]) => { const v = String(pub[k] || ""), done = v && !/^(ERROR|건너뜀)/.test(v), off = ch[sk] && !ch[sk].ok;
+    return `<button class="chip ${done ? "done" : ""}" data-pub="${esc(x.id)}" data-ch="${k}" ${off ? "disabled title='연결 안 됨'" : ""}>${done ? "✓ " : ""}${l}</button>`; }).join("") : "";
+  const errs = Object.entries(pub).filter(([, v]) => String(v).startsWith("ERROR")).map(([k, v]) => `${esc((CH.find((c) => c[0] === k) || [k, k])[1])}: ${esc(String(v).slice(7, 120))}`);
+  return `<div class="draft">${safeUrl(x.cover) ? `<img src="${esc(safeUrl(x.cover))}" alt="" loading="lazy">` : `<div style="width:100%;aspect-ratio:4/5;background:#eee;border-radius:10px"></div>`}
+    <div><div><span class="tag t-${esc(String(x.status).slice(0, 3) === "발행 " ? "발행" : x.status)}">${esc(x.status)}</span>${social ? '<span class="tag t-social">🎬 릴스·스레드</span>' : ""}<span class="meta">${esc(x.created)} · ${esc(x.series)}</span></div>
+    <h3>${esc(x.title)}</h3>
+    ${(x.issues || []).length ? `<div class="err" style="margin-top:4px">${x.issues.map(esc).join("<br>")}</div>` : ""}
+    ${errs.length ? `<div class="warn" style="margin-top:4px">${errs.join("<br>")}</div>` : ""}
+    <div class="chips">${chips}</div>
+    <div class="chips">
+      ${safeUrl(x.preview) ? `<a class="chip" href="${esc(safeUrl(x.preview))}" target="_blank" rel="noopener">👀 미리보기</a>` : ""}
+      ${safeUrl(x.video) ? `<a class="chip" href="${esc(safeUrl(x.video))}" target="_blank" rel="noopener">▶ 영상</a>` : ""}
+      ${safeUrl(x.naver) ? `<a class="chip" href="${esc(safeUrl(x.naver))}" target="_blank" rel="noopener">📝 네이버 블로그 원고</a>` : ""}
+      ${can ? `<button class="chip" data-all="${esc(x.id)}">🚀 ${social ? "릴스·스레드 한 번에" : "전체 채널 한 번에"}</button>` : ""}
+      ${x.storable && !social ? `<button class="chip" data-remix="${esc(x.id)}">🎬 릴스·스레드로 재가공</button>` : ""}
+    </div></div></div>`;
+}
+function setupCard(first){
+  return `<div class="card" id="setup">
+    ${first ? `<h2><span class="n">!</span>처음 한 번: GitHub 연결</h2>
+      <p>허브가 autopost(자동 생성·업로드 프로그램)에 "만들어 / 올려" 신호를 보내려면 GitHub 열쇠(토큰)가 한 번 필요해요. <b>열쇠는 서버에만 저장되고</b> 이 화면에는 다시 보이지 않아요.</p>`
+      : `<details><summary>⚙ GitHub 연결 관리 ${S.gh_set_at ? `<span class="meta">(등록: ${esc(new Date(S.gh_set_at).toLocaleDateString("ko-KR"))})</span>` : ""}</summary>`}
+    <ol class="how">
+      <li>휴대폰·PC에서 <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">GitHub 새 토큰 만들기</a>를 엽니다 (kilmoonsoo 계정).</li>
+      <li><b>Token name</b>: <code>허브-autopost</code> · <b>Expiration</b>: 1년(366 days)</li>
+      <li><b>Repository access</b>: Only select repositories → <code>kilmoonsoo/autopost</code></li>
+      <li><b>Permissions</b> → Repository permissions: <code>Actions</code> = Read and write, <code>Contents</code> = Read-only</li>
+      <li>맨 아래 <b>Generate token</b> → 나온 <code>github_pat_…</code> 를 복사해 아래 칸에 붙여넣기</li>
+    </ol>
+    <p class="note">관리 화면(admin.html)에서 쓰던 토큰이 있으면 그걸 붙여넣어도 돼요.</p>
+    <input type="password" id="gh" placeholder="github_pat_…" autocomplete="off">
+    <div class="row" style="margin-top:10px"><button class="btn pri" id="gh-save">저장하고 확인</button>${first ? "" : `<button class="btn" id="gh-del">연결 끊기</button>`}</div>
+    <div id="gh-msg"></div>
+    ${first ? "" : "</details>"}
+  </div>`;
+}
+function bindSetup(){
+  const s = $("#gh-save"); if (!s) return;
+  s.onclick = async () => { const v = $("#gh").value.trim(); if (!/^(github_pat_|ghp_)/.test(v)) { $("#gh-msg").innerHTML = `<div class="err">github_pat_ 로 시작하는 토큰을 붙여넣어 주세요.</div>`; return; }
+    s.disabled = true; $("#gh-msg").innerHTML = `<div class="note"><span class="spin"></span>GitHub에 확인 중…</div>`;
+    try { await call("set_token", { gh: v }); $("#gh").value = ""; toast("연결됐어요! 이제 바로 만들 수 있어요"); await load(); }
+    catch (e) { $("#gh-msg").innerHTML = `<div class="err">${esc(e.message)}</div>`; } finally { s.disabled = false; } };
+  const d = $("#gh-del"); if (d) d.onclick = async () => { if (!confirm("GitHub 연결을 끊을까요? 다시 쓰려면 토큰을 새로 넣어야 해요.")) return;
+    try { await call("set_token", { gh: "" }); await load(); } catch (e) { toast(e.message, 5000); } };
+}
+function renderSrc(){
+  const box = $("#src-box"); if (!box) return;
+  if (src === "topic") box.innerHTML = `<label class="f">주제</label><input type="text" id="topic" placeholder="예: 봉천동 원룸 전세 계약 전 확인할 3가지" maxlength="120">`;
+  else if (src === "plan") box.innerHTML = `<p class="note">${set === "social" ? "릴스·스레드 저녁 연재 순서대로" : "오늘 요일 연재 계획대로"} 주제를 AI가 골라요.</p>`;
+  else {
+    const act = listings.filter((l) => !/계약완료|철회/.test(l.status || ""));
+    box.innerHTML = act.length ? `<label class="f">매물 고르기 (매물장)</label><select id="lst">${act.map((l, i) => `<option value="${i}">${esc([l.status, l.deal, l.kind, (l.addr || "").split(" ").slice(-2).join(" "), l.bldg].filter(Boolean).join(" · "))}</option>`).join("")}</select><div id="lst-chk"></div>`
+      : `<div class="warn">매물장에 진행 중인 매물이 없어요. ⑨ 매물장에서 먼저 등록해 주세요.</div>`;
+    const sel = $("#lst"); if (sel) { const chk = () => { const l = act[+sel.value], m = missing(toListing(l));
+      $("#lst-chk").innerHTML = m.length ? `<div class="warn">표시·광고 필수항목 빠짐: <span class="miss">${m.map(esc).join(", ")}</span><br>이대로 보내면 원고는 만들어지지만 <b>발행 보류</b>돼요. ⑨ 매물장에서 채운 뒤 보내세요.</div>`
+        : `<div class="ok">필수항목 모두 있음 ✓ — 동·호수·의뢰인 정보는 보내지 않아요.</div>`; };
+      sel.onchange = chk; chk(); sel._act = act; }
+  }
+}
+function bind(){
+  document.querySelectorAll("[data-src]").forEach((b) => b.onclick = () => { src = b.dataset.src; document.querySelectorAll("[data-src]").forEach((x) => x.classList.toggle("on", x === b)); renderSrc(); });
+  document.querySelectorAll("[data-set]").forEach((b) => b.onclick = () => { set = b.dataset.set; document.querySelectorAll("[data-set]").forEach((x) => x.classList.toggle("on", x === b)); $("#style-box").hidden = set !== "social"; renderSrc(); });
+  const r = $("#refresh"); if (r) r.onclick = load;
+  $("#check").onclick = () => dispatch({ publish_id: "check", mode: "draft" }, "연결 확인을 시작했어요. 1~2분 뒤 결과가 바뀌어요.");
+  $("#go").onclick = async () => {
+    const mode = $("#mode").value, inputs = { mode, set: set === "social" ? "social" : "" };
+    if (set === "social" && $("#style").value) inputs.threads_style = $("#style").value;
+    if (src === "topic") { const t = $("#topic").value.trim(); if (!t) { toast("주제를 입력해 주세요"); return; } inputs.topic = t; }
+    if (src === "listing") { const sel = $("#lst"); if (!sel) return; inputs.listing = JSON.stringify(toListing(sel._act[+sel.value])); }
+    if (mode === "auto" && !confirm("검사를 통과하면 인스타·스레드·유튜브 등에 바로 공개 게시돼요. 진행할까요?")) return;
+    $("#go").disabled = true;
+    await dispatch(inputs, "만들기 시작! 3~8분 뒤 원고함에 나타나요.");
+    $("#go").disabled = false;
+  };
+  $("#app").onclick = async (e) => {
+    const p = e.target.closest("[data-pub]"), a = e.target.closest("[data-all]"), m = e.target.closest("[data-remix]");
+    if (p) { const x = S.drafts.find((d) => d.id === p.dataset.pub), l = CH.find((c) => c[0] === p.dataset.ch)[1];
+      if (!confirm(`${l}에 게시합니다.\n「${x ? x.title : ""}」${p.classList.contains("done") ? "\n이미 올린 채널이라 한 번 더 올라가요." : ""}\n대외에 공개되는 글이에요. 진행할까요?`)) return;
+      p.disabled = true; await dispatch({ publish_id: p.dataset.pub, channels: p.dataset.ch, mode: "auto" }, `${l} 올리기 시작 — 2~4분 뒤 ✓ 표시가 붙어요`); }
+    if (a) { const x = S.drafts.find((d) => d.id === a.dataset.all), ch = S.status?.channels || {};
+      const list = CH.filter(([k, , sk]) => (x.set !== "social" || SOCIAL_CH.includes(k)) && !(ch[sk] && !ch[sk].ok) && !(String((x.published || {})[k] || "") && !/^(ERROR|건너뜀)/.test(String(x.published[k]))));
+      if (!list.length) { toast("올릴 채널이 없어요 (모두 올렸거나 연결 안 됨)"); return; }
+      if (!confirm(`다음 채널에 게시합니다: ${list.map((c) => c[1]).join(", ")}\n「${x.title}」\n대외에 공개되는 글이에요. 진행할까요?`)) return;
+      a.disabled = true; await dispatch({ publish_id: x.id, channels: list.map((c) => c[0]).join(","), mode: "auto" }, "한 번에 올리기 시작 — 3~5분 걸려요"); }
+    if (m) { if (!confirm("이 원고를 릴스·스레드 전용으로 다시 만들까요? (원고함에 보관, 바로 올리지 않음)")) return;
+      m.disabled = true; await dispatch({ set: "social", source_id: m.dataset.remix, mode: "draft" }, "재가공 시작 — 3~5분 뒤 🎬 원고가 생겨요"); }
+  };
+}
+async function dispatch(inputs, okMsg){
+  try { await call("dispatch", { inputs }); toast(okMsg, 4500); busyUntil = Date.now() + 10 * 60000; setTimeout(load, 4000); }
+  catch (e) {
+    let m = e.message;
+    if (/Unexpected inputs|not defined in the workflow/i.test(m)) m = "autopost에 아직 새 기능이 반영되지 않았어요 (autopost PR 병합 필요). 주제 입력·전체 묶음은 지금도 됩니다.";
+    toast(m, 7000);
+  }
+}
+async function load(){
+  if (!token()) { render(); return; }
+  try { S = await call("state"); }
+  catch (e) { S = e.status === 403 ? { forbidden: e.message } : null; if (!S) { $("#app").innerHTML = `<div class="card"><div class="err">${esc(e.message)}</div><button class="btn" style="margin-top:10px" onclick="location.reload()">다시 시도</button></div>`; return; } }
+  if (!S.need_token && !S.forbidden && !listings.length) { try { listings = await rpc("mj_list", { p_token: token() }) || []; } catch (e) { listings = []; } }
+  const keep = { topic: $("#topic")?.value, mode: $("#mode")?.value, style: $("#style")?.value };
+  render();
+  if (keep.topic && $("#topic")) $("#topic").value = keep.topic;
+  if (keep.mode && $("#mode")) $("#mode").value = keep.mode;
+  if (keep.style && $("#style")) $("#style").value = keep.style;
+  clearTimeout(timer);
+  const live = (S.runs || []).some((r) => r.status !== "completed") || Date.now() < busyUntil;
+  if (live) timer = setTimeout(load, 15000);
+}
+addEventListener("storage", (e) => { if (e.key === TK) load(); });
+document.addEventListener("visibilitychange", () => { if (!document.hidden) load(); });
+load();
+}
+</script>
+</body>
+</html>

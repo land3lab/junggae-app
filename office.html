@@ -1,0 +1,624 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>랜드3 사무실</title>
+<style>
+/* VOICE: 귀여운 사무실 시뮬레이션 — 직원들이 실제로 일하는 게 보이는 운영 화면
+   IDEA: 위에서 내려다본 중개사무소 평면도, 방마다 팀
+   PICTURE: 평면도 자체(캐릭터·책상·말풍선)가 화면의 절반 이상
+   COLOUR/TYPE: 랜드3 주황 #F77235 + 차콜 #23292B, 나무 바닥 / 밤엔 어두운 바닥 · Noto Sans KR
+   LAYOUT: 왼쪽 평면도, 오른쪽 팀 현황·태스크, 아래 이벤트 로그 */
+:root{color-scheme:light dark;
+  --bg:light-dark(#F6F3EE,#14171A);--panel:light-dark(#FFFFFF,#1D2226);--ink:light-dark(#23292B,#EDEFF1);--mut:light-dark(#7A8086,#8E969D);
+  --line:light-dark(#E7E0D4,#2C3338);--wall:light-dark(#EEF0F3,#1A1F24);--floor:light-dark(#D9B48A,#2E2419);--floor2:light-dark(#D2AB80,#2A2117);
+  --zone:light-dark(rgba(255,255,255,.22),rgba(255,255,255,.035));--zl:light-dark(rgba(120,80,40,.35),rgba(255,255,255,.14));
+  --card:light-dark(#FFFFFF,#22292E);--or:#F77235;--btn:#EE6A2C;--ok:#2E9E5B;--wait:#9AA0A6;--bad:#E5484D;--collab:#7C5CFF;--desk:light-dark(#9C6B43,#5A3F28)}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 "Noto Sans KR",Pretendard,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;overflow-x:clip}
+header{display:flex;align-items:center;gap:12px;padding:12px 18px;border-bottom:1px solid var(--line);background:var(--panel)}
+.logo{display:flex;align-items:center;gap:8px;font-weight:800;font-size:18px}
+.logo i{width:28px;height:28px;border-radius:50%;background:var(--or);color:#fff;display:grid;place-items:center;font-style:normal;font-size:14px}
+.logo small{font-weight:500;color:var(--mut);font-size:13px}
+.clock{margin-left:auto;font-variant-numeric:tabular-nums;font-weight:700}
+.clock span{color:var(--mut);font-weight:500;margin-right:8px;font-size:13px}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 340px;min-height:calc(100vh - 54px)}
+.embed header{display:none}.embed .layout{min-height:100vh}.embed .side{max-height:100vh}
+.mapwrap{overflow:auto;position:relative}
+#stage{position:relative;width:1200px;height:628px;transform-origin:0 0;background:repeating-linear-gradient(90deg,var(--floor) 0 58px,var(--floor2) 58px 60px)}
+.wallband{position:absolute;left:0;top:0;width:1200px;height:168px;background:var(--wall);border-bottom:4px solid light-dark(#C9CDD3,#0E1114)}
+.zone{position:absolute;border:2px dashed var(--zl);border-radius:10px;background:var(--zone)}
+.zone b{position:absolute;top:-11px;left:12px;font-size:12px;font-weight:800;color:var(--or);background:var(--bg);padding:0 6px;border-radius:4px;white-space:nowrap}
+.zone.top b{background:var(--wall)}
+.furn{position:absolute;transform:translate(-50%,-100%);pointer-events:none}
+.plant{position:absolute;width:22px;height:30px}
+.agent{position:absolute;transform:translate(-50%,-100%);transition:left 1.7s linear,top 1.7s linear;cursor:pointer;z-index:3;width:46px}
+.agent svg.sp{display:block;width:46px;height:57px;filter:drop-shadow(0 2px 0 rgba(0,0,0,.12))}
+.agent.walk svg.sp{animation:bob .32s ease-in-out infinite alternate}
+@keyframes bob{to{transform:translateY(-3px)}}
+.agent.work svg.sp{animation:busy 1.2s ease-in-out infinite}
+@keyframes busy{50%{transform:translateY(-1px) rotate(-1.5deg)}}
+.agent.sel .card{outline:2px solid var(--or)}
+.card{position:absolute;top:100%;left:50%;transform:translateX(-50%);margin-top:2px;background:var(--card);border:1.5px solid var(--rc,#ccc);border-radius:7px;padding:2px 7px 3px;text-align:center;white-space:nowrap;box-shadow:0 2px 6px rgba(0,0,0,.12);font-size:11px;line-height:1.35}
+.card .nm{font-weight:800;font-size:12.5px}
+.card .rl{color:var(--rc);font-weight:700;font-size:10.5px}
+.card .st{color:var(--mut);font-size:10.5px}
+.card .st i{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--wait);margin-right:3px;vertical-align:1px}
+.st.work i{background:var(--ok)}.st.collab i{background:var(--collab)}.st.blocked i{background:var(--bad)}.st.rest i{background:#E7A400}
+.badge{position:absolute;top:-6px;right:-10px;background:var(--btn);color:#fff;font-size:11px;font-weight:800;border-radius:99px;min-width:19px;height:19px;display:none;place-items:center;padding:0 5px;z-index:4;box-shadow:0 1px 3px rgba(0,0,0,.25)}
+.badge.on{display:grid}.badge.u{background:var(--bad)}
+.real li{list-style:none;display:flex;gap:6px;align-items:flex-start;font-size:12.5px;padding:6px 0;border-bottom:1px dashed var(--line)}
+.real{padding:0;margin:0}.real .lv{font-size:10px;font-weight:800;color:#fff;border-radius:4px;padding:1px 5px;flex:none;margin-top:2px}
+.real .lv.u{background:var(--bad)}.real .lv.t{background:var(--btn)}.real .lv.w{background:#4C6EF5}
+.real button{margin-left:auto;font-size:11.5px;min-height:28px;padding:3px 8px;background:var(--bg);border:1px solid var(--line);color:var(--ink);flex:none}
+.bub{position:absolute;bottom:100%;left:50%;transform:translateX(-50%);margin-bottom:3px;background:var(--card);color:var(--ink);border-radius:9px;padding:3px 8px;font-size:11px;font-weight:700;white-space:nowrap;max-width:116px;overflow:hidden;text-overflow:ellipsis;box-shadow:0 2px 6px rgba(0,0,0,.15);opacity:0;transition:opacity .25s;pointer-events:none}
+.bub.on{opacity:1}
+.bub.done{background:light-dark(#E7F6EC,#1F3A2A);color:var(--ok)}
+.bub.collab{background:light-dark(#EFEAFF,#2C2550);color:var(--collab)}
+.bub.blocked{background:light-dark(#FDECEC,#3D2022);color:var(--bad)}
+.side{background:var(--panel);padding:14px;display:flex;flex-direction:column;gap:12px;overflow:auto;max-height:calc(100vh - 54px)}
+.box{border:1px solid var(--line);border-radius:12px;padding:12px}
+.box h3{margin:0 0 10px;font-size:15px;display:flex;align-items:center;gap:6px}
+.box h3 .pill{margin-left:auto;font-size:11px;font-weight:600;color:var(--mut);border:1px solid var(--line);border-radius:99px;padding:1px 8px}
+.box h3 .pill:before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--ok);margin-right:4px;vertical-align:1px}
+.kpi{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.kpi div{border:1px solid var(--line);border-radius:9px;text-align:center;padding:7px 2px}
+.kpi b{display:block;font-size:20px;font-variant-numeric:tabular-nums}
+.kpi span{font-size:11px;color:var(--mut)}
+.k-ok b{color:var(--ok)}.k-bad b{color:var(--bad)}.k-c b{color:var(--collab)}
+.usage{margin-top:10px;border-top:1px dashed var(--line);padding-top:8px;font-size:13px}
+.usage div{display:flex;justify-content:space-between;font-variant-numeric:tabular-nums}
+.usage small{color:var(--mut);font-size:11px}
+.task{border:1px solid var(--line);border-radius:9px;padding:8px 9px;margin-bottom:6px;font-size:13px}
+.task .t{display:flex;gap:6px;align-items:center;font-weight:700}
+.task .t .p{font-size:10px;color:#fff;background:var(--btn);border-radius:4px;padding:0 4px}
+.task .t .p.m{background:#4C6EF5}
+.task .who{font-size:11.5px;color:var(--mut);margin:2px 0 5px}
+.bar{height:5px;background:var(--line);border-radius:9px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--ok);border-radius:9px;transition:width .9s linear}
+.done-list{padding:0;margin:0}
+.done-list li{font-size:12.5px;margin:3px 0;list-style:none}
+.done-list li:before{content:"✓ ";color:var(--ok);font-weight:800}
+.prof{display:flex;gap:10px;align-items:center}
+.prof .av{width:64px;height:64px;border-radius:12px;background:var(--bg);display:grid;place-items:center;flex:none}
+.prof .rl{color:var(--or);font-weight:700;font-size:12.5px}
+.btns{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:10px}
+button,.lnk{font:inherit;border:0;border-radius:9px;padding:9px 10px;font-weight:700;cursor:pointer;text-align:center;text-decoration:none;min-height:40px}
+.b-or{background:#F5B342;color:#23292B}.b-gh{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.energy{margin-top:8px;font-size:12px;color:var(--mut);display:flex;justify-content:space-between}
+.en i{background:linear-gradient(90deg,#4CC38A,#F5B342)}
+.close{margin-left:auto;background:none;border:0;color:var(--mut);font-weight:600;min-height:0;padding:0}
+.leftcol{display:flex;flex-direction:column;border-right:1px solid var(--line);min-width:0}
+.log{border-top:1px solid var(--line);background:var(--panel);flex:1}
+.log summary{padding:9px 16px;cursor:pointer;font-weight:700;font-size:14px;display:flex}
+.log summary span{margin-left:auto;color:var(--mut);font-weight:500}
+.log ol{margin:0;padding:0 16px 12px;max-height:260px;overflow:auto;list-style:none;font-size:12.5px}
+.log li{padding:2px 0;border-bottom:1px dashed var(--line)}
+.log time{color:var(--mut);font-variant-numeric:tabular-nums;margin-right:8px}
+.modal{position:fixed;inset:0;background:rgba(10,12,14,.62);display:none;align-items:center;justify-content:center;padding:14px;z-index:20}
+.modal.on{display:flex}
+.chat{background:var(--panel);border-radius:16px;width:min(980px,100%);height:min(640px,94vh);display:grid;grid-template-columns:270px minmax(0,1fr);overflow:hidden;border:1px solid var(--line)}
+.chat .left{border-right:1px solid var(--line);padding:18px;text-align:center;overflow:auto}
+.chat .left .av{width:120px;height:120px;margin:4px auto 10px;border:2px solid var(--or);border-radius:16px;display:grid;place-items:center;background:var(--bg)}
+.chat dl{display:grid;grid-template-columns:auto 1fr;gap:6px 8px;text-align:left;font-size:13px;margin:14px 0}
+.chat dt{color:var(--mut)}.chat dd{margin:0;text-align:right;font-weight:700}
+.chat .right{display:flex;flex-direction:column;min-height:0}
+.chat .top{display:flex;align-items:center;padding:12px 16px;border-bottom:1px solid var(--line);font-weight:800}
+.msgs{flex:1;overflow:auto;padding:16px;display:flex;flex-direction:column;gap:10px}
+.m{display:flex;gap:8px;align-items:flex-end;max-width:86%}
+.m .mini{width:34px;height:34px;border-radius:9px;background:var(--bg);border:1px solid var(--or);flex:none;display:grid;place-items:center}
+.m p{margin:0;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:8px 11px;white-space:pre-wrap;font-size:14px}
+.m time{display:block;text-align:right;font-size:10.5px;color:var(--mut);margin-top:2px}
+.m.me{align-self:flex-end;flex-direction:row-reverse}
+.m.me p{background:#F5B342;color:#23292B;border:0}
+.chips{display:flex;gap:6px;flex-wrap:wrap;padding:8px 14px;border-top:1px solid var(--line)}
+.chips button{background:var(--bg);border:1px solid var(--line);color:var(--ink);font-weight:500;font-size:13px;padding:5px 11px;min-height:32px;border-radius:99px}
+.send{display:flex;gap:8px;padding:10px 14px 14px}
+.send input{flex:1;font:inherit;font-size:16px;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:10px;padding:9px 12px}
+.note{font-size:11.5px;color:var(--mut);padding:0 16px 8px}
+@media (max-width:900px){
+  .layout{grid-template-columns:1fr}
+  .side{max-height:none}
+  .mapwrap{border-right:0}
+  .chat{grid-template-columns:1fr;height:94vh}
+  .chat .left{display:none}
+  .logo small{display:none}
+  .clock span{display:none}
+}
+@media (prefers-reduced-motion:reduce){.agent{transition:none}.agent svg.sp{animation:none!important}}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo"><i>⌂</i>Land3 Lab <small>중개사무소 · 오늘의 사무실</small></div>
+  <div class="clock"><span id="date"></span><b id="time">--:--</b></div>
+</header>
+<div class="layout">
+  <div class="leftcol"><div class="mapwrap" id="mapwrap"><div id="stage"></div></div>
+  <details class="log" open><summary>이벤트 로그 <span id="log-n">0건</span></summary><ol id="log"></ol></details></div>
+  <aside class="side">
+    <div class="box" id="selbox" hidden></div>
+    <div class="box" id="realbox" hidden><h3>오늘 실제 할 일 <span id="real-n" style="margin-left:auto;color:var(--mut);font-weight:500">0</span></h3><ul class="real" id="real"></ul></div>
+    <div class="box">
+      <h3>팀 현황 <span class="pill">시뮬레이션</span></h3>
+      <div class="kpi">
+        <div><b id="k-all">14</b><span>총 인원</span></div>
+        <div class="k-ok"><b id="k-work">0</b><span>작업중</span></div>
+        <div class="k-bad"><b id="k-block">0</b><span>막힘</span></div>
+        <div><b id="k-idle">0</b><span>대기</span></div>
+        <div class="k-c"><b id="k-run">0</b><span>진행 태스크</span></div>
+        <div class="k-ok"><b id="k-done">0</b><span>완료 태스크</span></div>
+      </div>
+      <div class="usage">
+        <div><span>AI 토큰 입력</span><b id="u-in">0</b></div>
+        <div><span>AI 토큰 출력</span><b id="u-out">0</b></div>
+        <div><span>예상 비용</span><b id="u-cost">0원</b></div>
+        <small>예시 수치 — 실제 작업이 연결되면 실사용량으로 바뀝니다</small>
+      </div>
+    </div>
+    <div class="box"><h3>진행중인 태스크 <span id="run-n" style="margin-left:auto;color:var(--mut);font-weight:500">0</span></h3><div id="tasks"></div></div>
+    <div class="box"><h3>최근 완료 <span id="done-n" style="margin-left:auto;color:var(--mut);font-weight:500">0</span></h3><ul class="done-list" id="done"></ul></div>
+  </aside>
+</div>
+
+<div class="modal" id="modal">
+  <div class="chat">
+    <div class="left" id="c-left"></div>
+    <div class="right">
+      <div class="top">1:1 면담 <button class="close" id="c-close">닫기 ✕</button></div>
+      <div class="msgs" id="msgs"></div>
+      <div class="note" id="c-note"></div>
+      <div class="chips" id="chips"></div>
+      <form class="send" id="send"><input id="inp" autocomplete="off" placeholder="메시지를 입력하세요"><button class="b-or" type="submit">보내기</button></form>
+    </div>
+  </div>
+</div>
+
+<script>
+{
+const IN_HUB = /junggae-app\.vercel\.app$/.test(location.hostname) || /[?&]embed=1/.test(location.search);
+if (/[?&]embed=1/.test(location.search)) document.documentElement.classList.add("embed");
+const HUB = IN_HUB ? "/" : "https://junggae-app.vercel.app/", ADMIN = "https://kilmoonsoo.github.io/admin.html";
+const $ = (id) => document.getElementById(id);
+const esc = (t) => String(t).replace(/[&<>"']/g, (c) => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const pad = (n) => String(n).padStart(2, "0");
+const now = () => { const d = new Date(); return `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`; };
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+const ZONES = [
+  { n:"대표실", x:20, y:18, w:230, h:132, top:1 },
+  { n:"안내 데스크", x:280, y:18, w:220, h:132, top:1 },
+  { n:"회의실", x:530, y:18, w:270, h:132, top:1 },
+  { n:"촬영 스튜디오", x:830, y:18, w:350, h:132, top:1 },
+  { n:"매물·고객팀", x:20, y:194, w:390, h:192 },
+  { n:"광고·콘텐츠팀", x:440, y:194, w:470, h:192 },
+  { n:"PC 수리 코너", x:940, y:194, w:240, h:192 },
+  { n:"분석·서류실", x:20, y:414, w:560, h:202 },
+  { n:"휴게실", x:610, y:414, w:570, h:202 },
+];
+const LOUNGE = [{x:760,y:545},{x:830,y:560},{x:900,y:545},{x:980,y:565},{x:1050,y:548}];
+
+const STAFF = [
+ { id:"desk", name:"한결 비서", role:"비서", ic:"🛎", rc:"#F77235", x:390, y:104, exp:"5년차", link:HUB,
+   look:{skin:"#F6D3B8",hair:"#2B2F31",style:"bob",shirt:"#F77235",acc:"headset",prop:"bell"},
+   about:"사무실에서 제일 먼저 출근해 모든 직원 자리를 돌며 할 일을 모아 오는 비서. 말버릇은 \"제가 챙겨 둘게요\".",
+   tasks:[{t:"오늘의 업무 보고 정리",with:"listings"},{t:"다가오는 일정 7일 점검",with:"customers"},{t:"잔금·입찰기일 알림 정리"}],
+   chips:["오늘 할 일 정리해줘","이번 주 일정 알려줘","누구한테 시키면 돼?"] },
+ { id:"listings", name:"장부장", role:"매물장", ic:"📒", rc:"#3A5A80", x:90, y:322, exp:"12년차", link:HUB+"#listings",
+   look:{skin:"#EDC3A0",hair:"#5A4632",style:"short",shirt:"#3A5A80",acc:"glasses",prop:"binder"},
+   about:"매물 장부를 한 줄도 틀리지 않게 적는 꼼꼼한 부장님. 14일 넘게 확인 안 한 매물을 보면 안경을 고쳐 씁니다.",
+   tasks:[{t:"신규 매물 등록 · 봉천동 투룸 전세",next:["dabang","customers"]},{t:"광고 내림 미확인 매물 점검"},{t:"14일 미확인 매물 신선도 확인"}],
+   chips:["새 매물 등록할 때 꼭 받을 것","광고 안 내린 매물 있어?","매물 장부 정리 요령"] },
+ { id:"customers", name:"정다감", role:"고객관리", ic:"💗", rc:"#D96C8A", x:210, y:322, exp:"7년차", link:HUB+"#customers",
+   look:{skin:"#F8D7BF",hair:"#7A3B2E",style:"long",shirt:"#D96C8A",acc:"phone",prop:"heart"},
+   about:"손님 이름과 찾는 집 조건을 전부 기억하는 다정한 실장님. 연락할 날을 놓치는 법이 없습니다.",
+   tasks:[{t:"새 매물 ↔ 맞는 손님 매칭",with:"listings"},{t:"오늘 연락할 손님 3명 정리"},{t:"임대차 만기 3개월 전 안내"}],
+   chips:["오늘 연락할 손님 문자 초안","만기 안내 문자 써줘","손님 온도 A는 어떻게 관리해?"] },
+ { id:"vacancy", name:"공실이", role:"공실클럽", ic:"🔑", rc:"#2E9E5B", x:330, y:322, exp:"4년차", link:HUB+"#vacancy",
+   look:{skin:"#E9BE97",hair:"#23292B",style:"cap",shirt:"#2E9E5B",acc:"none",prop:"key"},
+   about:"RSA 동문 사무실을 발로 뛰며 빈방 열쇠를 모으는 반장. \"아직 공실인가요?\"가 입버릇.",
+   tasks:[{t:"동문 공실 신선도 확인 (14일)"},{t:"공실클럽에 매물 올리기",with:"listings"},{t:"공동중개 문의 기록 정리"}],
+   chips:["공동중개 수수료 나누는 방식","동문한테 공실 문의 문자","아직 공실인가요?"] },
+ { id:"dabang", name:"한클릭", role:"다방광고", ic:"📣", rc:"#4C6EF5", x:510, y:322, exp:"3년차", link:HUB+"#dabang",
+   look:{skin:"#F3CDAE",hair:"#3B2A20",style:"spiky",shirt:"#4C6EF5",acc:"none",prop:"mega"},
+   about:"한 번 입력하면 다방·네이버·당근용 광고문을 동시에 뽑는 손 빠른 대리. 표시광고 빠진 항목엔 빨간 펜을 듭니다.",
+   tasks:[{t:"광고문 4종 · 봉천동 투룸",with:"listings",next:["blog","shorts"]},{t:"표시광고 필수항목 검사"},{t:"광고 만료 연장 확인"}],
+   chips:["다방 광고 제목 5개","표시광고 필수 항목이 뭐야?","당근용으로 짧게"] },
+ { id:"blog", name:"이천자", role:"블로그 작가", ic:"✍️", rc:"#8C6BC9", x:625, y:322, exp:"6년차", link:HUB+"#blog",
+   look:{skin:"#F6D3B8",hair:"#2B2F31",style:"bun",shirt:"#8C6BC9",acc:"beret",prop:"pen"},
+   about:"어떤 매물이든 딱 2,000자 내외로 써내는 작가. 제목만 봐도 매물이 보이게 쓰는 게 철칙입니다.",
+   tasks:[{t:"매물 블로그 2,000자 · 봉천동 투룸",with:"dabang",next:["publish"]},{t:"상식 글 · 전세 계약 전 체크",next:["reels"]},{t:"블로그 키워드 20개 정리"}],
+   chips:["블로그 제목 5개 뽑아줘","키워드 20개 작업해줘","2,000자 글 구조 알려줘"] },
+ { id:"editor", name:"칠공칠", role:"편집장", ic:"☕", rc:"#5B7DB1", x:740, y:322, exp:"15년차", link:IN_HUB ? "/#autopost" : ADMIN,
+   look:{skin:"#EDC3A0",hair:"#9AA0A6",style:"short",shirt:"#1B2A4A",acc:"glasses",prop:"coffee"},
+   about:"매일 아침 7시 7분에 오늘의 주제를 고르고 블로그·카드뉴스·쇼츠·스레드를 한 번에 만드는 베테랑 편집장(autopost).",
+   tasks:[{t:"오늘의 연재 주제 선정",next:["reels"]},{t:"카드뉴스 5장 검수"},{t:"보고 메일 발송"}],
+   chips:["이번 주 연재 주제 추천","오늘 원고 어때?","카드뉴스 표지 문구"] },
+ { id:"publish", name:"다올림", role:"통합 발행", ic:"🚀", rc:"#00897B", x:855, y:322, exp:"5년차", link:HUB+"#publish",
+   look:{skin:"#F3CDAE",hair:"#4A3426",style:"short",shirt:"#00897B",acc:"headset",prop:"rocket"},
+   about:"블로그·인스타·유튜브를 시간 맞춰 다 올려 주는 팀장. 예약표를 보며 \"지금 올릴 차례!\"를 외칩니다.",
+   tasks:[{t:"발행 예약 · 블로그→인스타→유튜브",with:"blog"},{t:"올림 완료 기록 정리"},{t:"인스타 캡션 해시태그 점검"}],
+   chips:["5시간 간격으로 발행 계획","오늘 올릴 순서 정리","가장 반응 좋은 시간?"] },
+ { id:"shorts", name:"삼십초", role:"쇼츠 PD", ic:"🎬", rc:"#E0533D", x:900, y:104, exp:"4년차", link:HUB+"#shorts",
+   look:{skin:"#E2B48C",hair:"#1E1E1E",style:"cap",shirt:"#23292B",acc:"none",prop:"camera"},
+   about:"모든 영상은 30초 안에 끝내야 한다는 PD. \"훅은 3초!\"를 외치며 매물 사진에 켄번즈 효과를 겁니다.",
+   tasks:[{t:"매물 쇼츠 30초 · 봉천동 투룸",with:"dabang",next:["publish"]},{t:"쇼츠 썸네일 A/B 테스트"},{t:"자막 표시사항 띠 확인"}],
+   chips:["30초 쇼츠 대본 써줘","훅 문장 5개","썸네일 문구 추천"] },
+ { id:"reels", name:"릴리", role:"릴스·스레드", ic:"🧵", rc:"#C2185B", x:1010, y:104, exp:"2년차", link:IN_HUB ? "/#autopost" : ADMIN+"#drafts",
+   look:{skin:"#F8D7BF",hair:"#C2185B",style:"pony",shirt:"#FFB300",acc:"none",prop:"spool"},
+   about:"저녁 7시 7분에 릴스와 스레드를 뽑는 크리에이터. 실타래처럼 글을 이어 붙이는 게 특기.",
+   tasks:[{t:"블로그 → 릴스·스레드 재가공",with:"blog"},{t:"스레드 질문형 3개 작성"},{t:"릴스 표지 9:16 제작"}],
+   chips:["스레드 질문형으로 써줘","릴스 훅 3초 문장","해시태그 10개"] },
+ { id:"land", name:"지가 박사", role:"토지 시세", ic:"🔍", rc:"#795548", x:100, y:552, exp:"20년차", link:HUB+"#land",
+   look:{skin:"#E9BE97",hair:"#F2F2F2",style:"bald",shirt:"#795548",acc:"glasses",prop:"magnifier"},
+   about:"실거래와 공시지가를 돋보기로 들여다보는 박사님. 숫자 하나 대신 '하단~상단 범위'로만 말합니다.",
+   tasks:[{t:"토지 시세 범위 리포트"},{t:"비교 실거래 사례 수집"},{t:"공시지가 배율 점검",with:"lh"}],
+   chips:["시세는 왜 범위로 말해?","매도자 상담 멘트","비교사례가 적으면?"] },
+ { id:"lh", name:"초록이", role:"LH 신호등", ic:"🚦", rc:"#2E7D32", x:290, y:552, exp:"6년차", link:HUB+"#lh",
+   look:{skin:"#F6D3B8",hair:"#2E7D32",style:"short",shirt:"#37474F",acc:"none",prop:"light"},
+   about:"등기부 갑구·을구를 읽고 초록·노랑·빨강 불을 켜 주는 검사관. 압류·가압류를 보면 바로 빨간불.",
+   tasks:[{t:"LH 전세임대 사전점검 · 신림동 원룸",block:true},{t:"등기부 재열람 알림 확인"},{t:"부채비율 계산",with:"land"}],
+   chips:["빨간불은 언제 켜져?","부채비율 계산법","다가구는 뭘 더 봐?"] },
+ { id:"bid", name:"또박이", role:"입찰서류", ic:"🖋", rc:"#5D4037", x:480, y:552, exp:"9년차", link:HUB+"#bid",
+   look:{skin:"#F3CDAE",hair:"#2B2F31",style:"side",shirt:"#5D4037",acc:"glasses",prop:"stamp"},
+   about:"입찰표 칸을 또박또박 채우고 \"0 한 번 더 쓴 건 아닌가요?\"를 꼭 묻는 서기. 최저가 미만은 절대 통과 못 합니다.",
+   tasks:[{t:"기일입찰표·위임장 작성"},{t:"입찰 보증금 10% 계산"},{t:"입찰 준비물 체크리스트",with:"desk"}],
+   chips:["입찰 준비물 알려줘","대리 입찰 위임장 주의점","입찰가 실수 막는 법"] },
+ { id:"pc", name:"닥터 쌩쌩", role:"PC 주치의", ic:"🛠", rc:"#7D97A5", x:1060, y:322, exp:"10년차", link:HUB+"#pc",
+   look:{skin:"#E2B48C",hair:"#1E1E1E",style:"short",shirt:"#ECEFF1",acc:"mirror",prop:"wrench"},
+   about:"10년 된 컴퓨터도 쌩쌩하게 살려 내는 PC 주치의. 진단 → 처방 → 실행 순서를 꼭 지킵니다.",
+   tasks:[{t:"사무실 PC 부팅 속도 진단"},{t:"시작프로그램 0원 청소"},{t:"SSD 교체 처방서",with:"desk"}],
+   chips:["컴퓨터가 너무 느려","SSD 바꾸면 빨라져?","인터넷등기소 보안프로그램"] },
+];
+const BY = Object.fromEntries(STAFF.map((s) => [s.id, s]));
+const MOODS = ["😊 좋음","🤔 궁금","😎 자신감","😌 여유","🔥 의욕"];
+
+function hair(st, c){
+  switch(st){
+    case "bob": return `<path d="M40 50Q40 30 60 30Q80 30 80 50L80 62Q76 56 74 50L46 50Q44 56 40 62Z" fill="${c}"/>`;
+    case "long": return `<path d="M39 52Q39 29 60 29Q81 29 81 52L83 74Q76 70 75 60L75 46Q60 40 45 46L45 60Q44 70 37 74Z" fill="${c}"/>`;
+    case "bun": return `<circle cx="60" cy="28" r="7" fill="${c}"/><path d="M41 50Q41 31 60 31Q79 31 79 50Q70 41 60 42Q50 41 41 50Z" fill="${c}"/>`;
+    case "pony": return `<path d="M41 50Q41 31 60 31Q79 31 79 50Q70 40 52 44Q46 46 41 50Z" fill="${c}"/><path d="M78 40Q92 44 88 66Q84 58 79 52Z" fill="${c}"/>`;
+    case "spiky": return `<path d="M41 49L44 34L50 40L54 30L60 38L66 29L70 39L76 33L79 49Q60 40 41 49Z" fill="${c}"/>`;
+    case "side": return `<path d="M41 50Q40 31 60 31Q80 31 79 50Q72 42 52 41L46 47Z" fill="${c}"/>`;
+    case "bald": return `<path d="M41 52Q41 44 45 44L45 56ZM79 52Q79 44 75 44L75 56Z" fill="${c}"/>`;
+    case "cap": return `<path d="M41 47Q41 30 60 30Q79 30 79 47Z" fill="${c}"/><rect x="58" y="44" width="28" height="5" rx="2.5" fill="${c}"/>`;
+    default: return `<path d="M41 50Q41 31 60 31Q79 31 79 50Q70 42 60 43Q50 42 41 50Z" fill="${c}"/>`;
+  }
+}
+function acc(a){
+  switch(a){
+    case "glasses": return `<g fill="none" stroke="#23292B" stroke-width="1.8"><circle cx="53" cy="53" r="4.6"/><circle cx="67" cy="53" r="4.6"/><path d="M57.6 53h4.8"/></g>`;
+    case "headset": return `<path d="M42 52Q42 30 60 30Q78 30 78 52" fill="none" stroke="#23292B" stroke-width="2.6"/><rect x="38" y="49" width="6" height="9" rx="3" fill="#23292B"/>`;
+    case "beret": return `<ellipse cx="57" cy="33" rx="17" ry="6" fill="#B23A48"/>`;
+    case "mirror": return `<circle cx="60" cy="35" r="5" fill="#CFD8DC" stroke="#9AA0A6" stroke-width="1.6"/>`;
+    case "phone": return `<rect x="76" y="50" width="6" height="11" rx="1.5" fill="#23292B"/>`;
+    default: return "";
+  }
+}
+const PROPS = {
+  bell:`<path d="M85 92Q85 80 92 80Q99 80 99 92Z" fill="#E7A400"/><rect x="83" y="91" width="18" height="3" rx="1.5" fill="#B07D00"/>`,
+  binder:`<rect x="84" y="78" width="15" height="15" rx="2" fill="#3A5A80"/><rect x="87" y="75" width="15" height="15" rx="2" fill="#5C7EA6"/>`,
+  heart:`<path d="M92 92L85 85Q83 78 89 78Q92 78 92 82Q92 78 95 78Q101 78 99 85Z" fill="#D96C8A"/>`,
+  key:`<circle cx="88" cy="84" r="5" fill="none" stroke="#E7A400" stroke-width="2.4"/><path d="M93 84h9M99 84v4" stroke="#E7A400" stroke-width="2.4"/>`,
+  mega:`<path d="M84 83h5l9-6v18l-9-6h-5Z" fill="#4C6EF5"/>`,
+  pen:`<rect x="86" y="78" width="13" height="16" rx="1.5" fill="#fff" stroke="#C9B9A2"/><path d="M96 95l8-14" stroke="#8C6BC9" stroke-width="2.6"/>`,
+  camera:`<rect x="83" y="80" width="18" height="12" rx="2.5" fill="#23292B"/><circle cx="92" cy="86" r="4" fill="#F77235"/>`,
+  spool:`<rect x="85" y="77" width="14" height="3" fill="#8D6E63"/><rect x="85" y="91" width="14" height="3" fill="#8D6E63"/><rect x="87" y="80" width="10" height="11" fill="#C2185B"/>`,
+  coffee:`<rect x="86" y="78" width="12" height="14" rx="2" fill="#fff" stroke="#C9B9A2"/><path d="M98 82q5 1 0 6" stroke="#C9B9A2" stroke-width="1.6" fill="none"/>`,
+  rocket:`<path d="M92 74q7 6 4 16h-8q-3-10 4-16Z" fill="#00897B"/><circle cx="92" cy="82" r="2" fill="#fff"/>`,
+  magnifier:`<circle cx="90" cy="83" r="6" fill="#E3F2FD" stroke="#F77235" stroke-width="2.6"/><path d="M94.5 87.5l6 6" stroke="#F77235" stroke-width="3.2" stroke-linecap="round"/>`,
+  light:`<rect x="87" y="73" width="10" height="24" rx="3" fill="#23292B"/><circle cx="92" cy="78" r="2.6" fill="#E53935"/><circle cx="92" cy="85" r="2.6" fill="#FDD835"/><circle cx="92" cy="92" r="2.6" fill="#43A047"/>`,
+  stamp:`<rect x="86" y="87" width="12" height="5" rx="1" fill="#C62828"/><rect x="90" y="77" width="4" height="10" fill="#5D4037"/><circle cx="92" cy="76" r="3.4" fill="#5D4037"/>`,
+  wrench:`<path d="M84 92l10-10" stroke="#78909C" stroke-width="3.4" stroke-linecap="round"/><circle cx="96" cy="80" r="4.4" fill="none" stroke="#78909C" stroke-width="3"/>`,
+};
+function head(L){
+  return `<g transform="translate(30 21) scale(.74) translate(-60 -52)">
+    <circle cx="42.5" cy="54" r="3.2" fill="${L.skin}"/><circle cx="77.5" cy="54" r="3.2" fill="${L.skin}"/>
+    <circle cx="60" cy="52" r="18" fill="${L.skin}"/>${hair(L.style, L.hair)}
+    <circle cx="53" cy="53" r="2.2" fill="#23292B"/><circle cx="67" cy="53" r="2.2" fill="#23292B"/>
+    <circle cx="48" cy="59" r="3" fill="#F28B82" opacity=".4"/><circle cx="72" cy="59" r="3" fill="#F28B82" opacity=".4"/>
+    <path d="M55 61Q60 65 65 61" stroke="#8D4A3A" stroke-width="1.8" fill="none" stroke-linecap="round"/>${acc(L.acc)}</g>`;
+}
+function sprite(L, cls="sp", w=0){
+  return `<svg class="${cls}" ${w?`width="${w}"`:""} viewBox="0 0 60 74" aria-hidden="true">
+    <ellipse cx="30" cy="71" rx="14" ry="3" fill="rgba(0,0,0,.18)"/>
+    <rect x="22" y="56" width="6.5" height="14" rx="3" fill="#3B3F44"/><rect x="31.5" y="56" width="6.5" height="14" rx="3" fill="#3B3F44"/>
+    <rect x="10" y="38" width="7" height="17" rx="3.5" fill="${L.shirt}"/><rect x="43" y="38" width="7" height="17" rx="3.5" fill="${L.shirt}"/>
+    <circle cx="13.5" cy="56" r="3.4" fill="${L.skin}"/><circle cx="46.5" cy="56" r="3.4" fill="${L.skin}"/>
+    <path d="M15 60Q15 34 30 34Q45 34 45 60Z" fill="${L.shirt}"/><path d="M26 34l4 6 4-6" fill="#fff" opacity=".85"/>
+    ${head(L)}</svg>`;
+}
+const deskSvg = (L) => `<svg width="78" height="44" viewBox="0 0 78 44"><rect x="2" y="22" width="74" height="14" rx="3" fill="var(--desk)"/>
+  <rect x="25" y="2" width="28" height="18" rx="2" fill="#2B3036"/><rect x="27.5" y="4.5" width="23" height="13" rx="1" fill="#6FA8DC" opacity=".85"/>
+  <rect x="36" y="19" width="6" height="4" fill="#2B3036"/><rect x="28" y="26" width="22" height="4" rx="1" fill="#3B4249"/>
+  <svg x="54" y="9" width="24" height="24" viewBox="76 70 32 32">${PROPS[L.prop]||""}</svg></svg>`;
+
+/* ── 무대 ── */
+const stage = $("stage");
+let html = `<div class="wallband"></div>`;
+html += ZONES.map((z) => `<div class="zone${z.top?" top":""}" style="left:${z.x}px;top:${z.y}px;width:${z.w}px;height:${z.h}px"><b>${z.n}</b></div>`).join("");
+html += `<div class="furn" style="left:90px;top:74px"><svg width="96" height="46"><rect x="2" y="2" width="92" height="42" rx="3" fill="#fff" stroke="#B9C0C8"/><rect x="10" y="10" width="20" height="12" fill="#F7C9A9"/><rect x="34" y="10" width="20" height="12" fill="#BBD7F2"/><rect x="58" y="10" width="26" height="12" fill="#C9E7C9"/><path d="M10 30h60M10 36h44" stroke="#C9CED6" stroke-width="2"/></svg></div>`;
+html += `<div class="furn" style="left:196px;top:120px">${deskSvg({prop:""})}<div style="text-align:center;font-size:11px;font-weight:800;color:var(--or)">대표님 자리</div></div>`;
+html += `<div class="furn" style="left:665px;top:118px"><svg width="150" height="52"><ellipse cx="75" cy="26" rx="70" ry="20" fill="var(--desk)"/><circle cx="20" cy="8" r="6" fill="#8A9097"/><circle cx="130" cy="8" r="6" fill="#8A9097"/><circle cx="20" cy="46" r="6" fill="#8A9097"/><circle cx="130" cy="46" r="6" fill="#8A9097"/></svg></div>`;
+html += `<div class="furn" style="left:1120px;top:118px"><svg width="56" height="80"><circle cx="28" cy="18" r="14" fill="none" stroke="#F5B342" stroke-width="5"/><path d="M28 32v26M28 58l-16 20M28 58l16 20M28 58v20" stroke="#5B6168" stroke-width="3"/></svg></div>`;
+html += `<div class="furn" style="left:660px;top:505px"><svg width="44" height="58"><rect x="4" y="4" width="36" height="50" rx="5" fill="#3B4249"/><rect x="12" y="12" width="20" height="10" rx="2" fill="#F77235"/><rect x="15" y="34" width="14" height="12" rx="2" fill="#fff"/></svg></div>`;
+html += `<div class="furn" style="left:900px;top:614px"><svg width="200" height="46"><rect x="4" y="8" width="192" height="34" rx="12" fill="#C27C5B"/><rect x="14" y="2" width="172" height="16" rx="8" fill="#D7967A"/></svg></div>`;
+[[30,186],[1170,186],[30,618],[1170,618],[595,408]].forEach(([x,y]) => html += `<svg class="plant" style="left:${x-11}px;top:${y-30}px" viewBox="0 0 22 30"><rect x="5" y="18" width="12" height="11" rx="2" fill="#C1785A"/><path d="M11 18q-8-8-3-16q3 8 3 16q1-10 8-13q0 9-8 13" fill="#5E9E5B"/></svg>`);
+STAFF.forEach((s) => html += `<div class="furn" style="left:${s.x}px;top:${s.y-30}px">${deskSvg(s.look)}</div>`);
+stage.innerHTML = html;
+
+const A = {};
+STAFF.forEach((s, i) => {
+  const el = document.createElement("div");
+  el.className = "agent"; el.dataset.id = s.id;
+  el.style.left = s.x + "px"; el.style.top = (s.y + 18) + "px";
+  el.innerHTML = `<span class="badge"></span><div class="bub"></div>${sprite(s.look)}<div class="card" style="--rc:${s.rc}"><div class="nm">${esc(s.name)}</div><div class="rl">${s.ic} ${esc(s.role)}</div><div class="st"><i></i><span>대기</span></div></div>`;
+  stage.appendChild(el);
+  A[s.id] = { s, el, status:"idle", task:null, energy:72 + (i*7)%26, mood:MOODS[i % MOODS.length] };
+});
+const tasks = [], done = [];
+let tokIn = 0, tokOut = 0, logN = 0, tid = 0, sel = null;
+
+const LABEL = {idle:"대기",work:"작업중",collab:"협업중",blocked:"막힘",rest:"휴식",walk:"이동중"};
+function setStatus(a, st, label){
+  a.status = st;
+  a.el.classList.toggle("work", st==="work");
+  const e = a.el.querySelector(".st"); e.className = "st " + st;
+  e.querySelector("span").textContent = label || LABEL[st];
+  if (sel === a.s.id) renderSel();
+}
+function say(a, text, kind="", ms=0){
+  const b = a.el.querySelector(".bub");
+  b.textContent = text; b.className = "bub on " + kind;
+  clearTimeout(a.sayT);
+  if (ms) a.sayT = setTimeout(() => b.classList.remove("on"), ms);
+}
+function moveTo(a, x, y){
+  return new Promise((res) => {
+    a.el.classList.add("walk");
+    a.el.style.left = x + "px"; a.el.style.top = y + "px";
+    setTimeout(() => { a.el.classList.remove("walk"); res(); }, 1750);
+  });
+}
+const home = (a) => moveTo(a, a.s.x, a.s.y + 18);
+function log(text){
+  const li = document.createElement("li");
+  li.innerHTML = `<time>${now()}</time>${esc(text)}`;
+  $("log").prepend(li); logN++;
+  while ($("log").children.length > 120) $("log").lastChild.remove();
+  $("log-n").textContent = logN + "건";
+}
+
+async function startTask(a, def, prio="M"){
+  if (a.status !== "idle") return;
+  const t = { id:++tid, title:def.t, owner:a.s.id, prog:0, prio, def, dur:16 };
+  a.task = t; tasks.push(t);
+  log(`${a.s.name} · "${t.title}" 시작`);
+  const p = def.with && A[def.with];
+  if (p && p.status === "idle"){
+    setStatus(a, "walk"); say(a, `${p.s.name}에게 가는 중…`);
+    await moveTo(a, p.s.x + 56, p.s.y + 22);
+    setStatus(a, "collab"); setStatus(p, "collab");
+    say(a, "협업중", "collab"); say(p, "협업중", "collab");
+    log(`${a.s.name} ↔ ${p.s.name} 협업`);
+    await sleep(5200);
+    say(p, "완료 ✓", "done", 2500); setStatus(p, "idle");
+    await home(a);
+  }
+  t.dur = 14 + Math.random()*16;
+  setStatus(a, "work"); say(a, `작업중 · ${t.title}`);
+}
+function finish(a){
+  const t = a.task; if (!t) return;
+  tasks.splice(tasks.indexOf(t), 1); a.task = null;
+  done.unshift({ title:t.title, who:a.s.name, at:now().slice(0,5) }); done.length = Math.min(done.length, 30);
+  tokIn += 900 + Math.round(Math.random()*1800); tokOut += 500 + Math.round(Math.random()*1500);
+  setStatus(a, "idle"); say(a, "완료 ✓", "done", 3500);
+  a.energy = Math.max(5, a.energy - 8 - Math.round(Math.random()*8));
+  log(`${a.s.name} · "${t.title}" 완료`);
+  (t.def.next || []).forEach((nid, k) => setTimeout(() => { const n = A[nid]; if (n) startTask(n, n.s.tasks[0], "H"); }, 2500 + k*1800));
+}
+async function rest(a){
+  setStatus(a, "walk"); say(a, "커피 한 잔 하고 올게요 ☕", "", 2500);
+  const sp = LOUNGE[Math.floor(Math.random()*LOUNGE.length)];
+  await moveTo(a, sp.x + Math.random()*20, sp.y);
+  setStatus(a, "rest"); log(`${a.s.name} · 휴게실에서 휴식`);
+  await sleep(7000 + Math.random()*5000);
+  a.energy = Math.min(100, a.energy + 35);
+  await home(a); setStatus(a, "idle");
+}
+async function meeting(){
+  const idle = Object.values(A).filter((a) => a.status==="idle");
+  if (idle.length < 3) return;
+  const g = idle.sort(() => Math.random()-.5).slice(0,3);
+  log(`회의실 · ${g.map((a)=>a.s.name).join(", ")} 주간 회의`);
+  await Promise.all(g.map((a, k) => { setStatus(a, "walk"); return moveTo(a, 600 + k*58, 104 + (k%2)*30); }));
+  g.forEach((a) => { setStatus(a, "collab", "회의중"); say(a, "회의중", "collab"); });
+  await sleep(8000);
+  await Promise.all(g.map((a) => { say(a, "회의 끝!", "done", 2000); return home(a).then(() => setStatus(a, "idle")); }));
+}
+
+setInterval(() => {
+  Object.values(A).forEach((a) => {
+    const t = a.task;
+    if (!t || a.status !== "work") return;
+    if (t.def.block && t.prog > 45 && !t.blockedOnce){
+      t.blockedOnce = true; setStatus(a, "blocked"); say(a, "가압류 발견! 확인 필요 🔴", "blocked");
+      log(`${a.s.name} · 막힘 — 등기부에 가압류, 사람 확인 필요`);
+      setTimeout(() => { if (a.status==="blocked"){ setStatus(a, "work"); say(a, "확인 완료, 다시 진행"); log(`${a.s.name} · 막힘 해소`); } }, 9000);
+      return;
+    }
+    t.prog = Math.min(100, t.prog + 100 / t.dur);
+    if (t.prog >= 100) finish(a);
+  });
+  paint();
+}, 1000);
+setInterval(() => {
+  const idle = Object.values(A).filter((a) => a.status==="idle");
+  if (!idle.length) return;
+  const a = idle[Math.floor(Math.random()*idle.length)];
+  if (a.energy < 35 && Math.random() < .7) { rest(a); return; }
+  if (Math.random() < .1) { meeting(); return; }
+  startTask(a, a.s.tasks[Math.floor(Math.random()*a.s.tasks.length)], Math.random() < .35 ? "H" : "M");
+}, 3200);
+
+function paint(){
+  const all = Object.values(A), c = (f) => all.filter(f).length;
+  $("k-work").textContent = c((a) => a.status==="work" || a.status==="collab");
+  $("k-block").textContent = c((a) => a.status==="blocked");
+  $("k-idle").textContent = c((a) => a.status==="idle" || a.status==="rest");
+  $("k-run").textContent = tasks.length; $("run-n").textContent = tasks.length;
+  $("k-done").textContent = done.length; $("done-n").textContent = done.length;
+  $("u-in").textContent = tokIn.toLocaleString("ko-KR");
+  $("u-out").textContent = tokOut.toLocaleString("ko-KR");
+  $("u-cost").textContent = Math.round((tokIn*3 + tokOut*15) / 1e6 * 1400).toLocaleString("ko-KR") + "원";
+  $("tasks").innerHTML = tasks.length ? tasks.slice(-6).reverse().map((t) => `<div class="task"><div class="t"><span class="p ${t.prio==="H"?"":"m"}">${t.prio}</span>${esc(t.title)}</div>
+    <div class="who">${A[t.owner].status==="blocked" ? '<b style="color:var(--bad)">막힘</b>' : "진행중"} · ${esc(BY[t.owner].name)}</div><div class="bar"><i style="width:${t.prog.toFixed(0)}%"></i></div></div>`).join("")
+    : `<div style="color:var(--mut);font-size:13px">지금은 모두 대기 중이에요</div>`;
+  $("done").innerHTML = done.slice(0,6).map((d) => `<li>${esc(d.title)} <span style="color:var(--mut)">· ${esc(d.who)} ${d.at}</span></li>`).join("") || `<li style="color:var(--mut)">아직 없어요</li>`;
+  if (sel) renderSel(true);
+}
+function renderSel(light){
+  const a = A[sel]; if (!a) return;
+  const box = $("selbox"); box.hidden = false;
+  if (light){ const b = box.querySelector(".en i"); if (b){ b.style.width = a.energy + "%"; box.querySelector(".en-v").textContent = a.energy; box.querySelector(".cur-st").textContent = a.el.querySelector(".st span").textContent; } return; }
+  box.style.borderColor = "var(--or)";
+  box.innerHTML = `<h3>${esc(a.s.name)} <button class="close" id="sel-x">닫기</button></h3>
+    <div class="prof"><div class="av">${sprite(a.s.look,"",56)}</div><div>
+      <div class="rl">${a.s.ic} ${esc(a.s.role)}</div>
+      <div style="font-size:13px">● <span class="cur-st">${esc(a.el.querySelector(".st span").textContent)}</span></div>
+      <div style="font-size:12.5px;color:var(--mut)">경력 ${esc(a.s.exp)} · 기분 ${esc(a.mood)}</div></div></div>
+    <div class="btns"><button class="b-or" id="sel-chat">💬 1:1 면담</button><a class="lnk b-gh" href="${esc(a.s.link)}" ${IN_HUB && a.s.link.startsWith("/") ? 'target="_top"' : 'target="_blank" rel="noopener"'}>도구 열기 ↗</a></div>
+    <div class="energy"><span>에너지</span><span class="en-v">${a.energy}</span></div><div class="bar en"><i style="width:${a.energy}%"></i></div>
+    <p style="font-size:12.5px;color:var(--mut);margin:8px 0 0">${esc(a.s.about)}</p>`;
+  $("sel-x").onclick = () => { $("selbox").hidden = true; A[sel].el.classList.remove("sel"); sel = null; };
+  $("sel-chat").onclick = () => openChat(sel);
+}
+document.addEventListener("click", (e) => { const l = e.target.closest("a.lnk"); if (!l || !IN_HUB) return; const m = (l.getAttribute("href") || "").match(/^\/#([a-z]+)$/); if (m && hubGo(m[1])) { e.preventDefault(); $("modal").classList.remove("on"); } });
+stage.addEventListener("click", (e) => {
+  const ag = e.target.closest(".agent"); if (!ag) return;
+  if (sel) A[sel].el.classList.remove("sel");
+  sel = ag.dataset.id; ag.classList.add("sel"); renderSel();
+  if (innerWidth <= 900) $("selbox").scrollIntoView({ behavior:"smooth", block:"nearest" });
+});
+
+/* ── 1:1 면담 ── */
+let sampleFn = null, chatId = null, hist = [];
+(async () => { try { if (window.claude && claude.use) sampleFn = await claude.use("sample"); } catch(e){ sampleFn = null; }
+  if (chatId) $("c-note").textContent = note(); })();
+const note = () => sampleFn ? "AI가 캐릭터로 답합니다 · 법령·금액은 최신 기준을 꼭 확인하세요" : "이 화면에서는 정해진 답만 해요 · claude.ai에서 열면 AI가 답합니다";
+function openChat(id){
+  const a = A[id]; chatId = id; hist = [];
+  $("c-left").innerHTML = `<div class="av">${sprite(a.s.look,"",92)}</div><div style="font-size:19px;font-weight:800">${esc(a.s.name)}</div>
+    <div style="color:var(--or);font-weight:700;font-size:13px">${a.s.ic} ${esc(a.s.role)}</div><div style="color:var(--mut);font-size:13px">경력 <b style="color:var(--or)">${esc(a.s.exp)}</b></div>
+    <dl><dt>현재 상태</dt><dd>${esc(a.el.querySelector(".st span").textContent)}</dd><dt>기분</dt><dd>${esc(a.mood)}</dd><dt>에너지</dt><dd>${a.energy}</dd></dl>
+    <div style="text-align:left;font-size:12px;color:var(--mut)">현재 태스크</div><div style="text-align:left;font-weight:700;font-size:13px">${a.task ? esc(a.task.title) : "없음"}</div>
+    <div class="bar" style="margin-top:6px"><i style="width:${a.task ? a.task.prog.toFixed(0) : 0}%"></i></div>
+    <a class="lnk b-gh" style="display:block;margin-top:16px" href="${esc(a.s.link)}" ${IN_HUB && a.s.link.startsWith("/") ? 'target="_top"' : 'target="_blank" rel="noopener"'}>${esc(a.s.role)} 도구 열기 ↗</a>`;
+  $("msgs").innerHTML = "";
+  $("chips").innerHTML = a.s.chips.map((c) => `<button type="button">${esc(c)}</button>`).join("");
+  $("c-note").textContent = note();
+  $("modal").classList.add("on");
+  const d = new Date().getDay(), h = new Date().getHours();
+  bot(`안녕하세요, ${a.s.role} 담당 ${a.s.name}예요 ${a.s.ic}`);
+  setTimeout(() => bot(d===0||d===6 ? "근데 사장님… 주말인데 일 시키는 거 아니죠…? 😅" : h>=20 ? "퇴근 시간인데… 급한 일이세요? 🙂" : a.task ? `지금 "${a.task.title}" 하고 있어요. 뭐 도와드릴까요?` : "지금 손이 비어요. 뭐든 시켜 주세요!"), 700);
+  setTimeout(() => $("inp").focus(), 50);
+}
+function bot(text){
+  const el = document.createElement("div"); el.className = "m";
+  el.innerHTML = `<div class="mini">${sprite(A[chatId].s.look,"",28)}</div><div><p></p><time>${now()}</time></div>`;
+  el.querySelector("p").textContent = text;
+  $("msgs").appendChild(el); $("msgs").scrollTop = 1e9; hist.push({ who:"bot", text }); return el.querySelector("p");
+}
+function me(text){
+  const el = document.createElement("div"); el.className = "m me";
+  el.innerHTML = `<div><p></p><time>${now()}</time></div>`; el.querySelector("p").textContent = text;
+  $("msgs").appendChild(el); $("msgs").scrollTop = 1e9; hist.push({ who:"me", text });
+}
+function fallback(s, q){
+  if (/주말|쉬|놀/.test(q)) return "...진짜요? 😂 알겠어요, 사장님 부탁이면 해야죠.";
+  if (/시킬|해줘|써줘|뽑아|만들|정리/.test(q)) return `네! "${q}" 바로 시작할게요. 다 되면 말풍선에 완료 ✓ 띄울게요. 자세한 작업은 ${s.role} 도구에서 같이 보면 더 정확해요.`;
+  return `${s.about.split(".")[0]}. 그 부분은 ${s.role} 도구를 열어서 같이 보면 좋겠어요!`;
+}
+async function ask(q){
+  q = q.trim(); if (!q || !chatId) return;
+  const a = A[chatId], s = a.s; me(q); $("inp").value = "";
+  if (/시킬|해줘|써줘|뽑아|만들|정리/.test(q) && a.status==="idle") startTask(a, { t:q.slice(0,24) }, "H");
+  const p = bot("…");
+  if (!sampleFn){ await sleep(700); p.textContent = fallback(s, q); hist[hist.length-1].text = p.textContent; return; }
+  const convo = hist.slice(0,-1).slice(-10).map((m) => (m.who==="me" ? "사장님: " : s.name + ": ") + m.text).join("\n");
+  const prompt = `당신은 서울 관악구 공인중개사 사무소(미스터홈즈 관악센터, 랜드3 연구소)의 가상 직원 캐릭터 "${s.name}"입니다.
+담당: ${s.role}. 성격: ${s.about}
+지금 상태: ${a.el.querySelector(".st span").textContent}${a.task ? `, 하고 있는 일: ${a.task.title}` : ""}. 기분: ${a.mood}, 에너지 ${a.energy}.
+규칙: 한국어 존댓말, 사장님(대표 공인중개사)과 메신저로 1:1 면담 중. 캐릭터 말투로 짧고 친근하게(보통 1~3문장, 이모지 0~1개).
+사장님이 작업(제목·문구·목록·문자 초안 등)을 시키면 실제 결과물을 바로 써 준다(필요하면 길게, 목록 사용 가능).
+모르는 사실·금액·법 조항 숫자를 지어내지 않는다. 법령·세율·요율은 "최신 기준 확인 필요"를 붙인다. 과장 광고 표현(최저가·무조건·수익 보장) 금지.
+지금까지 대화:
+${convo}
+사장님: ${q}
+${s.name}:`;
+  try {
+    const r = await sampleFn(prompt, { modelTier:"quick", cache:false, onText:({text}) => { p.textContent = text; $("msgs").scrollTop = 1e9; } });
+    p.textContent = (r.text || "").trim() || "…";
+  } catch(e){
+    p.textContent = e && e.code==="rate_limited" ? "잠깐만요, 숨 좀 돌리고 답할게요 😮‍💨" : fallback(s, q);
+  }
+  hist[hist.length-1].text = p.textContent;
+}
+$("chips").addEventListener("click", (e) => { const b = e.target.closest("button"); if (b) ask(b.textContent); });
+$("send").addEventListener("submit", (e) => { e.preventDefault(); ask($("inp").value); });
+$("c-close").onclick = () => $("modal").classList.remove("on");
+$("modal").addEventListener("click", (e) => { if (e.target.id==="modal") $("modal").classList.remove("on"); });
+addEventListener("keydown", (e) => { if (e.key==="Escape") $("modal").classList.remove("on"); });
+
+/* ── 화면 맞춤·시계 ── */
+const wrap = $("mapwrap");
+function fit(){
+  const w = wrap.clientWidth;
+  const k = innerWidth <= 900 ? Math.max(.6, Math.min(1, w/1200)) : Math.min(1.3, w/1200);
+  stage.style.transform = `scale(${k})`;
+  wrap.style.height = Math.ceil(628*k) + 4 + "px";
+  stage.style.width = "1200px";
+}
+const ro = new ResizeObserver(fit); ro.observe(wrap); fit();
+function tick(){ const d = new Date(); $("time").textContent = `${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  $("date").textContent = d.toLocaleDateString("ko-KR",{month:"long",day:"numeric",weekday:"short"}); }
+tick(); setInterval(tick, 15000);
+
+/* ── 허브 안: 실제 할 일 연동 ── */
+const TOOL2STAFF = { autopost:"editor" };
+const realTasks = () => { try { return Array.isArray(parent.__hubTasks) ? parent.__hubTasks : null; } catch(e){ return null; } };
+const hubGo = (tool) => { try { if (parent.__hubGo) { parent.__hubGo(tool); return true; } } catch(e){} return false; };
+const realUsed = new Set();
+function syncReal(){
+  const L = realTasks(); if (!L) return;
+  $("realbox").hidden = false; $("real-n").textContent = L.length;
+  const by = {};
+  L.forEach((t) => { const sid = TOOL2STAFF[t.tool] || t.tool; (by[sid] = by[sid] || []).push(t); });
+  Object.values(A).forEach((a) => { const b = a.el.querySelector(".badge"), n = (by[a.s.id] || []).length;
+    b.textContent = n; b.classList.toggle("on", n > 0); b.classList.toggle("u", (by[a.s.id] || []).some((t) => t.lvl === "u")); });
+  $("real").innerHTML = L.length ? L.slice(0, 10).map((t, i) => { const s = BY[TOOL2STAFF[t.tool] || t.tool];
+    return `<li><span class="lv ${esc(t.lvl)}">${t.lvl==="u"?"긴급":t.lvl==="t"?"오늘":"이번 주"}</span><span>${esc(t.title)}<br><span style="color:var(--mut)">${s ? esc(s.name) : ""}</span></span><button type="button" data-real="${i}">${esc(t.cta || "처리하기")}</button></li>`; }).join("")
+    : `<li style="color:var(--mut)">오늘 처리할 일이 없어요 🎉</li>`;
+  // 손이 빈 직원은 실제 할 일부터
+  Object.entries(by).forEach(([sid, list]) => { const a = A[sid]; if (!a || a.status !== "idle") return;
+    const t = list.find((x) => !realUsed.has(x.id)); if (!t) return;
+    realUsed.add(t.id); startTask(a, { t: t.title.slice(0, 30) }, t.lvl === "u" ? "H" : "M"); });
+}
+$("real").addEventListener("click", (e) => { const b = e.target.closest("[data-real]"); if (!b) return;
+  const t = (realTasks() || [])[+b.dataset.real]; if (t && !hubGo(t.tool)) location.href = "/#" + t.tool; });
+if (IN_HUB) { setInterval(syncReal, 5000); setTimeout(syncReal, 800); }
+
+log("사무실 오픈 · 14명 출근");
+setTimeout(() => startTask(A.listings, A.listings.s.tasks[0], "H"), 600);
+setTimeout(() => startTask(A.editor, A.editor.s.tasks[0], "H"), 1400);
+setTimeout(() => startTask(A.lh, A.lh.s.tasks[0], "M"), 2200);
+setTimeout(() => startTask(A.desk, A.desk.s.tasks[0], "M"), 3000);
+paint();
+}
+</script>
+</body>
+</html>
