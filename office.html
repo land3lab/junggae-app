@@ -144,7 +144,7 @@ button,.lnk{font:inherit;border:0;border-radius:9px;padding:9px 10px;font-weight
     <div class="box">
       <h3>팀 현황 <span class="pill">시뮬레이션</span></h3>
       <div class="kpi">
-        <div><b id="k-all">20</b><span>총 인원</span></div>
+        <div><b id="k-all">21</b><span>총 인원</span></div>
         <div class="k-ok"><b id="k-work">0</b><span>작업중</span></div>
         <div class="k-bad"><b id="k-block">0</b><span>막힘</span></div>
         <div><b id="k-idle">0</b><span>대기</span></div>
@@ -273,36 +273,41 @@ const STAFF = [
    tasks:[{t:"사무실 PC 부팅 속도 진단"},{t:"시작프로그램 0원 청소"},{t:"SSD 교체 처방서",with:"desk"}],
    chips:["컴퓨터가 너무 느려","SSD 바꾸면 빨라져?","인터넷등기소 보안프로그램"] },
  // ── 랜드3 연구소 별관 (따로 만든 앱들) ──
- { id:"jaegeon", name:"재건둥이", role:"재건축 추적", ic:"🏗", rc:"#B5651D", x:120, y:772, exp:"3년차", link:IN_HUB ? "/#jaegeon" : "https://rsar-land3-jaeturi.ktma9028.workers.dev/",
+ { id:"jaegeon", name:"재건둥이", role:"재건축 추적", ic:"🏗", rc:"#B5651D", x:110, y:772, exp:"3년차", link:IN_HUB ? "/#jaegeon" : "https://rsar-land3-jaeturi.ktma9028.workers.dev/",
    look:{skin:"#F3CDAE",hair:"#3B2A20",style:"cap",shirt:"#B5651D",acc:"none",prop:"crane"},
    about:"재건축 고시·공고·뉴스를 매일 아침 훑어 새 소식을 물어 오는 막내 연구원. \"고시 떴어요!\"가 입버릇.",
    tasks:[{t:"재건축 고시·공고 새 글 확인"},{t:"관악구 정비사업 뉴스 정리",with:"balchuk"},{t:"고시 변경사항 알림 정리",with:"desk"}],
    chips:["이번 주 재건축 고시 요약","정비사업 단계 쉽게 설명","고시 볼 때 체크할 것"] },
- { id:"balchuk", name:"발축이", role:"재개발 3D 지도", ic:"🗺", rc:"#1E88E5", x:310, y:772, exp:"4년차", link:IN_HUB ? "/#balchuk" : "https://balchuk.land3lab.com/",
+ { id:"balchuk", name:"발축이", role:"재개발 3D 지도", ic:"🗺", rc:"#1E88E5", x:272, y:772, exp:"4년차", link:IN_HUB ? "/#balchuk" : "https://balchuk.land3lab.com/",
    look:{skin:"#F6D3B8",hair:"#1565C0",style:"spiky",shirt:"#1E88E5",acc:"glasses",prop:"map"},
    about:"서울 재개발·재건축 구역을 3D 지도로 날아다니며 가능성과 수익률을 따지는 지도 박사 지망생.",
    tasks:[{t:"정비구역 3D 지도 갱신"},{t:"구역별 사업 단계 점검",with:"jaegeon"},{t:"재개발 수익률 분석",with:"land"}],
    chips:["재개발 가능성 어떻게 봐?","수익률 계산 순서","모아타운이랑 차이"] },
- { id:"yangseongi", name:"양성이", role:"양성화 시뮬", ic:"🏚", rc:"#8E24AA", x:500, y:772, exp:"3년차", link:IN_HUB ? "/#yangseongi" : "https://yangseongi.land3lab.com/",
+ { id:"yangseongi", name:"양성이", role:"양성화 시뮬", ic:"🏚", rc:"#8E24AA", x:434, y:772, exp:"3년차", link:IN_HUB ? "/#yangseongi" : "https://yangseongi.land3lab.com/",
    look:{skin:"#F8D7BF",hair:"#4A148C",style:"bob",shirt:"#8E24AA",acc:"none",prop:"house"},
    about:"위반건축물을 보면 양성화 전·후 3D를 그려 보는 시뮬레이터. 이행강제금 계산은 누구보다 빠릅니다.",
    tasks:[{t:"위반건축물 여부 조회"},{t:"양성화 전후 3D 비교"},{t:"이행강제금 계산",with:"lh"}],
    chips:["위반건축물이면 대출 돼?","양성화 절차 알려줘","이행강제금 기준"] },
- { id:"gyeongturi", name:"경투리", role:"경매 투자", ic:"⚖", rc:"#C62828", x:690, y:772, exp:"7년차", link:IN_HUB ? "/#gyeongturi" : "https://gyeongturi-rsar-land3.kilmoonsoo.chatgpt.site/",
+ { id:"gyeongturi", name:"경투리", role:"경매 투자", ic:"⚖", rc:"#C62828", x:596, y:772, exp:"7년차", link:IN_HUB ? "/#gyeongturi" : "https://gyeongturi-rsar-land3.kilmoonsoo.chatgpt.site/",
    look:{skin:"#E9BE97",hair:"#2B2F31",style:"side",shirt:"#C62828",acc:"glasses",prop:"gavel"},
    about:"경매 물건만 보면 권리분석부터 낙찰가율까지 줄줄 꿰는 투자 도우미. 또박이와 단짝입니다.",
    tasks:[{t:"경매 물건 권리분석"},{t:"입찰가 시뮬레이션",with:"bid"},{t:"지역 낙찰가율 비교"}],
    chips:["권리분석 순서","말소기준권리가 뭐야?","입찰가 정하는 법"] },
- { id:"maejjigi", name:"매찍이", role:"현장 기록", ic:"📍", rc:"#00838F", x:880, y:772, exp:"2년차", link:IN_HUB ? "/#maejjigi" : "https://maejjigi-field.kilmoonsoo.chatgpt.site/",
+ { id:"maejjigi", name:"매찍이", role:"현장 기록", ic:"📍", rc:"#00838F", x:758, y:772, exp:"2년차", link:IN_HUB ? "/#maejjigi" : "https://maejjigi-field.kilmoonsoo.chatgpt.site/",
    look:{skin:"#F3CDAE",hair:"#00695C",style:"pony",shirt:"#00ACC1",acc:"none",prop:"camera"},
    about:"현장에 가면 사진 찍고 메모하고 바로 정리해 오는 발 빠른 현장 기록 담당.",
    tasks:[{t:"현장 매물 사진·메모 정리",next:["listings"]},{t:"현장 체크리스트 기록"},{t:"매물장으로 옮기기",with:"listings"}],
    chips:["현장에서 꼭 찍을 사진","현장 체크리스트","매물 메모 정리해줘"] },
- { id:"maetong", name:"매통이", role:"통화 정리", ic:"📞", rc:"#43A047", x:1070, y:772, exp:"3년차", link:IN_HUB ? "/#maetong" : "https://land3lab.github.io/mrhomesga/callnote/",
+ { id:"maetong", name:"매통이", role:"통화 정리", ic:"📞", rc:"#43A047", x:920, y:772, exp:"3년차", link:IN_HUB ? "/#maetong" : "https://land3lab.github.io/mrhomesga/callnote/",
    look:{skin:"#F6D3B8",hair:"#5A4632",style:"long",shirt:"#43A047",acc:"headset",prop:"phone2"},
    about:"통화가 끝나면 매물·손님 정보를 자동으로 정리해 두는 전화 담당. 정다감 실장과 매일 손님 명단을 맞춥니다.",
    tasks:[{t:"통화 내용 → 매물 정리"},{t:"부재중 손님 콜백 목록",with:"customers"},{t:"통화 메모 요약"}],
    chips:["부재중 손님 콜백 문자","통화 메모 정리 요령","오늘 통화 요약해줘"] },
+ { id:"dongmuni", name:"동문이", role:"동문 지도", ic:"🤝", rc:"#F77235", x:1082, y:772, exp:"2년차", link:IN_HUB ? "/#dongmuni" : "https://rsa-dongmuni.vercel.app",
+   look:{skin:"#F3CDAE",hair:"#2B2F31",style:"short",shirt:"#F77235",acc:"none",prop:"cards"},
+   about:"RSA 총동문회 동문 407명의 사무소를 지도에 꿰고 있는 마당발. 공동중개할 동문을 찾으면 공실이와 바로 연결해 줍니다.",
+   tasks:[{t:"권역별 동문 사무소 지도 정리"},{t:"동문 명함 등록·수정 요청 확인"},{t:"공동중개 동문 연결",with:"vacancy"}],
+   chips:["우리 동네 동문 찾아줘","동문 명함 등록 방법","공동중개 동문 연결해줘"] },
 ];
 const BY = Object.fromEntries(STAFF.map((s) => [s.id, s]));
 const MOODS = ["😊 좋음","🤔 궁금","😎 자신감","😌 여유","🔥 의욕"];
@@ -349,6 +354,7 @@ const PROPS = {
   house:`<path d="M84 86l8-8 8 8" stroke="#8E24AA" stroke-width="2" fill="none"/><rect x="86" y="86" width="12" height="9" fill="#E1BEE7" stroke="#8E24AA" stroke-width="1.4"/>`,
   gavel:`<rect x="86" y="77" width="12" height="6" rx="1.5" fill="#6D4C41" transform="rotate(-25 92 80)"/><path d="M93 82l6 10" stroke="#6D4C41" stroke-width="2.6"/><rect x="82" y="93" width="14" height="3" rx="1" fill="#8D6E63"/>`,
   phone2:`<rect x="86" y="76" width="11" height="19" rx="2.5" fill="#23292B"/><rect x="88" y="79" width="7" height="12" rx="1" fill="#A5D6A7"/>`,
+  cards:`<rect x="83" y="80" width="15" height="10" rx="1.5" fill="#fff" stroke="#F77235" stroke-width="1.4" transform="rotate(-8 90 85)"/><rect x="86" y="84" width="15" height="10" rx="1.5" fill="#FFF3EC" stroke="#F77235" stroke-width="1.4"/><circle cx="90" cy="89" r="1.8" fill="#F77235"/>`,
   wrench:`<path d="M84 92l10-10" stroke="#78909C" stroke-width="3.4" stroke-linecap="round"/><circle cx="96" cy="80" r="4.4" fill="none" stroke="#78909C" stroke-width="3"/>`,
 };
 function head(L){
