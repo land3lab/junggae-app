@@ -1,7 +1,7 @@
 {
   "name": "중개사무소 앱",
   "short_name": "중개사무소",
-  "description": "랜드3 연구소 · 중개사 실전 도구 7종",
+  "description": "랜드3 연구소 · 중개사 실전 도구 11종",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
