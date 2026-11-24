@@ -47,6 +47,12 @@ header{display:flex;align-items:center;gap:12px;padding:12px 18px;border-bottom:
 .card .st{color:var(--mut);font-size:10.5px}
 .card .st i{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--wait);margin-right:3px;vertical-align:1px}
 .st.work i{background:var(--ok)}.st.collab i{background:var(--collab)}.st.blocked i{background:var(--bad)}.st.rest i{background:#E7A400}
+.badge{position:absolute;top:-6px;right:-10px;background:var(--btn);color:#fff;font-size:11px;font-weight:800;border-radius:99px;min-width:19px;height:19px;display:none;place-items:center;padding:0 5px;z-index:4;box-shadow:0 1px 3px rgba(0,0,0,.25)}
+.badge.on{display:grid}.badge.u{background:var(--bad)}
+.real li{list-style:none;display:flex;gap:6px;align-items:flex-start;font-size:12.5px;padding:6px 0;border-bottom:1px dashed var(--line)}
+.real{padding:0;margin:0}.real .lv{font-size:10px;font-weight:800;color:#fff;border-radius:4px;padding:1px 5px;flex:none;margin-top:2px}
+.real .lv.u{background:var(--bad)}.real .lv.t{background:var(--btn)}.real .lv.w{background:#4C6EF5}
+.real button{margin-left:auto;font-size:11.5px;min-height:28px;padding:3px 8px;background:var(--bg);border:1px solid var(--line);color:var(--ink);flex:none}
 .bub{position:absolute;bottom:100%;left:50%;transform:translateX(-50%);margin-bottom:3px;background:var(--card);color:var(--ink);border-radius:9px;padding:3px 8px;font-size:11px;font-weight:700;white-space:nowrap;max-width:116px;overflow:hidden;text-overflow:ellipsis;box-shadow:0 2px 6px rgba(0,0,0,.15);opacity:0;transition:opacity .25s;pointer-events:none}
 .bub.on{opacity:1}
 .bub.done{background:light-dark(#E7F6EC,#1F3A2A);color:var(--ok)}
@@ -134,6 +140,7 @@ button,.lnk{font:inherit;border:0;border-radius:9px;padding:9px 10px;font-weight
   <details class="log" open><summary>이벤트 로그 <span id="log-n">0건</span></summary><ol id="log"></ol></details></div>
   <aside class="side">
     <div class="box" id="selbox" hidden></div>
+    <div class="box" id="realbox" hidden><h3>오늘 실제 할 일 <span id="real-n" style="margin-left:auto;color:var(--mut);font-weight:500">0</span></h3><ul class="real" id="real"></ul></div>
     <div class="box">
       <h3>팀 현황 <span class="pill">시뮬레이션</span></h3>
       <div class="kpi">
@@ -224,7 +231,7 @@ const STAFF = [
    about:"어떤 매물이든 딱 2,000자 내외로 써내는 작가. 제목만 봐도 매물이 보이게 쓰는 게 철칙입니다.",
    tasks:[{t:"매물 블로그 2,000자 · 봉천동 투룸",with:"dabang",next:["publish"]},{t:"상식 글 · 전세 계약 전 체크",next:["reels"]},{t:"블로그 키워드 20개 정리"}],
    chips:["블로그 제목 5개 뽑아줘","키워드 20개 작업해줘","2,000자 글 구조 알려줘"] },
- { id:"editor", name:"칠공칠", role:"편집장", ic:"☕", rc:"#5B7DB1", x:740, y:322, exp:"15년차", link:ADMIN,
+ { id:"editor", name:"칠공칠", role:"편집장", ic:"☕", rc:"#5B7DB1", x:740, y:322, exp:"15년차", link:IN_HUB ? "/#autopost" : ADMIN,
    look:{skin:"#EDC3A0",hair:"#9AA0A6",style:"short",shirt:"#1B2A4A",acc:"glasses",prop:"coffee"},
    about:"매일 아침 7시 7분에 오늘의 주제를 고르고 블로그·카드뉴스·쇼츠·스레드를 한 번에 만드는 베테랑 편집장(autopost).",
    tasks:[{t:"오늘의 연재 주제 선정",next:["reels"]},{t:"카드뉴스 5장 검수"},{t:"보고 메일 발송"}],
@@ -239,7 +246,7 @@ const STAFF = [
    about:"모든 영상은 30초 안에 끝내야 한다는 PD. \"훅은 3초!\"를 외치며 매물 사진에 켄번즈 효과를 겁니다.",
    tasks:[{t:"매물 쇼츠 30초 · 봉천동 투룸",with:"dabang",next:["publish"]},{t:"쇼츠 썸네일 A/B 테스트"},{t:"자막 표시사항 띠 확인"}],
    chips:["30초 쇼츠 대본 써줘","훅 문장 5개","썸네일 문구 추천"] },
- { id:"reels", name:"릴리", role:"릴스·스레드", ic:"🧵", rc:"#C2185B", x:1010, y:104, exp:"2년차", link:ADMIN+"#drafts",
+ { id:"reels", name:"릴리", role:"릴스·스레드", ic:"🧵", rc:"#C2185B", x:1010, y:104, exp:"2년차", link:IN_HUB ? "/#autopost" : ADMIN+"#drafts",
    look:{skin:"#F8D7BF",hair:"#C2185B",style:"pony",shirt:"#FFB300",acc:"none",prop:"spool"},
    about:"저녁 7시 7분에 릴스와 스레드를 뽑는 크리에이터. 실타래처럼 글을 이어 붙이는 게 특기.",
    tasks:[{t:"블로그 → 릴스·스레드 재가공",with:"blog"},{t:"스레드 질문형 3개 작성"},{t:"릴스 표지 9:16 제작"}],
@@ -348,7 +355,7 @@ STAFF.forEach((s, i) => {
   const el = document.createElement("div");
   el.className = "agent"; el.dataset.id = s.id;
   el.style.left = s.x + "px"; el.style.top = (s.y + 18) + "px";
-  el.innerHTML = `<div class="bub"></div>${sprite(s.look)}<div class="card" style="--rc:${s.rc}"><div class="nm">${esc(s.name)}</div><div class="rl">${s.ic} ${esc(s.role)}</div><div class="st"><i></i><span>대기</span></div></div>`;
+  el.innerHTML = `<span class="badge"></span><div class="bub"></div>${sprite(s.look)}<div class="card" style="--rc:${s.rc}"><div class="nm">${esc(s.name)}</div><div class="rl">${s.ic} ${esc(s.role)}</div><div class="st"><i></i><span>대기</span></div></div>`;
   stage.appendChild(el);
   A[s.id] = { s, el, status:"idle", task:null, energy:72 + (i*7)%26, mood:MOODS[i % MOODS.length] };
 });
@@ -490,6 +497,7 @@ function renderSel(light){
   $("sel-x").onclick = () => { $("selbox").hidden = true; A[sel].el.classList.remove("sel"); sel = null; };
   $("sel-chat").onclick = () => openChat(sel);
 }
+document.addEventListener("click", (e) => { const l = e.target.closest("a.lnk"); if (!l || !IN_HUB) return; const m = (l.getAttribute("href") || "").match(/^\/#([a-z]+)$/); if (m && hubGo(m[1])) { e.preventDefault(); $("modal").classList.remove("on"); } });
 stage.addEventListener("click", (e) => {
   const ag = e.target.closest(".agent"); if (!ag) return;
   if (sel) A[sel].el.classList.remove("sel");
@@ -579,6 +587,30 @@ const ro = new ResizeObserver(fit); ro.observe(wrap); fit();
 function tick(){ const d = new Date(); $("time").textContent = `${pad(d.getHours())}:${pad(d.getMinutes())}`;
   $("date").textContent = d.toLocaleDateString("ko-KR",{month:"long",day:"numeric",weekday:"short"}); }
 tick(); setInterval(tick, 15000);
+
+/* ── 허브 안: 실제 할 일 연동 ── */
+const TOOL2STAFF = { autopost:"editor" };
+const realTasks = () => { try { return Array.isArray(parent.__hubTasks) ? parent.__hubTasks : null; } catch(e){ return null; } };
+const hubGo = (tool) => { try { if (parent.__hubGo) { parent.__hubGo(tool); return true; } } catch(e){} return false; };
+const realUsed = new Set();
+function syncReal(){
+  const L = realTasks(); if (!L) return;
+  $("realbox").hidden = false; $("real-n").textContent = L.length;
+  const by = {};
+  L.forEach((t) => { const sid = TOOL2STAFF[t.tool] || t.tool; (by[sid] = by[sid] || []).push(t); });
+  Object.values(A).forEach((a) => { const b = a.el.querySelector(".badge"), n = (by[a.s.id] || []).length;
+    b.textContent = n; b.classList.toggle("on", n > 0); b.classList.toggle("u", (by[a.s.id] || []).some((t) => t.lvl === "u")); });
+  $("real").innerHTML = L.length ? L.slice(0, 10).map((t, i) => { const s = BY[TOOL2STAFF[t.tool] || t.tool];
+    return `<li><span class="lv ${esc(t.lvl)}">${t.lvl==="u"?"긴급":t.lvl==="t"?"오늘":"이번 주"}</span><span>${esc(t.title)}<br><span style="color:var(--mut)">${s ? esc(s.name) : ""}</span></span><button type="button" data-real="${i}">${esc(t.cta || "처리하기")}</button></li>`; }).join("")
+    : `<li style="color:var(--mut)">오늘 처리할 일이 없어요 🎉</li>`;
+  // 손이 빈 직원은 실제 할 일부터
+  Object.entries(by).forEach(([sid, list]) => { const a = A[sid]; if (!a || a.status !== "idle") return;
+    const t = list.find((x) => !realUsed.has(x.id)); if (!t) return;
+    realUsed.add(t.id); startTask(a, { t: t.title.slice(0, 30) }, t.lvl === "u" ? "H" : "M"); });
+}
+$("real").addEventListener("click", (e) => { const b = e.target.closest("[data-real]"); if (!b) return;
+  const t = (realTasks() || [])[+b.dataset.real]; if (t && !hubGo(t.tool)) location.href = "/#" + t.tool; });
+if (IN_HUB) { setInterval(syncReal, 5000); setTimeout(syncReal, 800); }
 
 log("사무실 오픈 · 14명 출근");
 setTimeout(() => startTask(A.listings, A.listings.s.tasks[0], "H"), 600);
