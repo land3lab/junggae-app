@@ -273,18 +273,31 @@ function bind(){
   };
   $("#app").onclick = async (e) => {
     const p = e.target.closest("[data-pub]"), a = e.target.closest("[data-all]"), m = e.target.closest("[data-remix]");
-    if (p) { const x = S.drafts.find((d) => d.id === p.dataset.pub), l = CH.find((c) => c[0] === p.dataset.ch)[1];
-      if (!confirm(`${l}에 게시합니다.\n「${x ? x.title : ""}」${p.classList.contains("done") ? "\n이미 올린 채널이라 한 번 더 올라가요." : ""}\n대외에 공개되는 글이에요. 진행할까요?`)) return;
-      p.disabled = true; await dispatch({ publish_id: p.dataset.pub, channels: p.dataset.ch, mode: "auto" }, `${l} 올리기 시작 — 2~4분 뒤 ✓ 표시가 붙어요`); }
+    if (p) { const x = S.drafts.find((d) => d.id === p.dataset.pub), k = p.dataset.ch, l = CH.find((c) => c[0] === k)[1];
+      const key = p.dataset.pub + ":" + k;
+      if (SENT[key] && Date.now() - SENT[key] < 10 * 60000) { toast(`${l}: 지금 올리는 중이에요 — 2~4분 뒤 ✓ 표시가 붙어요`, 4500); return; }
+      let ch = k;
+      if (p.classList.contains("done")) {
+        toast(`✓ ${l}에는 이미 올라갔어요`, 4000);
+        if (!confirm(`「${x ? x.title : ""}」\n${l}에는 이미 올라갔어요.\n\n같은 글이 한 번 더 올라가도 괜찮으면 [확인], 아니면 [취소]를 누르세요.`)) return;
+        ch = "again," + k;
+      } else if (!confirm(`${l}에 게시합니다.\n「${x ? x.title : ""}」\n대외에 공개되는 글이에요. 진행할까요?`)) return;
+      p.disabled = true; SENT[key] = Date.now();
+      await dispatch({ publish_id: p.dataset.pub, channels: ch, mode: "auto" }, `${l} 올리기 시작 — 2~4분 뒤 ✓ 표시가 붙어요`); }
     if (a) { const x = S.drafts.find((d) => d.id === a.dataset.all), ch = S.status?.channels || {};
-      const list = CH.filter(([k, , sk]) => (x.set !== "social" || SOCIAL_CH.includes(k)) && !(ch[sk] && !ch[sk].ok) && !(String((x.published || {})[k] || "") && !/^(ERROR|건너뜀)/.test(String(x.published[k]))));
-      if (!list.length) { toast("올릴 채널이 없어요 (모두 올렸거나 연결 안 됨)"); return; }
-      if (!confirm(`다음 채널에 게시합니다: ${list.map((c) => c[1]).join(", ")}\n「${x.title}」\n대외에 공개되는 글이에요. 진행할까요?`)) return;
-      a.disabled = true; await dispatch({ publish_id: x.id, channels: list.map((c) => c[0]).join(","), mode: "auto" }, "한 번에 올리기 시작 — 3~5분 걸려요"); }
+      const isDone = (k) => (String((x.published || {})[k] || "") && !/^(ERROR|건너뜀)/.test(String(x.published[k]))) || (SENT[x.id + ":" + k] && Date.now() - SENT[x.id + ":" + k] < 10 * 60000);
+      const mine = CH.filter(([k]) => x.set !== "social" || SOCIAL_CH.includes(k));
+      const already = mine.filter(([k]) => isDone(k));
+      const list = mine.filter(([k, , sk]) => !(ch[sk] && !ch[sk].ok) && !isDone(k));
+      if (!list.length) { toast(already.length ? `✓ 이미 올라갔어요: ${already.map((c) => c[1]).join(", ")}` : "올릴 채널이 없어요 (연결 안 됨)", 5000); return; }
+      if (!confirm(`다음 채널에 게시합니다: ${list.map((c) => c[1]).join(", ")}${already.length ? `\n(이미 올라감 — 건너뜀: ${already.map((c) => c[1]).join(", ")})` : ""}\n「${x.title}」\n대외에 공개되는 글이에요. 진행할까요?`)) return;
+      a.disabled = true; list.forEach(([k]) => SENT[x.id + ":" + k] = Date.now());
+      await dispatch({ publish_id: x.id, channels: list.map((c) => c[0]).join(","), mode: "auto" }, "한 번에 올리기 시작 — 3~5분 걸려요"); }
     if (m) { if (!confirm("이 원고를 릴스·스레드 전용으로 다시 만들까요? (원고함에 보관, 바로 올리지 않음)")) return;
       m.disabled = true; await dispatch({ set: "social", source_id: m.dataset.remix, mode: "draft" }, "재가공 시작 — 3~5분 뒤 🎬 원고가 생겨요"); }
   };
 }
+const SENT = {};   // 방금 보낸 채널(원고ID:채널) — 결과가 반영되기 전 중복 클릭 방지
 async function dispatch(inputs, okMsg){
   try { await call("dispatch", { inputs }); toast(okMsg, 4500); busyUntil = Date.now() + 10 * 60000; setTimeout(load, 4000); }
   catch (e) {
